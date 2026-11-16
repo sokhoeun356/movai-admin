@@ -2179,6 +2179,32 @@
           });
         }
 
+        /* Verify a candidate Admin key against the server BEFORE it is
+           trusted: GET /api/admin/keys carrying that key. Resolves only
+           when the server accepts the key; otherwise rejects with the
+           server's own error message (wrong key, blocked account, …) so
+           the login screen can show it verbatim. Raw fetch, not api():
+           the key is not saved yet, and api() would hide the server's
+           message behind a generic "unauthorized". */
+        function verifyAdminKey(key) {
+          return fetch(API_BASE + "/api/admin/keys", {
+            method: "GET",
+            headers: { "Authorization": "Bearer " + key }
+          }).then(function (res) {
+            return res.text().then(function (text) {
+              var data = null;
+              try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
+              if (res.ok) return data;
+              var msg = (data && (data.error || data.message)) || ("Server ឆ្លើយ " + res.status);
+              var err = new Error(msg);
+              err.code = "AUTH";
+              throw err;
+            });
+          }, function () {
+            throw new Error("ភ្ជាប់ទៅ server មិនបាន — សូមពិនិត្យអ៊ីនធឺណិត រួចព្យាយាមម្ដងទៀត។");
+          });
+        }
+
         /* ---------- Views ---------- */
         function showLogin(msg) {
           appView.classList.add("hidden");
@@ -7650,20 +7676,30 @@
             return;
           }
           hideAlert(loginError);
-          setKey(key);
           loginBtn.disabled = true;
+          keyInput.disabled = true;
           var stop = makeTicker(loginStatus, function (s) {
-            return "កំពុងពិនិត្យសោ… " + s + " វិនាទី (server អាចចំណាយពេលបន្តិចពេលបើកដំបូង)";
+            return "កំពុងពិនិត្យសោ… " + s + " វិនាទី";
           });
-          showApp();
-          loadControlData();
-          loadUsers().then(function () {
+          /* Verify FIRST — the key is saved and the dashboard shown ONLY
+             after the server confirms it. A wrong key (or any other text)
+             never leaves the login screen; the server's own error is
+             shown here in red instead. */
+          verifyAdminKey(key).then(function () {
+            stop();
+            setKey(key);
+            loginBtn.disabled = false;
+            keyInput.disabled = false;
+            loginStatus.textContent = "";
+            showApp();
+            loadControlData();
+            loadUsers();
+          }).catch(function (err) {
             stop();
             loginBtn.disabled = false;
+            keyInput.disabled = false;
             loginStatus.textContent = "";
-            if (loginView.classList.contains("hidden") === false) {
-              /* loadUsers bounced us back to login (bad key) */
-            }
+            showAlert(loginError, err.message);
           });
         });
 
@@ -7677,10 +7713,32 @@
         });
 
         /* ---------- Boot ---------- */
-        if (getKey()) {
-          showApp();
-          loadControlData();
-          loadUsers();
+        var savedKey = getKey();
+        if (savedKey) {
+          /* A saved key is not trusted until the server confirms it —
+             stay on the login screen while it is checked. If the check
+             fails, the saved key is cleared and the server's error is
+             shown on the login screen; the app opens only on success. */
+          loginBtn.disabled = true;
+          keyInput.disabled = true;
+          var stopBoot = makeTicker(loginStatus, function (s) {
+            return "កំពុងពិនិត្យសោ… " + s + " វិនាទី";
+          });
+          verifyAdminKey(savedKey).then(function () {
+            stopBoot();
+            loginBtn.disabled = false;
+            keyInput.disabled = false;
+            loginStatus.textContent = "";
+            showApp();
+            loadControlData();
+            loadUsers();
+          }).catch(function (err) {
+            stopBoot();
+            loginBtn.disabled = false;
+            keyInput.disabled = false;
+            clearKey();
+            showLogin(err.message);
+          });
         } else {
           showLogin("");
         }
