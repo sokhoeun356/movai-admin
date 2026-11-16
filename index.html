@@ -4105,6 +4105,20 @@
             keyState[p.id] = { count: 0, last4s: [] };
             refs.saveBtn.addEventListener("click", function () { saveKey(p, refs); });
             refs.copyAllBtn.addEventListener("click", function () { copyAllKeys(p, refs); });
+            /* Bulk paste: this is a single-line input, so the browser would
+               strip the newlines from a multi-key paste (e.g. text copied by
+               Copy All). Capture the clipboard text first and rewrite it
+               comma-joined — saveKey splits it back into separate keys. */
+            refs.keyInput.addEventListener("paste", function (e) {
+              var text = "";
+              try { text = e.clipboardData ? e.clipboardData.getData("text") : ""; } catch (err) { text = ""; }
+              if (!text || !/[\n,]/.test(text)) return;
+              var parts = text.split(/[\n,]+/).map(function (s) { return s.trim(); }).filter(function (s) { return !!s; });
+              if (parts.length < 2) return;
+              e.preventDefault();
+              refs.keyInput.value = parts.join(",");
+              refs.line.textContent = "បាន paste " + parts.length + " Key — ចុច «+ បន្ថែម Key» ដើម្បីបន្ថែមទាំងអស់។";
+            });
           });
         }
 
@@ -4334,6 +4348,14 @@
             refs.keyInput.focus();
             return;
           }
+          /* Bulk paste: several keys in the one box (one per line, exactly
+             as Copy All copies them — commas also accepted). Each key is
+             added on its own, one POST after another. */
+          var pieces = key.split(/[\n,]+/).map(function (s) { return s.trim(); }).filter(function (s) { return !!s; });
+          if (pieces.length > 1) {
+            saveKeysBulk(p, refs, pieces, endpoint);
+            return;
+          }
           var body = { provider: p.id };
           if (key) body.key = key;
           if (endpoint) body.endpoint = endpoint;
@@ -4356,6 +4378,46 @@
               refs.saveBtn.disabled = false;
               if (err.code === "AUTH") { handleSectionError(err, null); return; }
               refs.line.textContent = "បន្ថែម Key មិនបាន៖ " + err.message;
+            });
+        }
+
+        /* Bulk add: POST each pasted key one at a time (sequentially),
+           with live "done/total · seconds" progress. Stops at the first
+           failure and reports how many keys were already added. */
+        function saveKeysBulk(p, refs, keys, endpoint) {
+          var total = keys.length;
+          var done = 0;
+          var current = 1;
+          refs.saveBtn.disabled = true;
+          var stop = makeTicker(refs.line, function (s) {
+            return "កំពុងបន្ថែម Key… " + current + "/" + total + " · " + s + " វិនាទី";
+          });
+          var chain = Promise.resolve();
+          keys.forEach(function (k, i) {
+            chain = chain.then(function () {
+              current = i + 1;
+              var body = { provider: p.id, key: k };
+              if (endpoint) body.endpoint = endpoint;
+              return api("/api/admin/keys", { method: "POST", body: body })
+                .then(throwIfNotOk)
+                .then(function () { done++; });
+            });
+          });
+          chain
+            .then(function () {
+              stop();
+              refs.saveBtn.disabled = false;
+              refs.keyInput.value = "";
+              if (refs.epInput) refs.epInput.value = "";
+              refs.line.textContent = "បានបន្ថែម Key " + total + " សម្រាប់ " + p.name + " រួចរាល់។";
+              return loadKeys();
+            })
+            .catch(function (err) {
+              stop();
+              refs.saveBtn.disabled = false;
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              refs.line.textContent = "បន្ថែម Key មិនបាន៖ " + err.message + " (បានបន្ថែមរួច " + done + "/" + total + " Key)";
+              if (done > 0) loadKeys();
             });
         }
 
