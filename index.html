@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
       :root {
         --bg: #0A0B0D;
@@ -96,6 +97,38 @@
       .btn[disabled] { opacity: .55; cursor: default; }
       .login-btn { margin-top: 18px; font-size: 16px; }
       .login-note { margin: 16px 0 0; font-size: 12.5px; color: var(--text-faint); text-align: center; }
+
+      /* ---------- Login: 2 steps (Google, then Admin Key) ---------- */
+      .step-label { font-size: 13px; font-weight: 800; color: var(--lime); margin: 0 0 12px; }
+      .gis-btn { display: flex; justify-content: center; min-height: 48px; margin: 2px 0 4px; }
+      .gis-retry { display: block; margin: 10px auto 0; }
+      .admin-id {
+        display: flex; align-items: center; gap: 11px;
+        background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
+        padding: 9px 11px; margin-bottom: 18px;
+      }
+      .admin-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: none; background: var(--card-2); }
+      .admin-id-main { flex: 1; min-width: 0; }
+      .admin-id-name { font-weight: 700; font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .admin-id-email { color: var(--text-dim); font-size: 12.5px; word-break: break-all; }
+      .key-field { display: flex; gap: 8px; }
+      .key-field .text-input { flex: 1; min-width: 0; }
+      .key-tool-btn {
+        flex: none; width: 46px; padding: 0;
+        display: inline-flex; align-items: center; justify-content: center;
+      }
+      .key-copy-btn { flex: none; padding: 0 14px; font-size: 13.5px; white-space: nowrap; }
+      .link-btn {
+        display: block; margin: 12px auto 0; padding: 8px 6px; min-height: 0;
+        background: none; border: none; color: var(--lime);
+        font-weight: 700; font-size: 14px; text-decoration: underline;
+      }
+      .key-help { border-top: 1px solid var(--line-soft); margin-top: 16px; padding-top: 14px; }
+      .key-help h4 { margin: 0 0 6px; font-size: 14.5px; }
+      .key-help .desc { color: var(--text-dim); font-size: 13px; margin: 0 0 12px; }
+      .key-help .ctl { margin-bottom: 12px; }
+      .key-help-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+      .key-help-actions .btn { flex: 1 1 130px; }
 
       /* ---------- App shell ---------- */
       .app { max-width: 1080px; margin: 0 auto; padding: 0 16px calc(104px + env(safe-area-inset-bottom)); }
@@ -1063,16 +1096,71 @@
   </head>
   <body>
 
-    <!-- ================= LOGIN ================= -->
+    <!-- ================= LOGIN (2 steps: Google, then Admin Key) ================= -->
     <div class="login-wrap" id="loginView">
-      <form class="login-card" id="loginForm" autocomplete="off">
+      <div class="login-card">
         <span class="wordmark"><span class="mov">Mov</span><span class="ai">Ai</span><span class="admin-word"> Admin</span></span>
-        <label class="field-label" for="keyInput">Admin Key</label>
-        <input class="text-input" id="keyInput" type="password" placeholder="Admin Key…" autocomplete="current-password" />
-        <div class="alert alert-error" id="loginError" role="alert"></div>
-        <button class="btn btn-primary btn-block login-btn" id="loginBtn" type="submit">ចូលប្រើ</button>
-        <p class="login-note" id="loginStatus"></p>
-      </form>
+        <p class="login-sub">ចូលដោយ Google រួចវាយ Admin Key 🗝️</p>
+
+        <!-- Step 1: Google sign-in (admin Gmails only) -->
+        <div id="googleStep">
+          <p class="step-label">ជំហានទី 1 · ចូលដោយ Google</p>
+          <div class="gis-btn" id="gisBtn"></div>
+          <button class="btn gis-retry hidden" id="gisRetryBtn" type="button">ព្យាយាមម្ដងទៀត</button>
+          <div class="alert alert-error" id="googleError" role="alert"></div>
+          <p class="login-note" id="googleStatus"></p>
+          <p class="login-note">មានតែ Gmail Admin 3 ប៉ុណ្ណោះដែលអាចចូលបាន</p>
+        </div>
+
+        <!-- Step 2: Admin Key (shown only after an admin Gmail passes step 1) -->
+        <form id="loginForm" autocomplete="off" class="hidden">
+          <div class="admin-id">
+            <img class="admin-avatar hidden" id="adminAvatar" alt="" referrerpolicy="no-referrer" />
+            <div class="admin-id-main">
+              <div class="admin-id-name" id="adminName"></div>
+              <div class="admin-id-email" id="adminEmail"></div>
+            </div>
+            <button class="btn btn-icon" id="changeAccountBtn" type="button">ប្ដូរគណនី</button>
+          </div>
+          <p class="step-label">ជំហានទី 2 · វាយ Admin Key 🗝️</p>
+          <label class="field-label" for="keyInput">Admin Key</label>
+          <div class="key-field">
+            <input class="text-input" id="keyInput" type="password" placeholder="Admin Key…" autocomplete="current-password" />
+            <button class="btn key-tool-btn" id="keyEyeBtn" type="button" aria-label="បង្ហាញ / លាក់ Key" title="បង្ហាញ / លាក់ Key">
+              <svg id="keyEyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="keyEyeOff" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.61 6.61A13.53 13.53 0 0 0 2 12s3.5 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/></svg>
+            </button>
+            <button class="btn key-copy-btn" id="keyCopyBtn" type="button">Copy</button>
+          </div>
+          <div class="alert alert-error" id="loginError" role="alert"></div>
+          <div class="alert alert-ok" id="loginOk" role="status"></div>
+          <button class="btn btn-primary btn-block login-btn" id="loginBtn" type="submit">ចូលប្រើ</button>
+          <p class="login-note" id="loginStatus"></p>
+          <button class="link-btn" id="forgotKeyLink" type="button">ភ្លេច Key / បង្កើត Key ថ្មី</button>
+
+          <!-- Forgot / reset: only reachable with a live Google session -->
+          <div class="key-help hidden" id="keyHelpPanel">
+            <h4>មើល Key បច្ចុប្បន្ន</h4>
+            <p class="desc">ចុចខាងក្រោម Key បច្ចុប្បន្ននឹងត្រូវដាក់ចូលប្រអប់ Key ខាងលើ — ចុចភ្នែកដើម្បីមើល ឬ Copy ដើម្បីចម្លងយកទៅភ្ជាប់។</p>
+            <button class="btn btn-block" id="revealKeyBtn" type="button">បង្ហាញ Key បច្ចុប្បន្ន</button>
+            <h4 style="margin-top:20px">បង្កើត Key ថ្មី</h4>
+            <p class="desc">វាយ Key ថ្មី 2 ដងឲ្យដូចគ្នា ឬចុចបង្កើតដោយស្វ័យប្រវត្តិ។ ពេលរក្សាទុក Key ចាស់នឹងឈប់ដំណើរការភ្លាម។</p>
+            <div class="ctl">
+              <label class="field-label" for="newKeyInput">Key ថ្មី</label>
+              <input class="text-input" id="newKeyInput" type="password" placeholder="Key ថ្មី…" autocomplete="new-password" />
+            </div>
+            <div class="ctl">
+              <label class="field-label" for="confirmKeyInput">វាយ Key ថ្មីម្ដងទៀត</label>
+              <input class="text-input" id="confirmKeyInput" type="password" placeholder="Key ថ្មីម្ដងទៀត…" autocomplete="new-password" />
+            </div>
+            <div class="key-help-actions">
+              <button class="btn" id="genKeyBtn" type="button">បង្កើតដោយស្វ័យប្រវត្តិ</button>
+              <button class="btn btn-primary" id="resetKeyBtn" type="button">រក្សាទុក Key ថ្មី</button>
+            </div>
+            <p class="save-status" id="keyHelpStatus"></p>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- ================= APP ================= -->
@@ -2086,6 +2174,28 @@
         var loginBtn = document.getElementById("loginBtn");
         var loginError = document.getElementById("loginError");
         var loginStatus = document.getElementById("loginStatus");
+        var loginOk = document.getElementById("loginOk");
+        var googleStep = document.getElementById("googleStep");
+        var gisBtn = document.getElementById("gisBtn");
+        var gisRetryBtn = document.getElementById("gisRetryBtn");
+        var googleError = document.getElementById("googleError");
+        var googleStatus = document.getElementById("googleStatus");
+        var adminAvatar = document.getElementById("adminAvatar");
+        var adminName = document.getElementById("adminName");
+        var adminEmail = document.getElementById("adminEmail");
+        var changeAccountBtn = document.getElementById("changeAccountBtn");
+        var keyEyeBtn = document.getElementById("keyEyeBtn");
+        var keyEyeOpen = document.getElementById("keyEyeOpen");
+        var keyEyeOff = document.getElementById("keyEyeOff");
+        var keyCopyBtn = document.getElementById("keyCopyBtn");
+        var forgotKeyLink = document.getElementById("forgotKeyLink");
+        var keyHelpPanel = document.getElementById("keyHelpPanel");
+        var revealKeyBtn = document.getElementById("revealKeyBtn");
+        var newKeyInput = document.getElementById("newKeyInput");
+        var confirmKeyInput = document.getElementById("confirmKeyInput");
+        var genKeyBtn = document.getElementById("genKeyBtn");
+        var resetKeyBtn = document.getElementById("resetKeyBtn");
+        var keyHelpStatus = document.getElementById("keyHelpStatus");
 
         var logoutBtn = document.getElementById("logoutBtn");
         var searchInput = document.getElementById("searchInput");
@@ -2536,6 +2646,195 @@
           });
         }
 
+        /* ---------- Login step 1: Google sign-in ----------
+           Only the 3 admin Gmails may pass. The client-side list is a
+           UX gate (a non-admin Gmail is refused here and never sees
+           the key field); the server re-checks the Gmail on
+           POST /api/admin/key/verify-google and returns a 15-minute
+           session that alone can reveal or reset the Admin Key. The
+           Admin Key itself (step 2, verifyAdminKey above) stays the
+           gate that actually opens the app — lockout rules unchanged. */
+        var GOOGLE_CLIENT_ID = "809358546010-dspkik0o4ahg7km15dspro5cj3qjk384.apps.googleusercontent.com";
+        var ADMIN_EMAILS = ["sokhoeun7788@gmail.com", "sokhoeun356@gmail.com", "yemsokhoeun98@gmail.com"];
+        var IDENTITY_STORAGE = "movai_admin_identity";
+        var googleSession = "";
+        var adminIdentity = loadIdentity();
+
+        function loadIdentity() {
+          try {
+            var raw = localStorage.getItem(IDENTITY_STORAGE);
+            if (!raw) return null;
+            var o = JSON.parse(raw);
+            if (o && o.email) return { email: String(o.email), name: String(o.name || ""), picture: String(o.picture || "") };
+          } catch (e) {}
+          return null;
+        }
+        function saveIdentity() {
+          try {
+            if (adminIdentity) localStorage.setItem(IDENTITY_STORAGE, JSON.stringify(adminIdentity));
+            else localStorage.removeItem(IDENTITY_STORAGE);
+          } catch (e) {}
+        }
+        function clearIdentity() {
+          adminIdentity = null;
+          googleSession = "";
+          saveIdentity();
+        }
+
+        function decodeJwtPayload(token) {
+          var parts = String(token || "").split(".");
+          if (parts.length < 2) return null;
+          var b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+          while (b64.length % 4) b64 += "=";
+          try {
+            var json = decodeURIComponent(atob(b64).split("").map(function (c) {
+              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(""));
+            return JSON.parse(json);
+          } catch (e) { return null; }
+        }
+
+        function showGoogleStep() {
+          googleStep.classList.remove("hidden");
+          loginForm.classList.add("hidden");
+        }
+        function showKeyStep() {
+          googleStep.classList.add("hidden");
+          loginForm.classList.remove("hidden");
+          if (adminIdentity) {
+            adminName.textContent = adminIdentity.name || adminIdentity.email;
+            adminEmail.textContent = adminIdentity.email;
+            if (adminIdentity.picture) {
+              adminAvatar.src = adminIdentity.picture;
+              adminAvatar.classList.remove("hidden");
+            } else {
+              adminAvatar.removeAttribute("src");
+              adminAvatar.classList.add("hidden");
+            }
+          }
+        }
+
+        /* Calls that ride on the 15-minute Google session (reveal /
+           reset the Admin Key). Rejects with code "SESSION" when the
+           session is gone or expired so callers can send the admin
+           back to step 1. */
+        function keySessionFetch(path, options) {
+          options = options || {};
+          var headers = { "Authorization": "Bearer " + googleSession };
+          if (options.body) headers["Content-Type"] = "application/json";
+          return fetch(API_BASE + path, {
+            method: options.method || "GET",
+            headers: headers,
+            body: options.body ? JSON.stringify(options.body) : undefined
+          }).then(function (res) {
+            return res.text().then(function (text) {
+              var data = null;
+              try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
+              if (res.status === 401 || res.status === 403) {
+                var errS = new Error("Session Google ផុតកំណត់ (15 នាទី) — សូមចូលដោយ Google ម្ដងទៀត។");
+                errS.code = "SESSION";
+                throw errS;
+              }
+              if (!res.ok || (data && data.ok === false)) {
+                var errH = new Error((data && (data.error || data.message)) || ("Server ឆ្លើយ " + res.status));
+                errH.code = "HTTP";
+                throw errH;
+              }
+              return data;
+            });
+          }, function () {
+            throw new Error("ភ្ជាប់ទៅ server មិនបាន — សូមពិនិត្យអ៊ីនធឺណិត រួចព្យាយាមម្ដងទៀត។");
+          });
+        }
+
+        function onGoogleCredential(response) {
+          hideAlert(googleError);
+          var payload = decodeJwtPayload(response && response.credential);
+          var email = payload && payload.email ? String(payload.email).toLowerCase() : "";
+          if (!email) {
+            showAlert(googleError, "អាន Gmail ពី Google មិនបាន — សូមព្យាយាមម្ដងទៀត។");
+            return;
+          }
+          if (ADMIN_EMAILS.indexOf(email) === -1) {
+            if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+            showAlert(googleError, "Gmail «" + email + "» មិនមែនជា Admin ទេ — មានតែ Gmail Admin 3 ប៉ុណ្ណោះដែលអាចចូលបាន។");
+            return;
+          }
+          var stop = makeTicker(googleStatus, function (s) {
+            return "កំពុងពិនិត្យ Gmail ជាមួយ server… " + s + " វិនាទី";
+          });
+          fetch(API_BASE + "/api/admin/key/verify-google", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idToken: response.credential })
+          }).then(function (res) {
+            return res.text().then(function (text) {
+              var data = null;
+              try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
+              if (!res.ok || !data || data.ok === false || !data.session) {
+                throw new Error((data && (data.error || data.message)) || ("Server ឆ្លើយ " + res.status));
+              }
+              return data.session;
+            });
+          }, function () {
+            throw new Error("ភ្ជាប់ទៅ server មិនបាន — សូមពិនិត្យអ៊ីនធឺណិត រួចព្យាយាមម្ដងទៀត។");
+          }).then(function (session) {
+            stop();
+            googleStatus.textContent = "";
+            googleSession = session;
+            adminIdentity = {
+              email: email,
+              name: payload.name ? String(payload.name) : "",
+              picture: payload.picture ? String(payload.picture) : ""
+            };
+            saveIdentity();
+            hideAlert(loginError);
+            hideAlert(loginOk);
+            keyHelpPanel.classList.add("hidden");
+            showKeyStep();
+            setTimeout(function () { keyInput.focus(); }, 60);
+          }).catch(function (err) {
+            stop();
+            googleStatus.textContent = "";
+            showAlert(googleError, err.message);
+          });
+        }
+
+        var gisReady = false;
+        function initGoogleSignIn() {
+          if (gisReady) return true;
+          if (!window.google || !google.accounts || !google.accounts.id) return false;
+          google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: onGoogleCredential,
+            auto_select: false,
+            cancel_on_tap_outside: true
+          });
+          google.accounts.id.renderButton(gisBtn, {
+            theme: "filled_black", size: "large", type: "standard",
+            shape: "rectangular", text: "signin_with", logo_alignment: "left", width: 320
+          });
+          gisReady = true;
+          gisRetryBtn.classList.add("hidden");
+          return true;
+        }
+        var gisPoll = setInterval(function () {
+          if (initGoogleSignIn()) clearInterval(gisPoll);
+        }, 250);
+        setTimeout(function () {
+          clearInterval(gisPoll);
+          if (!gisReady) {
+            googleStatus.textContent = "ទាញ Google Sign-In មិនបាន — ពិនិត្យអ៊ីនធឺណិត រួចចុចព្យាយាមម្ដងទៀត។";
+            gisRetryBtn.classList.remove("hidden");
+          }
+        }, 8000);
+        gisRetryBtn.addEventListener("click", function () {
+          googleStatus.textContent = "";
+          if (!initGoogleSignIn()) {
+            googleStatus.textContent = "នៅទាញ Google Sign-In មិនបានទៀត — សូមផ្ទុកទំព័រឡើងវិញ។";
+          }
+        });
+
         /* ---------- Views ---------- */
         function showLogin(msg) {
           appView.classList.add("hidden");
@@ -2543,10 +2842,26 @@
           closeSheet();
           closeDrawer();
           closePushPrompt();
-          if (msg) showAlert(loginError, msg); else hideAlert(loginError);
           loginStatus.textContent = "";
+          googleStatus.textContent = "";
           keyInput.value = "";
-          setTimeout(function () { keyInput.focus(); }, 60);
+          keyInput.type = "password";
+          keyEyeOpen.classList.remove("hidden");
+          keyEyeOff.classList.add("hidden");
+          hideAlert(loginOk);
+          /* With a live Google session the admin lands straight on the
+             key step; without one they must pass Google first and the
+             message is shown there. */
+          if (googleSession && adminIdentity) {
+            showKeyStep();
+            hideAlert(googleError);
+            if (msg) showAlert(loginError, msg); else hideAlert(loginError);
+            setTimeout(function () { keyInput.focus(); }, 60);
+          } else {
+            showGoogleStep();
+            hideAlert(loginError);
+            if (msg) showAlert(googleError, msg); else hideAlert(googleError);
+          }
         }
 
         function showApp() {
@@ -5989,10 +6304,15 @@
              with { ok:false, error } and store NOTHING — which is why
              posts used to "succeed" here yet never reached the feed.
              The post is authored as the owner Admin account, the same
-             identity the server already shows on Admin posts. */
+             identity the server already shows on Admin posts. When the
+             admin signed in with Google (step 1), their Google name +
+             profile picture go along as `name`/`avatar` so the feed
+             shows the admin's real name and photo instead of the plain
+             "Admin" label. */
           var body = {
-            email: "sokhoeun7788@gmail.com",
-            name: "Admin",
+            email: (adminIdentity && adminIdentity.email) || "sokhoeun7788@gmail.com",
+            name: (adminIdentity && adminIdentity.name) || "Admin",
+            avatar: (adminIdentity && adminIdentity.picture) || "",
             mode: postType,
             title: title,
             type: postType,
@@ -8410,6 +8730,142 @@
         applyAppearanceToControls();
         setSmoothUI();
 
+        /* ---------- Login step 2 controls: eye / copy / forgot ---------- */
+        keyEyeBtn.addEventListener("click", function () {
+          var show = keyInput.type === "password";
+          keyInput.type = show ? "text" : "password";
+          keyEyeOpen.classList.toggle("hidden", show);
+          keyEyeOff.classList.toggle("hidden", !show);
+          keyInput.focus();
+        });
+
+        keyCopyBtn.addEventListener("click", function () {
+          var v = keyInput.value.trim();
+          if (!v) {
+            keyHelpStatus.textContent = "";
+            showAlert(loginError, "ប្រអប់ Key នៅទទេ — វាយ Key ឬចុច «បង្ហាញ Key បច្ចុប្បន្ន» ខាងក្រោមជាមុនសិន។");
+            return;
+          }
+          hideAlert(loginError);
+          copyText(v).then(function () {
+            keyCopyBtn.textContent = "បាន Copy ✓";
+            setTimeout(function () { keyCopyBtn.textContent = "Copy"; }, 1600);
+          });
+        });
+
+        changeAccountBtn.addEventListener("click", function () {
+          clearIdentity();
+          if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+          hideAlert(loginError);
+          hideAlert(loginOk);
+          keyHelpPanel.classList.add("hidden");
+          showGoogleStep();
+        });
+
+        forgotKeyLink.addEventListener("click", function () {
+          keyHelpPanel.classList.toggle("hidden");
+          if (!keyHelpPanel.classList.contains("hidden")) newKeyInput.focus();
+        });
+
+        function keyHelpFail(err) {
+          if (err.code === "SESSION") {
+            googleSession = "";
+            showLogin(err.message);
+            return;
+          }
+          keyHelpStatus.textContent = "មិនបាន៖ " + err.message;
+        }
+
+        revealKeyBtn.addEventListener("click", function () {
+          if (!googleSession) {
+            showLogin("Session Google មិនទាន់មាន — សូមចូលដោយ Google ជាមុនសិន។");
+            return;
+          }
+          revealKeyBtn.disabled = true;
+          var stop = makeTicker(keyHelpStatus, function (s) {
+            return "កំពុងទាញ Key ពី server… " + s + " វិនាទី";
+          });
+          keySessionFetch("/api/admin/key/reveal")
+            .then(function (data) {
+              stop();
+              revealKeyBtn.disabled = false;
+              if (!data || !data.key) {
+                keyHelpStatus.textContent = "Server មិនបានផ្ញើ Key មកទេ។";
+                return;
+              }
+              keyInput.value = data.key;
+              hideAlert(loginError);
+              keyHelpStatus.textContent = "បានដាក់ Key បច្ចុប្បន្នចូលប្រអប់ Key ខាងលើហើយ — ចុចភ្នែកដើម្បីមើល, Copy ដើម្បីចម្លង, ឬចុច «ចូលប្រើ» ដើម្បីចូល។";
+            })
+            .catch(function (err) {
+              stop();
+              revealKeyBtn.disabled = false;
+              keyHelpStatus.textContent = "";
+              keyHelpFail(err);
+            });
+        });
+
+        genKeyBtn.addEventListener("click", function () {
+          var chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+          var buf = new Uint32Array(20);
+          if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(buf);
+          else for (var i = 0; i < buf.length; i++) buf[i] = Math.floor(Math.random() * 4294967296);
+          var k = "";
+          for (var j = 0; j < buf.length; j++) k += chars.charAt(buf[j] % chars.length);
+          newKeyInput.value = k;
+          confirmKeyInput.value = k;
+          newKeyInput.type = "text";
+          confirmKeyInput.type = "text";
+          keyHelpStatus.textContent = "បានបង្កើត Key ថ្មីឲ្យហើយ — ចុច «រក្សាទុក Key ថ្មី» ដើម្បីប្រើវា។";
+        });
+
+        resetKeyBtn.addEventListener("click", function () {
+          var nk = newKeyInput.value.trim();
+          var ck = confirmKeyInput.value.trim();
+          if (!googleSession) {
+            showLogin("Session Google មិនទាន់មាន — សូមចូលដោយ Google ជាមុនសិន។");
+            return;
+          }
+          if (nk.length < 6) {
+            keyHelpStatus.textContent = "Key ថ្មីត្រូវមានយ៉ាងតិច 6 តួអក្សរ។";
+            newKeyInput.focus();
+            return;
+          }
+          if (nk !== ck) {
+            keyHelpStatus.textContent = "Key ទាំង 2 មិនដូចគ្នាទេ — សូមវាយឲ្យដូចគ្នា។";
+            confirmKeyInput.focus();
+            return;
+          }
+          resetKeyBtn.disabled = true;
+          genKeyBtn.disabled = true;
+          var stop = makeTicker(keyHelpStatus, function (s) {
+            return "កំពុងរក្សាទុក Key ថ្មី… " + s + " វិនាទី";
+          });
+          keySessionFetch("/api/admin/key/reset", { method: "POST", body: { newKey: nk } })
+            .then(function () {
+              stop();
+              resetKeyBtn.disabled = false;
+              genKeyBtn.disabled = false;
+              keyInput.value = nk;
+              newKeyInput.value = "";
+              confirmKeyInput.value = "";
+              newKeyInput.type = "password";
+              confirmKeyInput.type = "password";
+              keyHelpPanel.classList.add("hidden");
+              keyHelpStatus.textContent = "";
+              hideAlert(loginError);
+              showAlert(loginOk, "បានបង្កើត Key ថ្មីរួចរាល់ ✓ — Key ថ្មីត្រូវបានដាក់ចូលប្រអប់ Key ខាងលើហើយ ចុច «ចូលប្រើ» ដើម្បីចូល។");
+            })
+            .catch(function (err) {
+              stop();
+              resetKeyBtn.disabled = false;
+              genKeyBtn.disabled = false;
+              keyHelpStatus.textContent = "";
+              if (err.code === "SESSION") { keyHelpFail(err); return; }
+              keyHelpStatus.textContent = "រក្សាទុកមិនបាន៖ " + err.message;
+            });
+        });
+
         /* ---------- Login / logout / refresh ---------- */
         loginForm.addEventListener("submit", function (e) {
           e.preventDefault();
@@ -8419,6 +8875,7 @@
             return;
           }
           hideAlert(loginError);
+          hideAlert(loginOk);
           loginBtn.disabled = true;
           keyInput.disabled = true;
           var stop = makeTicker(loginStatus, function (s) {
@@ -8450,6 +8907,8 @@
 
         logoutBtn.addEventListener("click", function () {
           clearKey();
+          clearIdentity();
+          if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
           users = [];
           searchInput.value = "";
           showLogin("");
@@ -8464,7 +8923,7 @@
              shown on the login screen; the app opens only on success. */
           loginBtn.disabled = true;
           keyInput.disabled = true;
-          var stopBoot = makeTicker(loginStatus, function (s) {
+          var stopBoot = makeTicker(googleStatus, function (s) {
             return "កំពុងពិនិត្យសោ… " + s + " វិនាទី";
           });
           verifyAdminKey(savedKey).then(function () {
