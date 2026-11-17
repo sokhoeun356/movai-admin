@@ -827,6 +827,7 @@
       .notif-chip.gift { color: var(--purple); background: var(--purple-bg); border-color: rgba(167,139,250,.4); }
       .notif-chip.grant { color: var(--lime); background: var(--green-bg); border-color: rgba(173,220,41,.4); }
       .notif-chip.deduct { color: #FFB3B3; background: var(--red-bg); border-color: rgba(255,107,107,.4); }
+      .notif-chip.amt { font-size: 13px; font-weight: 800; padding: 2px 11px; white-space: normal; line-height: 1.35; }
       .notif-title { font-weight: 700; font-size: 14.5px; margin-top: 3px; word-break: break-word; }
       .notif-detail { color: var(--text-dim); font-size: 13.5px; margin-top: 1px; word-break: break-word; }
       .notif-who { color: var(--text-faint); font-size: 13px; margin-top: 1px; word-break: break-all; }
@@ -6459,6 +6460,85 @@
           return res;
         }
 
+        /* Credit in/out notifications must show the AMOUNT and the pool
+           next to the + / − sign — never a bare «+ Credit» / «− Credit».
+           The server records the amount under several possible field
+           names (its grant contract uses `credits` for the Media delta
+           and `songCredits` for the Song delta), sometimes nested, and
+           on older records only inside the text. Pull the amount out of
+           whichever shape is present and build one line such as
+           «−300 Media», «+250 Media» or, for a gift that fills both
+           pools, «+250 Media +24 Song». Returns "" when the record
+           truly carries no amount anywhere, so nothing is invented. */
+        function parseCreditLine(n, type) {
+          var sources = [n];
+          Object.keys(n).forEach(function (k) {
+            var v = n[k];
+            if (v && typeof v === "object" && !Array.isArray(v)) sources.push(v);
+          });
+          function fromKeys(names) {
+            for (var s = 0; s < sources.length; s++) {
+              var v = creditVal(sources[s], names);
+              if (v !== undefined) return v;
+            }
+            return undefined;
+          }
+          var mediaVal = fromKeys(["mediaAmount", "media_amount", "mediaCredits", "media_credits", "mediaCredit", "media_credit", "mediaDelta", "deltaMedia", "creditsMedia", "amountMedia", "media"]);
+          var songVal = fromKeys(["songAmount", "song_amount", "songCredits", "song_credits", "songCredit", "song_credit", "songDelta", "deltaSong", "creditsSong", "amountSong", "song"]);
+          if (mediaVal === undefined) mediaVal = fromKeys(["credits", "credit"]);
+          var genericVal;
+          if (mediaVal === undefined && songVal === undefined) {
+            genericVal = fromKeys(["amount", "creditAmount", "credit_amount", "delta", "value", "quantity", "totalCredits", "amountCredits"]);
+          }
+          if (mediaVal === undefined && songVal === undefined && genericVal === undefined) {
+            /* Text fallback: scan every string the record carries for
+               «250 Media», «+24 Song», «300 Credit» style amounts. */
+            var texts = [];
+            sources.forEach(function (src) {
+              Object.keys(src).forEach(function (k) {
+                if (typeof src[k] === "string") texts.push(src[k]);
+              });
+            });
+            var joined = texts.join("\n");
+            var m, re = /([+\-−])?\s*(\d[\d,]*)\s*(media|song|credits?)\b/gi;
+            while ((m = re.exec(joined)) !== null) {
+              var val = Number(m[2].replace(/,/g, ""));
+              if (!isFinite(val) || val === 0) continue;
+              if (m[1] === "-" || m[1] === "−") val = -val;
+              var pool = m[3].toLowerCase();
+              if (pool === "media" && mediaVal === undefined) mediaVal = val;
+              else if (pool === "song" && songVal === undefined) songVal = val;
+              else if (pool.indexOf("credit") === 0 && genericVal === undefined) genericVal = val;
+            }
+            if (mediaVal === undefined && songVal === undefined && genericVal === undefined) {
+              var re2 = /\b(media|song)\b[^\d+\-−]{0,12}([+\-−]?\d[\d,]*)/gi;
+              while ((m = re2.exec(joined)) !== null) {
+                var v2 = Number(m[2].replace(/,/g, ""));
+                if (!isFinite(v2) || v2 === 0) continue;
+                if (m[1].toLowerCase() === "media" && mediaVal === undefined) mediaVal = v2;
+                else if (m[1].toLowerCase() === "song" && songVal === undefined) songVal = v2;
+              }
+            }
+          }
+          if (genericVal !== undefined && mediaVal === undefined && songVal === undefined) {
+            var hint = (String(pick(n, ["pool", "creditType", "credit_type", "creditPool"]) || "") + " " +
+              String(n.title || "") + " " + String(n.detail || "")).toLowerCase();
+            if (hint.indexOf("song") !== -1 || hint.indexOf("ចម្រៀង") !== -1) songVal = genericVal;
+            else if (hint.indexOf("media") !== -1 || hint.indexOf("រូបភាព") !== -1 || hint.indexOf("វីដេអូ") !== -1) mediaVal = genericVal;
+          }
+          var segs = [];
+          function seg(val, label) {
+            if (val === undefined || val === null || !isFinite(Number(val)) || Number(val) === 0) return;
+            var num = Math.abs(Number(val));
+            var sign = Number(val) < 0 || type === "deduct" ? "−" : "+";
+            segs.push(sign + fmtNum(num) + " " + label);
+          }
+          seg(mediaVal, "Media");
+          seg(songVal, "Song");
+          if (!segs.length && genericVal !== undefined) seg(genericVal, "Credit");
+          return segs.join(" ");
+        }
+
         function normalizeNotification(n) {
           n = (n && typeof n === "object") ? n : {};
           var rawType = String(pick(n, ["type", "kind", "event", "category", "action"]) || "").toLowerCase();
@@ -6483,8 +6563,12 @@
             priceText: "",
             creditText: "",
             buyerId: "",
-            buyerText: ""
+            buyerText: "",
+            creditLine: ""
           };
+          if (type === "grant" || type === "deduct" || type === "gift") {
+            out.creditLine = parseCreditLine(n, type);
+          }
           if (type === "purchase") {
             var dec = String(pick(n, ["decision", "decisionStatus", "decision_status"]) || "").toLowerCase();
             if (dec.indexOf("approv") === -1 && dec.indexOf("reject") === -1) {
@@ -6532,7 +6616,7 @@
             row.className = "notif-row" + (n.read ? "" : " unread") + (n.decision === "rejected" ? " resolved" : "");
             row.setAttribute("role", "button");
             row.setAttribute("tabindex", "0");
-            row.setAttribute("aria-label", (isPurchase && n.pkgName ? String(n.pkgName) : (NOTIF_LABELS[n.type] || n.type)) + (n.read ? "" : " — មិនទាន់អាន"));
+            row.setAttribute("aria-label", (isPurchase && n.pkgName ? String(n.pkgName) : (NOTIF_LABELS[n.type] || n.type)) + (n.creditLine ? " " + n.creditLine : "") + (n.read ? "" : " — មិនទាន់អាន"));
             if (isPurchase) {
               /* Big, clean purchase layout: package name, price and
                  Credit large; the buyer (Gmail · ID) small underneath;
@@ -6583,6 +6667,13 @@
             var chip = row.querySelector(".notif-chip");
             chip.textContent = NOTIF_LABELS[n.type] || n.type;
             chip.classList.add(n.type);
+            /* Credit in/out: the chip itself carries sign + amount +
+               pool (e.g. «−300 Media», «+250 Media +24 Song») on the
+               same top row as the date — never a bare «+ Credit». */
+            if (n.creditLine) {
+              chip.textContent = n.creditLine;
+              chip.classList.add("amt");
+            }
             row.querySelector(".fail-time").textContent = fmtDateTime(n.time);
             function activate() { markNotificationRead(n); }
             row.addEventListener("click", activate);
@@ -6733,6 +6824,7 @@
           if (extraCount > 0) title += " (+" + fmtNum(extraCount) + " ទៀត)";
           notifPopupTitle.textContent = title;
           var detail = String(n.detail || n.who || NOTIF_LABELS[n.type] || "");
+          if (n.creditLine) detail = detail ? n.creditLine + " · " + detail : n.creditLine;
           notifPopupDetail.textContent = detail;
           notifPopupDetail.style.display = detail ? "" : "none";
           notifPopup.classList.remove("hidden");
