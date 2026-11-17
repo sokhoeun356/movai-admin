@@ -102,6 +102,12 @@
       .step-label { font-size: 13px; font-weight: 800; color: var(--lime); margin: 0 0 12px; }
       .gis-btn { display: flex; justify-content: center; min-height: 48px; margin: 2px 0 4px; }
       .gis-retry { display: block; margin: 10px auto 0; }
+      .login-or {
+        display: flex; align-items: center; gap: 12px;
+        margin: 20px 0 12px; color: var(--text-faint); font-size: 12.5px; font-weight: 600;
+      }
+      .login-or::before, .login-or::after { content: ""; flex: 1; border-top: 1px solid var(--line-soft); }
+      .key-only-btn { font-size: 15px; }
       .admin-id {
         display: flex; align-items: center; gap: 11px;
         background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
@@ -1100,7 +1106,7 @@
     <div class="login-wrap" id="loginView">
       <div class="login-card">
         <span class="wordmark"><span class="mov">Mov</span><span class="ai">Ai</span><span class="admin-word"> Admin</span></span>
-        <p class="login-sub">ចូលដោយ Google រួចវាយ Admin Key 🗝️</p>
+        <p class="login-sub">ចូលដោយ Google រួចវាយ Admin Key 🗝️ — ឬចូលដោយ Admin Key តែម្ដង</p>
 
         <!-- Step 1: Google sign-in (admin Gmails only) -->
         <div id="googleStep">
@@ -1110,11 +1116,16 @@
           <div class="alert alert-error" id="googleError" role="alert"></div>
           <p class="login-note" id="googleStatus"></p>
           <p class="login-note">មានតែ Gmail Admin 3 ប៉ុណ្ណោះដែលអាចចូលបាន</p>
+
+          <!-- Option 2: Admin Key only — no Google sign-in needed -->
+          <div class="login-or"><span>ឬ</span></div>
+          <button class="btn btn-block key-only-btn" id="keyOnlyBtn" type="button">🗝️ ចូលដោយ Admin Key តែម្ដង</button>
+          <p class="login-note">ជម្រើសទី 2 · មិនចាំបាច់ចូល Google — វាយ Admin Key ហើយចូលតែម្ដង</p>
         </div>
 
         <!-- Step 2: Admin Key (shown only after an admin Gmail passes step 1) -->
         <form id="loginForm" autocomplete="off" class="hidden">
-          <div class="admin-id">
+          <div class="admin-id" id="adminIdChip">
             <img class="admin-avatar hidden" id="adminAvatar" alt="" referrerpolicy="no-referrer" />
             <div class="admin-id-main">
               <div class="admin-id-name" id="adminName"></div>
@@ -1122,7 +1133,7 @@
             </div>
             <button class="btn btn-icon" id="changeAccountBtn" type="button">ប្ដូរគណនី</button>
           </div>
-          <p class="step-label">ជំហានទី 2 · វាយ Admin Key 🗝️</p>
+          <p class="step-label" id="keyStepLabel">ជំហានទី 2 · វាយ Admin Key 🗝️</p>
           <label class="field-label" for="keyInput">Admin Key</label>
           <div class="key-field">
             <input class="text-input" id="keyInput" type="password" placeholder="Admin Key…" autocomplete="current-password" />
@@ -1137,6 +1148,7 @@
           <button class="btn btn-primary btn-block login-btn" id="loginBtn" type="submit">ចូលប្រើ</button>
           <p class="login-note" id="loginStatus"></p>
           <button class="link-btn" id="forgotKeyLink" type="button">ភ្លេច Key / បង្កើត Key ថ្មី</button>
+          <button class="link-btn hidden" id="backToGoogleBtn" type="button">← ត្រឡប់ទៅចូលដោយ Google (ជម្រើសទី 1)</button>
 
           <!-- Forgot / reset: only reachable with a live Google session -->
           <div class="key-help hidden" id="keyHelpPanel">
@@ -2176,6 +2188,10 @@
         var loginStatus = document.getElementById("loginStatus");
         var loginOk = document.getElementById("loginOk");
         var googleStep = document.getElementById("googleStep");
+        var keyOnlyBtn = document.getElementById("keyOnlyBtn");
+        var adminIdChip = document.getElementById("adminIdChip");
+        var keyStepLabel = document.getElementById("keyStepLabel");
+        var backToGoogleBtn = document.getElementById("backToGoogleBtn");
         var gisBtn = document.getElementById("gisBtn");
         var gisRetryBtn = document.getElementById("gisRetryBtn");
         var googleError = document.getElementById("googleError");
@@ -2694,13 +2710,27 @@
           } catch (e) { return null; }
         }
 
+        /* Option 2: key-only mode — the same key form as step 2, but
+           reached straight from step 1 without a Google sign-in. The
+           identity chip and the forgot/reset panel (which ride on the
+           15-minute Google session) are hidden in this mode; the key
+           itself is still verified by verifyAdminKey with the same
+           server lockout, exactly as in step 2. */
+        var keyOnlyMode = false;
+
         function showGoogleStep() {
+          keyOnlyMode = false;
           googleStep.classList.remove("hidden");
           loginForm.classList.add("hidden");
         }
         function showKeyStep() {
+          keyOnlyMode = false;
           googleStep.classList.add("hidden");
           loginForm.classList.remove("hidden");
+          adminIdChip.classList.remove("hidden");
+          forgotKeyLink.classList.remove("hidden");
+          backToGoogleBtn.classList.add("hidden");
+          keyStepLabel.textContent = "ជំហានទី 2 · វាយ Admin Key 🗝️";
           if (adminIdentity) {
             adminName.textContent = adminIdentity.name || adminIdentity.email;
             adminEmail.textContent = adminIdentity.email;
@@ -2712,6 +2742,21 @@
               adminAvatar.classList.add("hidden");
             }
           }
+        }
+        function showKeyOnlyStep() {
+          keyOnlyMode = true;
+          googleStep.classList.add("hidden");
+          loginForm.classList.remove("hidden");
+          adminIdChip.classList.add("hidden");
+          forgotKeyLink.classList.add("hidden");
+          keyHelpPanel.classList.add("hidden");
+          backToGoogleBtn.classList.remove("hidden");
+          keyStepLabel.textContent = "ចូលដោយ Admin Key តែម្ដង 🗝️";
+          hideAlert(googleError);
+          hideAlert(loginError);
+          hideAlert(loginOk);
+          googleStatus.textContent = "";
+          setTimeout(function () { keyInput.focus(); }, 60);
         }
 
         /* Calls that ride on the 15-minute Google session (reveal /
@@ -2833,6 +2878,18 @@
           if (!initGoogleSignIn()) {
             googleStatus.textContent = "នៅទាញ Google Sign-In មិនបានទៀត — សូមផ្ទុកទំព័រឡើងវិញ។";
           }
+        });
+
+        /* Option 2 entry points: from step 1 straight to the key
+           field, and back to the Google option. */
+        keyOnlyBtn.addEventListener("click", function () {
+          showKeyOnlyStep();
+        });
+        backToGoogleBtn.addEventListener("click", function () {
+          hideAlert(loginError);
+          hideAlert(loginOk);
+          keyHelpPanel.classList.add("hidden");
+          showGoogleStep();
         });
 
         /* ---------- Views ---------- */
@@ -8743,7 +8800,9 @@
           var v = keyInput.value.trim();
           if (!v) {
             keyHelpStatus.textContent = "";
-            showAlert(loginError, "ប្រអប់ Key នៅទទេ — វាយ Key ឬចុច «បង្ហាញ Key បច្ចុប្បន្ន» ខាងក្រោមជាមុនសិន។");
+            showAlert(loginError, keyOnlyMode
+              ? "ប្រអប់ Key នៅទទេ — សូមវាយ Admin Key ជាមុនសិន។"
+              : "ប្រអប់ Key នៅទទេ — វាយ Key ឬចុច «បង្ហាញ Key បច្ចុប្បន្ន» ខាងក្រោមជាមុនសិន។");
             return;
           }
           hideAlert(loginError);
