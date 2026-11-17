@@ -63,9 +63,9 @@
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: 20px;
-        padding: 32px 26px 28px;
+        padding: 26px 22px 22px;
       }
-      .login-card .wordmark { font-size: 34px; text-align: center; display: block; }
+      .login-card .wordmark { font-size: 30px; text-align: center; display: block; }
       .login-sub { text-align: center; color: var(--text-dim); margin: 6px 0 26px; font-size: 14px; }
       .field-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dim); margin: 0 0 7px; }
       .text-input {
@@ -124,7 +124,7 @@
 
       .toolbar {
         display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-        margin: 18px 0 6px;
+        margin: 14px 0 6px;
       }
       .search-box { flex: 1 1 260px; position: relative; }
       .search-box input { width: 100%; padding-left: 38px; }
@@ -178,7 +178,7 @@
       .mobile-cards { display: none; }
       .user-card {
         background: var(--card); border: 1px solid var(--line-soft);
-        border-radius: var(--radius); padding: 14px 15px; margin-bottom: 10px;
+        border-radius: var(--radius); padding: 12px 13px; margin-bottom: 8px;
         cursor: pointer; width: 100%; text-align: left; display: block;
       }
       .user-card .row1 { display: flex; align-items: baseline; gap: 8px; }
@@ -188,6 +188,29 @@
       .user-card .u-since { margin-left: auto; }
       .user-card .row3 { display: flex; gap: 6px 14px; flex-wrap: wrap; margin-top: 8px; }
       .user-card .row3 .u-ip, .user-card .row3 .u-device, .user-card .row3 .u-seen, .user-card .row3 .u-modellogins { font-size: 12.5px; }
+      .user-card .row-meta { display: flex; gap: 10px; align-items: center; margin-top: 2px; flex-wrap: wrap; }
+      .user-card .u-model { color: var(--lime); font-size: 13px; }
+      /* Model groups: same phone model = one block, 2 cards visible, swipe for more */
+      .model-group-block { margin-bottom: 14px; }
+      .mg-head { display: flex; align-items: center; gap: 8px; margin: 0 2px 8px; }
+      .mg-head .model-code { font-size: 14px; color: var(--text); }
+      .mg-count {
+        font-size: 12px; font-weight: 800; color: var(--lime-dark);
+        background: var(--lime); border-radius: 999px; padding: 1px 8px; line-height: 1.5;
+      }
+      .mg-track {
+        display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px;
+        scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .mg-track::-webkit-scrollbar { display: none; }
+      .mg-track .user-card { flex: 0 0 calc(50% - 5px); width: auto; scroll-snap-align: start; margin-bottom: 0; }
+      .users-table tr.group-head-row td {
+        background: var(--bg-2); color: var(--text); font-weight: 800; font-size: 13px;
+        padding: 8px 12px; border-bottom: 1px solid var(--line);
+      }
+      .users-table tbody tr.group-head-row { cursor: default; }
+      .users-table tbody tr.group-head-row:hover { background: transparent; }
 
       @media (max-width: 760px) {
         .users-table { display: none; }
@@ -197,7 +220,7 @@
       /* ---------- States ---------- */
       .state-box {
         border: 1px dashed var(--line); border-radius: var(--radius);
-        padding: 34px 20px; text-align: center; color: var(--text-dim); margin-top: 14px;
+        padding: 24px 16px; text-align: center; color: var(--text-dim); margin-top: 14px;
       }
       .state-box .big { font-size: 16px; color: var(--text); font-weight: 700; margin-bottom: 4px; }
       .spinner {
@@ -226,7 +249,7 @@
         background: var(--card); border: 1px solid var(--line);
         border-radius: 20px 20px 0 0;
         width: 100%; max-width: 560px; max-height: 92dvh; overflow-y: auto;
-        padding: 22px 20px 26px;
+        padding: 18px 16px 22px;
       }
       @media (min-width: 640px) {
         .overlay { align-items: center; padding: 20px; }
@@ -242,13 +265,13 @@
         flex: none;
       }
       .detail-grid {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 4px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0 4px;
       }
-      .detail-cell { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px; padding: 11px 13px; }
+      .detail-cell { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px; padding: 9px 11px; }
       .detail-cell .k { font-size: 12px; color: var(--text-faint); font-weight: 600; }
       .detail-cell .v { font-size: 17px; font-weight: 800; margin-top: 2px; }
       .detail-cell .v.small { font-size: 14.5px; font-weight: 700; }
-      .grant-box { border-top: 1px solid var(--line-soft); margin-top: 18px; padding-top: 18px; }
+      .grant-box { border-top: 1px solid var(--line-soft); margin-top: 14px; padding-top: 14px; }
       .grant-box h3 { margin: 0 0 14px; font-size: 16px; }
       .seg { display: flex; gap: 8px; margin-bottom: 14px; }
       .seg button {
@@ -310,7 +333,7 @@
       .drawer-item {
         display: flex; align-items: center; gap: 10px; width: 100%;
         background: transparent; border: 1px solid transparent; border-radius: 12px;
-        padding: 12px; font-weight: 700; font-size: 15px; color: var(--text-dim);
+        padding: 10px 12px; font-weight: 700; font-size: 14.5px; color: var(--text-dim);
         text-align: left; min-height: 3rem;
       }
       .drawer-item:hover { background: var(--card); color: var(--text); }
@@ -322,15 +345,15 @@
       }
 
       /* ---------- Analytics ---------- */
-      .stats-group { margin-bottom: 22px; }
+      .stats-group { margin-bottom: 18px; }
       .stats-group:last-child { margin-bottom: 4px; }
       .stats-group h3 { margin: 0 0 10px; font-size: 15.5px; }
       .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
       .stat-card {
         background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
-        padding: 14px 10px; text-align: center;
+        padding: 11px 8px; text-align: center;
       }
-      .stat-card .sv { font-size: 26px; font-weight: 800; line-height: 1.15; }
+      .stat-card .sv { font-size: 23px; font-weight: 800; line-height: 1.15; }
       .stat-card .sk { font-size: 12.5px; color: var(--text-faint); font-weight: 600; margin-top: 3px; }
       .stat-card.accent-song .sv { color: var(--yellow); }
       .stat-card.accent-media .sv { color: var(--purple); }
@@ -349,7 +372,7 @@
       .fail-err { color: var(--text-dim); font-size: 13.5px; margin-top: 3px; word-break: break-word; }
 
       /* ---------- Tracking overview (home strip) ---------- */
-      .overview-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0 2px; }
+      .overview-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 14px 0 2px; }
       @media (max-width: 620px) { .overview-strip { grid-template-columns: repeat(2, 1fr); } }
       .overview-link {
         display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
@@ -364,10 +387,10 @@
       /* ---------- Control sections ---------- */
       .section-card {
         background: var(--card); border: 1px solid var(--line-soft);
-        border-radius: var(--radius); padding: 20px 18px; margin: 14px 0;
+        border-radius: var(--radius); padding: 16px 14px; margin: 12px 0;
       }
-      .section-card h2 { margin: 0 0 4px; font-size: 18px; }
-      .section-card .desc { color: var(--text-dim); font-size: 13.5px; margin: 0 0 18px; }
+      .section-card h2 { margin: 0 0 4px; font-size: 17px; }
+      .section-card .desc { color: var(--text-dim); font-size: 13px; margin: 0 0 12px; }
       .ctl { margin-bottom: 18px; }
       .ctl:last-child { margin-bottom: 4px; }
       .ctl .field-label { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
@@ -555,7 +578,7 @@
       /* ---------- Purchase requests ---------- */
       .req-card {
         background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
-        padding: 15px; margin-bottom: 12px;
+        padding: 13px; margin-bottom: 10px;
       }
       .req-head { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
       .req-head .req-who { flex: 1; min-width: 180px; }
@@ -639,7 +662,7 @@
       .confirm-card {
         background: var(--card); border: 1px solid var(--line);
         border-radius: 20px; width: 100%; max-width: 400px;
-        padding: 24px 22px 20px;
+        padding: 20px 18px 16px;
       }
       .confirm-card h3 { margin: 0 0 8px; font-size: 18px; color: #FFB3B3; }
       .confirm-card p { color: var(--text-dim); font-size: 14px; margin: 0 0 6px; word-break: break-word; }
@@ -708,7 +731,7 @@
       .evt-pkg { font-weight: 700; font-size: 14px; margin-top: 1px; }
 
       /* ---------- Payment ---------- */
-      .pay-block { border: 1px solid var(--line-soft); background: var(--bg-2); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+      .pay-block { border: 1px solid var(--line-soft); background: var(--bg-2); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
       .pay-block h3 { margin: 0 0 4px; font-size: 15.5px; }
       .pay-block .pay-sub { color: var(--text-dim); font-size: 13.5px; margin: 0 0 12px; }
       .pay-block .ctl { margin-bottom: 0; }
@@ -727,7 +750,7 @@
       }
       .notif-row {
         display: flex; gap: 10px; align-items: flex-start;
-        padding: 12px 10px; border-bottom: 1px solid var(--line-soft);
+        padding: 10px 8px; border-bottom: 1px solid var(--line-soft);
         cursor: pointer; border-radius: 8px;
       }
       .notif-row:last-child { border-bottom: none; }
@@ -748,9 +771,9 @@
       .notif-who { color: var(--text-faint); font-size: 13px; margin-top: 1px; word-break: break-all; }
       /* Purchase notifications: package facts big and clean, buyer small. */
       .notif-row.resolved { opacity: .55; }
-      .notif-pkg-name { font-size: 21px; font-weight: 800; line-height: 1.25; margin-top: 5px; word-break: break-word; }
-      .notif-pkg-price { font-size: 19px; font-weight: 800; color: var(--yellow); line-height: 1.3; margin-top: 2px; word-break: break-word; }
-      .notif-pkg-credit { font-size: 17px; font-weight: 800; color: var(--lime); line-height: 1.3; margin-top: 1px; word-break: break-word; }
+      .notif-pkg-name { font-size: 17px; font-weight: 800; line-height: 1.25; margin-top: 5px; word-break: break-word; }
+      .notif-pkg-price { font-size: 16px; font-weight: 800; color: var(--yellow); line-height: 1.3; margin-top: 2px; word-break: break-word; }
+      .notif-pkg-credit { font-size: 15px; font-weight: 800; color: var(--lime); line-height: 1.3; margin-top: 1px; word-break: break-word; }
       .notif-buyer { color: var(--text-faint); font-size: 12.5px; margin-top: 5px; word-break: break-all; }
       .notif-fulltime { color: var(--text-faint); font-size: 12.5px; margin-top: 4px; }
       .notif-decision { font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 10px; white-space: nowrap; border: 1px solid var(--line); }
@@ -837,7 +860,7 @@
       .push-prompt-card {
         background: var(--card); border: 1px solid var(--line);
         border-radius: 20px; width: 100%; max-width: 400px;
-        padding: 26px 22px 22px; text-align: center;
+        padding: 22px 18px 18px; text-align: center;
       }
       .push-prompt-icon {
         width: 56px; height: 56px; margin: 0 auto 12px;
@@ -965,9 +988,8 @@
     <div class="login-wrap" id="loginView">
       <form class="login-card" id="loginForm" autocomplete="off">
         <span class="wordmark"><span class="mov">Mov</span><span class="ai">Ai</span><span class="admin-word"> Admin</span></span>
-        <p class="login-sub">ផ្ទាំងគ្រប់គ្រងសម្រាប់ម្ចាស់តែម្នាក់គត់</p>
-        <label class="field-label" for="keyInput">សោ Admin (Admin Key)</label>
-        <input class="text-input" id="keyInput" type="password" placeholder="វាយសោ Admin របស់អ្នក…" autocomplete="current-password" />
+        <label class="field-label" for="keyInput">Admin Key</label>
+        <input class="text-input" id="keyInput" type="password" placeholder="Admin Key…" autocomplete="current-password" />
         <div class="alert alert-error" id="loginError" role="alert"></div>
         <button class="btn btn-primary btn-block login-btn" id="loginBtn" type="submit">ចូលប្រើ</button>
         <p class="login-note" id="loginStatus"></p>
@@ -994,22 +1016,22 @@
       <div class="drawer-backdrop" id="drawerBackdrop"></div>
       <aside class="drawer" id="drawer" aria-label="ម៉ឺនុយផ្នែកគ្រប់គ្រង" aria-hidden="true">
         <button type="button" class="drawer-item on" data-section="users">អ្នកប្រើប្រាស់</button>
-        <button type="button" class="drawer-item" data-section="analytics">តាមដានទាំងអស់ · Analytics</button>
+        <button type="button" class="drawer-item" data-section="analytics">ស្ថិតិ</button>
         <button type="button" class="drawer-item" data-section="purchases">សំណើទិញ<span class="tab-badge hidden" id="purchasesBadge">0</span></button>
-        <button type="button" class="drawer-item" data-section="notifications">ដំណឹង · Notifications<span class="tab-badge hidden" id="notificationsBadge">0</span></button>
-        <button type="button" class="drawer-item" data-section="security">សុវត្ថិភាព · Security</button>
-        <button type="button" class="drawer-item" data-section="updates">Auto Update · អាប់ដេតអូតូ</button>
-        <button type="button" class="drawer-item" data-section="post">Post · ផុស</button>
-        <button type="button" class="drawer-item" data-section="packages">កញ្ចប់ · Packages</button>
-        <button type="button" class="drawer-item" data-section="payment">Payment · ការទូទាត់</button>
-        <button type="button" class="drawer-item" data-section="models">ម៉ូឌែល · ចាក់សោ/បើក</button>
+        <button type="button" class="drawer-item" data-section="notifications">ដំណឹង<span class="tab-badge hidden" id="notificationsBadge">0</span></button>
+        <button type="button" class="drawer-item" data-section="security">សុវត្ថិភាព</button>
+        <button type="button" class="drawer-item" data-section="updates">Auto Update</button>
+        <button type="button" class="drawer-item" data-section="post">Post</button>
+        <button type="button" class="drawer-item" data-section="packages">កញ្ចប់</button>
+        <button type="button" class="drawer-item" data-section="payment">Payment</button>
+        <button type="button" class="drawer-item" data-section="models">ម៉ូឌែល</button>
         <button type="button" class="drawer-item" data-section="keys">API Keys</button>
         <button type="button" class="drawer-item" data-section="providers">Providers</button>
         <button type="button" class="drawer-item" data-section="cloudinary">Cloudinary</button>
-        <button type="button" class="drawer-item" data-section="appearance">រូបរាង · Appearance</button>
-        <button type="button" class="drawer-item" data-section="smooth">របៀបស្មូត · Smooth mode</button>
-        <button type="button" class="drawer-item" data-section="telegram">Telegram Settings</button>
-        <button type="button" class="drawer-item" data-section="email">Email Settings</button>
+        <button type="button" class="drawer-item" data-section="appearance">រូបរាង</button>
+        <button type="button" class="drawer-item" data-section="smooth">Smooth</button>
+        <button type="button" class="drawer-item" data-section="telegram">Telegram</button>
+        <button type="button" class="drawer-item" data-section="email">Email</button>
         <div class="drawer-push">
           <div class="switch-row">
             <label class="switch">
@@ -1021,7 +1043,7 @@
               <div class="switch-state" id="pushState">បិទ (OFF)</div>
             </div>
           </div>
-          <p class="drawer-push-note" id="pushNote">Web Push — ដំណឹងលោតលើទូរស័ព្ទផ្ទាល់ (មិនមែន Telegram) ពេលមានអ្នក log in ទិញកញ្ចប់ ឬទទួលកាដូ។</p>
+          <p class="drawer-push-note" id="pushNote">ដំណឹងលោតលើទូរស័ព្ទ</p>
         </div>
         <div class="drawer-push">
           <div class="switch-row">
@@ -1031,10 +1053,9 @@
             </label>
             <div>
               <div class="switch-label">ដំណឹងលោតក្នុង App</div>
-              <div class="switch-state" id="popupState">បើក (ON) — ដំណឹងថ្មីលោតក្នុង App</div>
+              <div class="switch-state" id="popupState">បើក (ON)</div>
             </div>
           </div>
-          <p class="drawer-push-note">ពេលមានដំណឹងថ្មី (អ្នក log in ទិញកញ្ចប់ ទទួលកាដូ ផ្ដល់/កាត់ Credit) វានឹងលោតបង្ហាញក្នុង App ភ្លាមៗ — ដំណើរការក្នុងទិដ្ឋភាព App នេះ ទោះ Web Push បើកមិនបានក៏ដោយ។</p>
         </div>
         <div class="drawer-head">
           <span class="wordmark"><span class="mov">Mov</span><span class="ai">Ai</span></span>
@@ -1057,19 +1078,19 @@
 
       <div id="panel-users">
       <div class="overview-strip" aria-label="សង្ខេបការតាមដាន">
-        <div class="stat-card accent-lime"><div class="sv" id="ovUsersToday">–</div><div class="sk">អ្នកប្រើថ្ងៃនេះ · Users today</div></div>
-        <div class="stat-card accent-media"><div class="sv" id="ovCreatedToday">–</div><div class="sk">បង្កើតថ្ងៃនេះ · Created today</div></div>
-        <div class="stat-card accent-lime"><div class="sv" id="ovPublicViews">–</div><div class="sk">Public · Views</div></div>
-        <div class="stat-card accent-media"><div class="sv" id="ovPublicDownloads">–</div><div class="sk">Public · Download</div></div>
-        <div class="stat-card accent-red"><div class="sv" id="ovFailuresToday">–</div><div class="sk">បញ្ហាថ្ងៃនេះ · Failures today</div></div>
+        <div class="stat-card accent-lime"><div class="sv" id="ovUsersToday">–</div><div class="sk">អ្នកប្រើថ្ងៃនេះ</div></div>
+        <div class="stat-card accent-media"><div class="sv" id="ovCreatedToday">–</div><div class="sk">បង្កើតថ្ងៃនេះ</div></div>
+        <div class="stat-card accent-lime"><div class="sv" id="ovPublicViews">–</div><div class="sk">Views</div></div>
+        <div class="stat-card accent-media"><div class="sv" id="ovPublicDownloads">–</div><div class="sk">Downloads</div></div>
+        <div class="stat-card accent-red"><div class="sv" id="ovFailuresToday">–</div><div class="sk">បញ្ហាថ្ងៃនេះ</div></div>
       </div>
-      <button type="button" class="overview-link" id="overviewLink">មើលការតាមដានទាំងអស់ ›</button>
+      <button type="button" class="overview-link" id="overviewLink">ស្ថិតិទាំងអស់ ›</button>
       <div class="toolbar">
         <div class="search-box">
           <span class="mag" aria-hidden="true">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           </span>
-          <input class="text-input" id="searchInput" type="search" placeholder="ស្វែងរកតាម Gmail ឬ ឈ្មោះ…" aria-label="ស្វែងរកអ្នកប្រើប្រាស់" />
+          <input class="text-input" id="searchInput" type="search" placeholder="ស្វែងរក Gmail / ឈ្មោះ…" aria-label="ស្វែងរកអ្នកប្រើប្រាស់" />
         </div>
       </div>
       <p class="count-line" id="countLine"></p>
@@ -1078,7 +1099,7 @@
         <div class="state-box" id="loadingBox">
           <span class="spinner" aria-hidden="true"></span>
           <div class="big" style="margin-top:10px;">កំពុងផ្ទុកអ្នកប្រើប្រាស់…</div>
-          <div id="loadingTimer">0 វិនាទី — server អាចចំណាយពេលបន្តិចពេលបើកដំបូង</div>
+          <div id="loadingTimer">0 វិនាទី</div>
         </div>
 
         <table class="users-table hidden" id="usersTable" aria-label="តារាងអ្នកប្រើប្រាស់">
@@ -1087,12 +1108,12 @@
               <th>ID</th>
               <th>ឈ្មោះ</th>
               <th>Gmail</th>
-              <th>Credit រូបភាព/វីដេអូ</th>
-              <th>Credit បទចម្រៀង</th>
-              <th>កញ្ចប់ដែលទិញ</th>
-              <th>សមាជិកតាំងពី</th>
-              <th>IP address</th>
-              <th>Device · ម៉ូឌែល</th>
+              <th>Media</th>
+              <th>Song</th>
+              <th>កញ្ចប់</th>
+              <th>តាំងពី</th>
+              <th>IP</th>
+              <th>Device</th>
               <th>Last seen</th>
               <th aria-hidden="true"></th>
             </tr>
@@ -1103,7 +1124,6 @@
 
         <div class="state-box hidden" id="emptyBox">
           <div class="big">រកមិនឃើញអ្នកប្រើប្រាស់</div>
-          <div>សាកប្ដូរពាក្យស្វែងរក ឬចុច «ផ្ទុកឡើងវិញ»</div>
         </div>
       </div>
       </div><!-- /panel-users -->
@@ -1111,10 +1131,10 @@
       <!-- ================= PURCHASE REQUESTS ================= -->
       <div id="panel-purchases" class="hidden">
         <div class="section-card">
-          <h2>សំណើទិញ · Purchase Requests</h2>
-          <p class="desc">អ្នកប្រើចុច Buy ក្នុង MovAi នឹងផ្ញើសំណើមកទីនេះ — Credit មិនលោតអូតូទេ។ ពិនិត្យវិក្កយបត្រ (Receipt) សិន ថាបង់លុយពិតឬក្លែងក្លាយ ទើបចុច «អនុម័ត · Approve» ឬ «បដិសេធ · Reject» — ពេលអនុម័ត server ទើបផ្ដល់ Credit តាមកញ្ចប់ឲ្យអ្នកប្រើ។</p>
+          <h2>សំណើទិញ</h2>
+          <p class="desc">ពិនិត្យ Receipt → Approve / Reject</p>
           <div class="toolbar" style="margin-top:0;">
-            <button class="btn" id="purchasesRefreshBtn" type="button">↻ ផ្ទុកសំណើឡើងវិញ</button>
+            <button class="btn" id="purchasesRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
           <div class="alert alert-error" id="purchasesError" role="alert"></div>
           <div class="alert alert-ok" id="purchasesOk" role="status"></div>
@@ -1122,7 +1142,6 @@
           <div id="purchasesList"></div>
           <div class="state-box hidden" id="purchasesEmpty">
             <div class="big">មិនមានសំណើទិញទេ</div>
-            <div>ពេលអ្នកប្រើចុច Buy ក្នុង MovAi សំណើនឹងបង្ហាញនៅទីនេះ។</div>
           </div>
         </div>
       </div>
@@ -1130,36 +1149,35 @@
       <!-- ================= POST TO PUBLIC ================= -->
       <div id="panel-post" class="hidden">
         <div class="section-card">
-          <h2>Post · ផុសទៅ Public</h2>
-          <p class="desc">ផុសបទចម្រៀង រូបភាព វីដេអូ ឬ 3D ពី Admin ផ្ទាល់ទៅ Public feed ក្នុង MovAi — អ្នកប្រើទាំងអស់ (រួមទាំងភ្ញៀវ) នឹងឃើញ និងចុចស្ដាប់/មើលបាន។</p>
+          <h2>Post ទៅ Public</h2>
 
           <div class="ctl">
-            <span class="field-label">ប្រភេទ · Type</span>
+            <span class="field-label">ប្រភេទ</span>
             <div class="seg post-type-seg" role="group" aria-label="ប្រភេទ Post" id="postTypeSeg">
-              <button type="button" data-ptype="song" class="on-song">បទចម្រៀង · Song</button>
-              <button type="button" data-ptype="image">រូបភាព · Image</button>
-              <button type="button" data-ptype="video">វីដេអូ · Video</button>
+              <button type="button" data-ptype="song" class="on-song">បទចម្រៀង</button>
+              <button type="button" data-ptype="image">រូបភាព</button>
+              <button type="button" data-ptype="video">វីដេអូ</button>
               <button type="button" data-ptype="3d">3D</button>
             </div>
           </div>
 
           <div class="ctl hidden" id="postAspectCtl">
-            <span class="field-label">ទំហំរូបភាព · Size</span>
+            <span class="field-label">ទំហំ</span>
             <div class="seg" role="group" aria-label="ទំហំរូបភាព" id="postAspectSeg">
-              <button type="button" data-aspect="1x1" class="on">1x1 · ការ៉េ (Square)</button>
-              <button type="button" data-aspect="4x6">4x6 · បញ្ឈរ (Portrait)</button>
+              <button type="button" data-aspect="1x1" class="on">1x1 ការ៉េ</button>
+              <button type="button" data-aspect="4x6">4x6 បញ្ឈរ</button>
             </div>
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="postTitleInput">ចំណងជើង · Title</label>
-            <input class="text-input" id="postTitleInput" type="text" placeholder="ដាក់ចំណងជើងបទចម្រៀង / រូបភាព / វីដេអូ…" />
+            <label class="field-label" for="postTitleInput">ចំណងជើង</label>
+            <input class="text-input" id="postTitleInput" type="text" placeholder="ចំណងជើង…" />
           </div>
 
           <div class="ctl">
             <label class="field-label" for="postLinkInput">Link (URL ឯកសារ)</label>
             <div class="upload-row">
-              <input class="text-input" id="postLinkInput" type="url" placeholder="https://… (link បទចម្រៀង / រូបភាព / វីដេអូ / 3D)" />
+              <input class="text-input" id="postLinkInput" type="url" placeholder="https://…" />
               <button class="btn" id="postUploadMp3Btn" type="button">Upload MP3</button>
             </div>
             <input class="hidden" id="postMp3File" type="file" accept="audio/*" />
@@ -1177,7 +1195,7 @@
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="postCoverInput">Cover (URL រូបគម្រប់ · មិនបង្ខំ)</label>
+            <label class="field-label" for="postCoverInput">Cover URL</label>
             <div class="upload-row">
               <input class="text-input" id="postCoverInput" type="url" placeholder="https://… (រូប cover)" />
               <button class="btn" id="postUploadCoverBtn" type="button">Upload Cover</button>
@@ -1194,25 +1212,23 @@
             </label>
             <div>
               <div class="switch-label">Public</div>
-              <div class="switch-state" id="postPublicState">Public — គ្រប់គ្នាមើលឃើញក្នុង Public feed</div>
+              <div class="switch-state" id="postPublicState">Public</div>
             </div>
           </div>
 
           <div class="alert alert-error" id="postError" role="alert"></div>
           <div class="alert alert-ok" id="postOk" role="status"></div>
-          <button class="btn btn-primary btn-block" id="postSubmitBtn" type="button">ផុសឥឡូវនេះ · Post</button>
+          <button class="btn btn-primary btn-block" id="postSubmitBtn" type="button">ផុសឥឡូវនេះ</button>
           <p class="save-status" id="postStatus"></p>
 
           <div class="live-posts-head">
-            <h3>Post ដែលកំពុងចេញក្នុង Public feed ពិត</h3>
+            <h3>Post ក្នុង Public</h3>
             <button class="btn" id="livePostsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
-          <p class="desc" style="margin-bottom:10px;">បញ្ជីនេះផ្ទុកផ្ទាល់ពី Public feed របស់ website — បើ post របស់អ្នកមិនមាននៅទីនេះ មានន័យថាវាមិនទាន់ចេញឲ្យអ្នកប្រើឃើញទេ។</p>
           <p class="save-status" id="livePostsStatus" style="text-align:left;"></p>
           <div id="livePostsList"></div>
           <div class="state-box hidden" id="livePostsEmpty">
             <div class="big">មិនមាន post ក្នុង Public feed ទេ</div>
-            <div>Public feed ពិតប្រាកដកំពុងទទេ — ផុសខាងលើដើម្បីឲ្យវាចេញនៅទីនេះ និងលើ website។</div>
           </div>
         </div>
       </div>
@@ -1220,31 +1236,30 @@
       <!-- ================= PACKAGES ================= -->
       <div id="panel-packages" class="hidden">
         <div class="section-card">
-          <h2>កញ្ចប់ · Packages</h2>
-          <p class="desc">កញ្ចប់ទាំងអស់ពីវេបសាយ MovAi និងបញ្ជីតាមដាន៖ អ្នកណាចុចចូលមើលកញ្ចប់ (View) អ្នកណាចុចទិញ (Buy) អ្នកណាចុចចូលហើយ Cancel ចោលវិញ អ្នកណាស្នើទិញពិត (Request) — តាមអ៊ីមែល កញ្ចប់ និងពេលវេលា។ ចុច «Edit» លើកាតកញ្ចប់ដើម្បីកែតម្លៃលក់ និងតម្លៃដើម — បើដាក់តម្លៃលក់ឲ្យទាបជាងតម្លៃដើម កាតនឹងបង្ហាញភាគរយបញ្ចុះតម្លៃ (ឧ. $25 → $20 = -20%)។</p>
+          <h2>កញ្ចប់</h2>
+          <p class="desc">ចុច Edit ដើម្បីកែតម្លៃ</p>
 
           <div class="alert alert-error" id="pkgPriceError" role="alert"></div>
           <div class="alert alert-ok" id="pkgPriceOk" role="status"></div>
           <p class="save-status" id="pkgPriceStatus" style="text-align:left;"></p>
           <div id="packagesCatalog"></div>
 
-          <h3 style="margin:22px 0 4px;font-size:16px;">តាមដានកញ្ចប់ · Package activity</h3>
+          <h3 style="margin:22px 0 4px;font-size:16px;">សកម្មភាពកញ្ចប់</h3>
           <div class="toolbar" style="margin-top:10px;">
-            <button class="btn" id="pkgEventsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ · Refresh</button>
+            <button class="btn" id="pkgEventsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
           <div class="evt-filter" id="evtFilter" role="group" aria-label="ត្រងសកម្មភាពកញ្ចប់">
-            <button type="button" data-evt="all" class="on">ទាំងអស់ · All</button>
-            <button type="button" data-evt="view">មើល · View</button>
-            <button type="button" data-evt="buy">ទិញ · Buy</button>
+            <button type="button" data-evt="all" class="on">ទាំងអស់</button>
+            <button type="button" data-evt="view">មើល</button>
+            <button type="button" data-evt="buy">ទិញ</button>
             <button type="button" data-evt="cancel">Cancel</button>
-            <button type="button" data-evt="request">ស្នើទិញ · Request</button>
+            <button type="button" data-evt="request">ស្នើទិញ</button>
           </div>
           <div class="alert alert-error" id="pkgEventsError" role="alert"></div>
           <p class="save-status" id="pkgEventsStatus" style="text-align:left;"></p>
           <div id="pkgEventsList"></div>
           <div class="state-box hidden" id="pkgEventsEmpty">
             <div class="big">មិនទាន់មានសកម្មភាពកញ្ចប់</div>
-            <div>ពេលមានអ្នកចុចមើល/ទិញកញ្ចប់ក្នុង MovAi សកម្មភាពនឹងបង្ហាញនៅទីនេះ។</div>
           </div>
         </div>
       </div>
@@ -1252,22 +1267,21 @@
       <!-- ================= PAYMENT ================= -->
       <div id="panel-payment" class="hidden">
         <div class="section-card">
-          <h2>Payment · ការទូទាត់</h2>
-          <p class="desc">កែព័ត៌មានទទួលប្រាក់សម្រាប់អ្នកទិញកញ្ចប់ — KHQR សម្រាប់អ្នកបង់ក្នុងស្រុក Binance USDT សម្រាប់អ្នកបង់ក្រៅស្រុក។ ការកែនៅទីនេះរក្សាទុកទៅ server ហើយ MovAi នឹងបង្ហាញព័ត៌មានថ្មីនេះនៅពេលទិញកញ្ចប់។</p>
+          <h2>Payment</h2>
 
           <div class="pay-block">
             <h3>KHQR · Canadia Bank</h3>
-            <p class="pay-sub">សម្រាប់អ្នកបង់ក្នុងស្រុក — ដាក់ link KHQR ដែលអ្នកទិញចុចដើម្បីបង់ប្រាក់។</p>
+            <p class="pay-sub">ក្នុងស្រុក</p>
             <div class="ctl">
               <label class="field-label" for="paymentKhqrInput">KHQR Link</label>
               <input class="text-input" id="paymentKhqrInput" type="url" inputmode="url" autocomplete="off" placeholder="https://pay.canadiabank.com.kh/…" value="https://pay.canadiabank.com.kh/K6EkJR30W0BM3VVK" />
             </div>
-            <a class="pay-open-link" id="paymentKhqrOpen" href="https://pay.canadiabank.com.kh/K6EkJR30W0BM3VVK" target="_blank" rel="noopener noreferrer">បើក KHQR link សាកល្បង ›</a>
+            <a class="pay-open-link" id="paymentKhqrOpen" href="https://pay.canadiabank.com.kh/K6EkJR30W0BM3VVK" target="_blank" rel="noopener noreferrer">បើក KHQR ›</a>
           </div>
 
           <div class="pay-block">
             <h3>Binance · USDT</h3>
-            <p class="pay-sub">សម្រាប់អ្នកបង់ក្រៅស្រុក — ដាក់អាសយដ្ឋាន USDT (Binance) ដែលអ្នកទិញត្រូវផ្ទេរទៅ។ ទុកទទេបាន បើមិនទាន់ប្រើ។</p>
+            <p class="pay-sub">ក្រៅស្រុក</p>
             <div class="ctl">
               <label class="field-label" for="paymentBinanceInput">Binance USDT Address</label>
               <input class="text-input" id="paymentBinanceInput" type="text" autocomplete="off" placeholder="ដាក់អាសយដ្ឋាន USDT…" value="" />
@@ -1276,8 +1290,8 @@
 
           <div class="alert alert-error" id="paymentError" role="alert"></div>
           <div class="alert alert-ok" id="paymentOk" role="status"></div>
-          <button class="btn btn-primary btn-block" id="paymentSaveBtn" type="button" style="margin-top:14px;">រក្សាទុកការទូទាត់ · Save</button>
-          <button class="btn btn-block" id="paymentReloadBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកពី server ឡើងវិញ</button>
+          <button class="btn btn-primary btn-block" id="paymentSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក</button>
+          <button class="btn btn-block" id="paymentReloadBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកឡើងវិញ</button>
           <p class="save-status" id="paymentStatus"></p>
         </div>
       </div>
@@ -1285,8 +1299,8 @@
       <!-- ================= MODELS LOCK / UNLOCK ================= -->
       <div id="panel-models" class="hidden">
         <div class="section-card">
-          <h2>ម៉ូឌែល · Models — ចាក់សោ / បើក</h2>
-          <p class="desc">បើក = អ្នកប្រើ MovAi ប្រើម៉ូឌែលនោះបាន។ ចាក់សោ = MovAi មិនបង្ហាញ និងមិនប្រើម៉ូឌែលនោះទេ។ ការផ្លាស់ប្ដូរនីមួយៗរក្សាទុកទៅ server ភ្លាមៗ។</p>
+          <h2>ម៉ូឌែល</h2>
+          <p class="desc">បើក = ប្រើបាន · ចាក់សោ = លាក់</p>
           <div class="alert alert-error" id="modelsError" role="alert"></div>
           <div class="alert alert-ok" id="modelsOk" role="status"></div>
           <p class="save-status" id="modelsStatus" style="text-align:left;"></p>
@@ -1297,18 +1311,17 @@
       <!-- ================= APPEARANCE ================= -->
       <div id="panel-appearance" class="hidden">
         <div class="section-card">
-          <h2>រូបរាង · Appearance</h2>
-          <p class="desc">ការកំណត់ទាំងនេះបញ្ជាទៅ MovAi — អ្នកប្រើប្រាស់ទាំងអស់នឹងឃើញរូបរាងតាមនេះពេលបើក MovAi។</p>
+          <h2>រូបរាង</h2>
 
           <div class="preview-box" aria-hidden="true">
             <div class="pv-inner">
               <div class="pv-word" id="pvWord">Mov<span class="ai">Ai</span></div>
-              <div class="pv-text" id="pvText">អត្ថបទគំរូសម្រាប់មើលរូបរាង</div>
+              <div class="pv-text" id="pvText">អត្ថបទគំរូ</div>
             </div>
           </div>
 
           <div class="ctl">
-            <span class="field-label">Theme (ពណ៌)</span>
+            <span class="field-label">ពណ៌</span>
             <div class="theme-grid" id="themeGrid">
               <button type="button" class="theme-swatch" data-theme="lime"><span class="dotc" style="background:#ADDC29;"></span>Lime</button>
               <button type="button" class="theme-swatch" data-theme="ocean"><span class="dotc" style="background:#38BDF8;"></span>Ocean</button>
@@ -1321,40 +1334,40 @@
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="fontSizeRange">ទំហំអក្សរ · Font size <span class="val" id="fontSizeVal">50</span></label>
+            <label class="field-label" for="fontSizeRange">ទំហំអក្សរ <span class="val" id="fontSizeVal">50</span></label>
             <input type="range" id="fontSizeRange" min="0" max="100" step="1" value="50" />
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="glassClearRange">កញ្ចក់ · ថ្លា (Clear) <span class="val" id="glassClearVal">50</span></label>
+            <label class="field-label" for="glassClearRange">កញ្ចក់ថ្លា <span class="val" id="glassClearVal">50</span></label>
             <input type="range" id="glassClearRange" min="0" max="100" step="1" value="50" />
           </div>
           <div class="ctl">
-            <label class="field-label" for="glassBlurRange">កញ្ចក់ · ព្រាល (Blur) <span class="val" id="glassBlurVal">50</span></label>
+            <label class="field-label" for="glassBlurRange">កញ្ចក់ព្រាល <span class="val" id="glassBlurVal">50</span></label>
             <input type="range" id="glassBlurRange" min="0" max="100" step="1" value="50" />
           </div>
           <div class="ctl">
-            <label class="field-label" for="glassShineRange">កញ្ចក់ · ចាំង (Shine) <span class="val" id="glassShineVal">50</span></label>
+            <label class="field-label" for="glassShineRange">កញ្ចក់ចាំង <span class="val" id="glassShineVal">50</span></label>
             <input type="range" id="glassShineRange" min="0" max="100" step="1" value="50" />
           </div>
 
           <div class="ctl">
-            <span class="field-label">ស្រមោលអក្សរ · Text shadow</span>
+            <span class="field-label">ស្រមោលអក្សរ</span>
             <div class="shadow-grid" id="shadowGrid">
-              <button type="button" class="shadow-swatch" data-shadow="none">Aa<small>គ្មាន · None</small></button>
-              <button type="button" class="shadow-swatch sw-soft" data-shadow="soft">Aa<small>ទន់ · Soft</small></button>
-              <button type="button" class="shadow-swatch sw-strong" data-shadow="strong">Aa<small>ខ្លាំង · Strong</small></button>
-              <button type="button" class="shadow-swatch sw-glow" data-shadow="glow">Aa<small>ភ្លឺ · Glow</small></button>
+              <button type="button" class="shadow-swatch" data-shadow="none">Aa<small>គ្មាន</small></button>
+              <button type="button" class="shadow-swatch sw-soft" data-shadow="soft">Aa<small>ទន់</small></button>
+              <button type="button" class="shadow-swatch sw-strong" data-shadow="strong">Aa<small>ខ្លាំង</small></button>
+              <button type="button" class="shadow-swatch sw-glow" data-shadow="glow">Aa<small>ភ្លឺ</small></button>
             </div>
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="textBlurRange">អក្សរព្រាល · Text blur <span class="val" id="textBlurVal">0</span></label>
+            <label class="field-label" for="textBlurRange">អក្សរព្រាល <span class="val" id="textBlurVal">0</span></label>
             <input type="range" id="textBlurRange" min="0" max="100" step="1" value="0" />
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="bgBrightRange">ពន្លឺផ្ទៃខាងក្រោយ · Background brightness <span class="val" id="bgBrightVal">50</span></label>
+            <label class="field-label" for="bgBrightRange">ពន្លឺផ្ទៃក្រោយ <span class="val" id="bgBrightVal">50</span></label>
             <input type="range" id="bgBrightRange" min="0" max="100" step="1" value="50" />
           </div>
 
@@ -1362,18 +1375,18 @@
             <span class="field-label">បែបផែនម៉ាក · Brand effect</span>
             <div class="seg" role="group" aria-label="Brand effect" id="fxSeg">
               <button type="button" data-fx="none">ធម្មតា</button>
-              <button type="button" data-fx="glow">ភ្លឺ · Glow</button>
-              <button type="button" data-fx="shine">ចាំង · Shine</button>
-              <button type="button" data-fx="animate">ចលនា · Animated</button>
+              <button type="button" data-fx="glow">ភ្លឺ</button>
+              <button type="button" data-fx="shine">ចាំង</button>
+              <button type="button" data-fx="animate">ចលនា</button>
             </div>
           </div>
 
           <div class="ctl">
             <span class="field-label">របៀបថ្ងៃ / យប់ · Day / Night</span>
             <div class="seg" role="group" aria-label="Day night mode" id="modeSeg">
-              <button type="button" data-mode="dark">យប់ · Night</button>
-              <button type="button" data-mode="light">ថ្ងៃ · Day</button>
-              <button type="button" data-mode="auto">អូតូ · Auto</button>
+              <button type="button" data-mode="dark">យប់</button>
+              <button type="button" data-mode="light">ថ្ងៃ</button>
+              <button type="button" data-mode="auto">អូតូ</button>
             </div>
           </div>
 
@@ -1387,8 +1400,7 @@
       <!-- ================= SMOOTH MODE ================= -->
       <div id="panel-smooth" class="hidden">
         <div class="section-card">
-          <h2>របៀបស្មូត · Smooth mode</h2>
-          <p class="desc">ប៊ូតុង Smooth ដូចក្នុង website — ចុចបិទ/បើកនៅទីនេះ។ ពេលចុច វានឹងរក្សាទុកទៅ server ភ្លាម ហើយនៅស្ថានភាពដដែល មិនលោតត្រឡប់វិញទេ។ ពេលបើក Admin មកវិញ វានឹងបង្ហាញស្ថានភាពដែលបានរក្សាទុករួច។</p>
+          <h2>Smooth mode</h2>
           <div class="switch-row">
             <label class="switch">
               <input type="checkbox" id="smoothToggle" aria-label="Smooth mode បើក ឬ បិទ" />
@@ -1399,10 +1411,7 @@
               <div class="switch-state" id="smoothState">បិទ (OFF)</div>
             </div>
           </div>
-          <div class="note-box">
-            ពេល <b>Smooth ON</b> — MovAi អនុវត្ត Smooth ឲ្យអ្នកប្រើទាំងអស់។<br />
-            ពេល <b>Smooth OFF</b> — អ្នកប្រើម្នាក់ៗគ្រប់គ្រង Smooth ដោយខ្លួនឯងតាម toggle ក្នុង website (ឬ Smooth នៅបិទ)។
-          </div>
+          <div class="note-box"><b>ON</b> = អ្នកប្រើទាំងអស់ · <b>OFF</b> = គ្រប់គ្រងខ្លួនឯង</div>
           <div class="alert alert-error" id="smoothError" role="alert"></div>
           <div class="alert alert-ok" id="smoothOk" role="status"></div>
           <p class="save-status" id="smoothStatus" style="text-align:left;"></p>
@@ -1414,14 +1423,14 @@
       <div id="panel-keys" class="hidden">
         <div class="section-card">
           <h2>API Keys</h2>
-          <p class="desc">បញ្ចូល key របស់ provider នីមួយៗនៅទីនេះ — provider មួយអាចដាក់ key បានច្រើន។ Key រក្សាទុកនៅ server តែប៉ុណ្ណោះ អ្នកប្រើ MovAi មើលមិនឃើញទេ។ ទំព័រនេះបង្ហាញតែ 4 តួចុងក្រោយនៃ key នីមួយៗ — ចុចរូបភ្នែកដើម្បីមើល key ពេញ ចុច Copy ដើម្បីចម្លង key នោះ ឬ Copy All ដើម្បីចម្លងទាំងអស់។</p>
-          <p class="note-box" style="margin-top:12px;">ចំណាំ៖ ពេល Key មួយអស់ credit ឬដល់ limit server នឹងអូតូប្ដូរទៅ Key បន្ទាប់ដោយខ្លួនឯង — មិនបាច់ប្ដូរដោយដៃទេ។</p>
+          <p class="desc">Key នៅ server · បង្ហាញតែ 4 តួចុងក្រោយ</p>
+          <p class="note-box" style="margin-top:12px;">Key អស់ → ប្ដូរទៅ Key បន្ទាប់អូតូ</p>
           <p class="save-status" id="keysStatus" style="text-align:left;"></p>
           <div class="cld-legend" aria-label="អត្ថន័យភ្លើងស្ថានភាព Key">
             <span class="cld-leg"><span class="kc-dot ok"></span>ដំណើរការ</span>
             <span class="cld-leg"><span class="kc-dot blocked"></span>អស់ · Exhausted</span>
             <span class="cld-leg"><span class="kc-dot error"></span>បញ្ហាផ្សេង</span>
-            <span class="cld-leg"><span class="kc-dot"></span>មិនទាន់ដឹង (មិនទាន់ប្រើ)</span>
+            <span class="cld-leg"><span class="kc-dot"></span>មិនទាន់ប្រើ</span>
           </div>
           <div id="keysList"></div>
 
@@ -1432,7 +1441,7 @@
               <span class="count-badge hidden" id="keysCldCountBadge"></span>
               <span class="key-status none" id="keysCldCount">មិនទាន់ផ្ទុក</span>
             </div>
-            <p style="color:var(--text-dim);font-size:13.5px;margin:0 0 14px;">គណនី Cloudinary សម្រាប់ផ្ទុកបទចម្រៀង (Magic Hour WAV → MP3)។ ពេលគណនីមួយអស់ Credit server នឹងប្ដូរទៅគណនីបន្ទាប់ដោយអូតូ — ដូចផ្នែក Cloudinary ក្នុង menu ដែរ។</p>
+            <p style="color:var(--text-dim);font-size:13.5px;margin:0 0 14px;">ផ្ទុកបទចម្រៀង · អស់ Credit → ប្ដូរអូតូ</p>
             <div class="ctl">
               <label class="field-label" for="keysCldCloudNameInput">Cloud Name</label>
               <input class="text-input" id="keysCldCloudNameInput" type="text" autocomplete="off" placeholder="ឧ. bg08mr3i" />
@@ -1447,21 +1456,20 @@
             </div>
             <div class="alert alert-error" id="keysCldError" role="alert"></div>
             <div class="alert alert-ok" id="keysCldOk" role="status"></div>
-            <button class="btn btn-primary btn-block" id="keysCldSaveBtn" type="button" style="margin-top:14px;">រក្សាទុកគណនី · Save</button>
+            <button class="btn btn-primary btn-block" id="keysCldSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក</button>
             <button class="btn btn-block" id="keysCldRefreshBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកបញ្ជីឡើងវិញ</button>
             <p class="save-status" id="keysCldStatus"></p>
-            <h3 style="margin:20px 0 4px; font-size:15.5px;">គណនីទាំងអស់ · All accounts</h3>
+            <h3 style="margin:20px 0 4px; font-size:15.5px;">គណនីទាំងអស់</h3>
             <div class="cld-legend" aria-label="អត្ថន័យភ្លើងស្ថានភាព">
               <span class="cld-leg"><span class="cld-light green"></span>ដំណើរការល្អ</span>
-              <span class="cld-leg"><span class="cld-light red"></span>មានបញ្ហា (Key/Secret ខុស ឬអស់ Credit)</span>
-              <span class="cld-leg"><span class="cld-light yellow"></span>បញ្ហាផ្សេង / Credit ជិតអស់ / ពិនិត្យមិនបាន</span>
+              <span class="cld-leg"><span class="cld-light red"></span>មានបញ្ហា</span>
+              <span class="cld-leg"><span class="cld-light yellow"></span>បញ្ហាផ្សេង</span>
               <span class="cld-leg"><span class="cld-light grey"></span>បានបិទ</span>
               <span class="cld-leg"><span class="cld-light blue"></span>Credit នៅសល់</span>
             </div>
             <div id="keysCldList"></div>
             <div class="state-box hidden" id="keysCldEmpty">
               <div class="big">មិនទាន់មានគណនី Cloudinary ទេ</div>
-              <div>ដាក់ Cloud Name, API Key និង API Secret ខាងលើ ហើយចុច Save ដើម្បីបន្ថែមគណនីដំបូង។</div>
             </div>
           </div>
         </div>
@@ -1470,8 +1478,7 @@
       <!-- ================= PROVIDERS / MODELS ================= -->
       <div id="panel-providers" class="hidden">
         <div class="section-card">
-          <h2>Providers / Models</h2>
-          <p class="desc">ជ្រើស provider និង model ដែល server ប្រើសម្រាប់ mode នីមួយៗ — អ្នកប្រើ MovAi មើលមិនឃើញការជ្រើសរើសនេះទេ។</p>
+          <h2>Providers</h2>
           <p class="save-status" id="providersStatus" style="text-align:left;"></p>
           <div id="providerModes"></div>
         </div>
@@ -1481,7 +1488,7 @@
       <div id="panel-cloudinary" class="hidden">
         <div class="section-card">
           <h2>Cloudinary <span class="count-badge hidden" id="cldCountBadge"></span></h2>
-          <p class="desc">គណនី Cloudinary សម្រាប់ផ្ទុកបទចម្រៀង (Magic Hour WAV → MP3)។ ដាក់គណនីថ្មីនៅទីនេះ — server នឹងពិនិត្យ Key/Secret មុនរក្សាទុក ហើយពេលគណនីមួយអស់ Credit វានឹងប្ដូរទៅគណនីបន្ទាប់ដោយអូតូ។</p>
+          <p class="desc">ពិនិត្យ Key/Secret មុន Save · អស់ Credit → ប្ដូរអូតូ</p>
 
           <div class="ctl">
             <label class="field-label" for="cldCloudNameInput">Cloud Name</label>
@@ -1498,22 +1505,21 @@
 
           <div class="alert alert-error" id="cldError" role="alert"></div>
           <div class="alert alert-ok" id="cldOk" role="status"></div>
-          <button class="btn btn-primary btn-block" id="cldSaveBtn" type="button" style="margin-top:14px;">រក្សាទុកគណនី · Save</button>
+          <button class="btn btn-primary btn-block" id="cldSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក</button>
           <button class="btn btn-block" id="cldRefreshBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកបញ្ជីឡើងវិញ</button>
           <p class="save-status" id="cldStatus"></p>
 
-          <h3 style="margin:20px 0 4px; font-size:15.5px;">គណនីទាំងអស់ · All accounts</h3>
+          <h3 style="margin:20px 0 4px; font-size:15.5px;">គណនីទាំងអស់</h3>
           <div class="cld-legend" aria-label="អត្ថន័យភ្លើងស្ថានភាព">
             <span class="cld-leg"><span class="cld-light green"></span>ដំណើរការល្អ</span>
-            <span class="cld-leg"><span class="cld-light red"></span>មានបញ្ហា (Key/Secret ខុស ឬអស់ Credit)</span>
-            <span class="cld-leg"><span class="cld-light yellow"></span>បញ្ហាផ្សេង / Credit ជិតអស់ / ពិនិត្យមិនបាន</span>
+            <span class="cld-leg"><span class="cld-light red"></span>មានបញ្ហា</span>
+            <span class="cld-leg"><span class="cld-light yellow"></span>បញ្ហាផ្សេង</span>
             <span class="cld-leg"><span class="cld-light grey"></span>បានបិទ</span>
             <span class="cld-leg"><span class="cld-light blue"></span>Credit នៅសល់</span>
           </div>
           <div id="cldList"></div>
           <div class="state-box hidden" id="cldEmpty">
             <div class="big">មិនទាន់មានគណនី Cloudinary ទេ</div>
-            <div>ដាក់ Cloud Name, API Key និង API Secret ខាងលើ ហើយចុច Save ដើម្បីបន្ថែមគណនីដំបូង។</div>
           </div>
         </div>
       </div>
@@ -1521,64 +1527,61 @@
       <!-- ================= ANALYTICS ================= -->
       <div id="panel-analytics" class="hidden">
         <div class="section-card">
-          <h2>តាមដានទាំងអស់ · Analytics</h2>
-          <p class="desc">តាមដានអ្វីទាំងអស់នៅកន្លែងតែមួយ៖ អ្នកប្រើប្រាស់ ការបង្កើត (បទចម្រៀង/រូបភាព/វីដេអូ) Public (ផុស · View · Like · Download) និងបញ្ហាដែលកើតឡើង — ទិន្នន័យផ្ទុកពី server រាល់ពេលបើក Admin ផ្នែកនេះ និងធ្វើបច្ចុប្បន្នភាពអូតូរាល់ 90 វិនាទី។</p>
+          <h2>ស្ថិតិ</h2>
           <div class="toolbar" style="margin-top:0;">
-            <button class="btn" id="statsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ · Refresh</button>
+            <button class="btn" id="statsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
           <div class="alert alert-error" id="statsError" role="alert"></div>
           <p class="save-status" id="statsStatus" style="text-align:left;"></p>
 
           <div class="stats-group">
-            <h3>អ្នកប្រើប្រាស់ · Users</h3>
+            <h3>អ្នកប្រើប្រាស់</h3>
             <div class="stat-grid">
-              <div class="stat-card accent-lime"><div class="sv" id="statUsersToday">–</div><div class="sk">ថ្ងៃនេះ · Today</div></div>
-              <div class="stat-card accent-lime"><div class="sv" id="statUsers7">–</div><div class="sk">7 ថ្ងៃ · 7 days</div></div>
-              <div class="stat-card accent-lime"><div class="sv" id="statUsers30">–</div><div class="sk">30 ថ្ងៃ · 30 days</div></div>
+              <div class="stat-card accent-lime"><div class="sv" id="statUsersToday">–</div><div class="sk">ថ្ងៃនេះ</div></div>
+              <div class="stat-card accent-lime"><div class="sv" id="statUsers7">–</div><div class="sk">7 ថ្ងៃ</div></div>
+              <div class="stat-card accent-lime"><div class="sv" id="statUsers30">–</div><div class="sk">30 ថ្ងៃ</div></div>
             </div>
           </div>
 
           <div class="stats-group">
-            <h3>បង្កើតថ្ងៃនេះ · Created today</h3>
+            <h3>បង្កើតថ្ងៃនេះ</h3>
             <div class="stat-grid">
-              <div class="stat-card accent-song"><div class="sv" id="statSongsToday">–</div><div class="sk">បទចម្រៀង · Songs</div></div>
-              <div class="stat-card accent-media"><div class="sv" id="statVideosToday">–</div><div class="sk">វីដេអូ · Videos</div></div>
-              <div class="stat-card accent-media"><div class="sv" id="statImagesToday">–</div><div class="sk">រូបភាព · Images</div></div>
+              <div class="stat-card accent-song"><div class="sv" id="statSongsToday">–</div><div class="sk">បទចម្រៀង</div></div>
+              <div class="stat-card accent-media"><div class="sv" id="statVideosToday">–</div><div class="sk">វីដេអូ</div></div>
+              <div class="stat-card accent-media"><div class="sv" id="statImagesToday">–</div><div class="sk">រូបភាព</div></div>
             </div>
           </div>
 
           <div class="stats-group">
-            <h3>Public · ផ្សព្វផ្សាយសាធារណៈ</h3>
+            <h3>Public</h3>
             <div class="stat-grid">
-              <div class="stat-card accent-lime"><div class="sv" id="statPublicPosts">–</div><div class="sk">ផុស Public · Posts</div></div>
+              <div class="stat-card accent-lime"><div class="sv" id="statPublicPosts">–</div><div class="sk">ផុស</div></div>
               <div class="stat-card accent-lime"><div class="sv" id="statPublicViews">–</div><div class="sk">View</div></div>
               <div class="stat-card accent-song"><div class="sv" id="statPublicLikes">–</div><div class="sk">Like</div></div>
             </div>
             <div class="stat-grid" style="margin-top:10px;">
               <div class="stat-card accent-media"><div class="sv" id="statPublicDownloads">–</div><div class="sk">Download</div></div>
-              <div class="stat-card accent-song"><div class="sv" id="statSongsTotal">–</div><div class="sk">បទចម្រៀងសរុប · Songs total</div></div>
-              <div class="stat-card accent-media"><div class="sv" id="statMediaTotal">–</div><div class="sk">រូប/វីដេអូសរុប · Media total</div></div>
+              <div class="stat-card accent-song"><div class="sv" id="statSongsTotal">–</div><div class="sk">បទសរុប</div></div>
+              <div class="stat-card accent-media"><div class="sv" id="statMediaTotal">–</div><div class="sk">Media សរុប</div></div>
             </div>
           </div>
 
           <div class="stats-group">
-            <h3>បញ្ហា · Failures</h3>
+            <h3>បញ្ហា</h3>
             <div class="stat-grid" style="grid-template-columns:1fr;">
-              <div class="stat-card accent-red"><div class="sv" id="statFailuresToday">–</div><div class="sk">បរាជ័យថ្ងៃនេះ · Failures today</div></div>
+              <div class="stat-card accent-red"><div class="sv" id="statFailuresToday">–</div><div class="sk">ថ្ងៃនេះ</div></div>
             </div>
             <div id="failuresList" style="margin-top:6px;"></div>
             <div class="state-box hidden" id="failuresEmpty">
               <div class="big">មិនមានបញ្ហាទេ</div>
-              <div>មិនទាន់មាន error ដែលបានកត់ត្រាទេ។</div>
             </div>
           </div>
 
           <div class="stats-group">
-            <h3>សកម្មភាពថ្មីៗ · Recent activity</h3>
+            <h3>សកម្មភាពថ្មីៗ</h3>
             <div id="activityList"></div>
             <div class="state-box hidden" id="activityEmpty">
               <div class="big">មិនទាន់មានសកម្មភាព</div>
-              <div>ពេលមានអ្នកចុះឈ្មោះ បង្កើត ផុស Public ឬទិញកញ្ចប់ សកម្មភាពនឹងបង្ហាញនៅទីនេះ។</div>
             </div>
           </div>
         </div>
@@ -1587,18 +1590,16 @@
       <!-- ================= NOTIFICATIONS ================= -->
       <div id="panel-notifications" class="hidden">
         <div class="section-card">
-          <h2>ដំណឹង · Notifications</h2>
-          <p class="desc">ដំណឹងពិតៗពី server — ពេលមានអ្នក log in ទិញកញ្ចប់ ទទួលកាដូ ឬ Admin ផ្ដល់/កាត់ Credit ដំណឹងនឹងលេចនៅទីនេះ (ថ្មីបំផុតនៅលើ) ហើយ server ក៏ផ្ញើទៅ Telegram របស់ Admin ដែរ បើបានកំណត់ក្នុង Telegram Settings។ ចុចលើដំណឹងដើម្បីសម្គាល់ថាបានអានហើយ។ បញ្ជីនេះផ្ទុកអូតូរាល់ 60 វិនាទី។</p>
+          <h2>ដំណឹង</h2>
           <div class="toolbar" style="margin-top:0;">
-            <button class="btn" id="notifRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ · Refresh</button>
-            <button class="btn" id="notifMarkAllBtn" type="button">អានទាំងអស់ · Mark all read</button>
+            <button class="btn" id="notifRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
+            <button class="btn" id="notifMarkAllBtn" type="button">អានទាំងអស់</button>
           </div>
           <div class="alert alert-error" id="notifError" role="alert"></div>
           <p class="save-status" id="notifStatus" style="text-align:left;"></p>
           <div id="notifList"></div>
           <div class="state-box hidden" id="notifEmpty">
             <div class="big">មិនទាន់មានដំណឹង</div>
-            <div>ពេលមានអ្នក log in ទិញកញ្ចប់ ឬទទួលកាដូ ដំណឹងនឹងបង្ហាញនៅទីនេះ។</div>
           </div>
         </div>
       </div>
@@ -1606,20 +1607,18 @@
       <!-- ================= SECURITY ================= -->
       <div id="panel-security" class="hidden">
         <div class="section-card">
-          <h2>សុវត្ថិភាព · Security</h2>
-          <p class="desc">ព្រឹត្តិការណ៍សុវត្ថិភាពពី server — ឧបករណ៍ថ្មីដែល log in (🔐) និងម៉ូឌែលដែលត្រូវបានប្លុកព្យាយាមចូល (🚫) បង្ហាញនៅទីនេះជាមួយ Gmail ម៉ូឌែល/IP និងពេលវេលា (ថ្មីបំផុតនៅលើ)។ បញ្ជីនេះផ្ទុកពេលបើកផ្នែក និងធ្វើបច្ចុប្បន្នភាពអូតូរាល់ 60 វិនាទីពេលកំពុងមើលផ្នែកនេះ។</p>
+          <h2>សុវត្ថិភាព</h2>
           <div class="note-box" style="margin:0 0 16px;">
-            <b style="color:var(--text);">អ្នកប្រើដែលត្រូវបានប្លុក</b> (ប្លុកម៉ូឌែល · ប្លុក IP · ប្លុក Gmail) នឹងចូលប្រើ MovAi លែងបានទៀត។ ពួកគេអាចទាក់ទង Admin បាន<b style="color:var(--text);">តែតាម Report / Support ប៉ុណ្ណោះ</b>៖ Telegram <a href="https://t.me/yemsokhoeun_9999" target="_blank" rel="noopener" style="color:var(--lime); font-weight:700;">@yemsokhoeun_9999</a> ឬផ្ញើសារមក Admin page ផ្ទាល់។
+            អ្នកត្រូវបានប្លុក → ទាក់ទង Admin តាម Telegram <a href="https://t.me/yemsokhoeun_9999" target="_blank" rel="noopener" style="color:var(--lime); font-weight:700;">@yemsokhoeun_9999</a>
           </div>
           <div class="toolbar" style="margin-top:0;">
-            <button class="btn" id="securityRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ · Refresh</button>
+            <button class="btn" id="securityRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
           <div class="alert alert-error" id="securityError" role="alert"></div>
           <p class="save-status" id="securityStatus" style="text-align:left;"></p>
           <div id="securityList"></div>
           <div class="state-box hidden" id="securityEmpty">
             <div class="big">មិនមានបញ្ហាសុវត្ថិភាពទេ</div>
-            <div>មិនទាន់មានព្រឹត្តិការណ៍សុវត្ថិភាពដែលបានកត់ត្រាទេ។</div>
           </div>
         </div>
       </div>
@@ -1627,28 +1626,26 @@
       <!-- ================= AUTO UPDATE ================= -->
       <div id="panel-updates" class="hidden">
         <div class="section-card">
-          <h2>Auto Update · អាប់ដេតអូតូ</h2>
+          <h2>Auto Update</h2>
           <div class="upd-help">
-            <h3>របៀបបន្ថែម Model ថ្មីដោយខ្លួនឯង</h3>
+            <h3>បន្ថែម Model ថ្មី</h3>
             <ol>
-              <li>ពេលឃើញដំណឹង model ថ្មីនៅ sunoapi.org dashboard ឬ Telegram របស់គេ → ចូលមកទីនេះ → បំពេញ provider + ឈ្មោះ model → ចុច Add។</li>
-              <li>ចុច Approve — model នឹងលេចក្នុង website ភ្លាម។ បើមិនចង់បាន → ចុច «មិនចាំបាច់ Update» វានឹងមិនលេចឡើងទៀតទេ។</li>
-              <li>បើបងរវល់មិនបានចូលមើល ហើយ Auto-Apply បើក → ប្រព័ន្ធនឹង Update ឲ្យដោយខ្លួនឯងក្នុង 24 ម៉ោង ហើយផ្ដល់ដំណឹងមក Telegram។</li>
+              <li>ឃើញ model ថ្មី → បំពេញខាងក្រោម → Add</li>
+              <li>Approve = បង្ហាញក្នុង website · «មិនចាំបាច់ Update» = លាក់</li>
+              <li>Auto-Apply ON → Update អូតូ 24 ម៉ោង + Telegram</li>
             </ol>
-            <p class="upd-help-last">បើ chat របស់ Muse ខូចក៏ដោយ website + Admin នៅដំណើរការដដែល — បងគ្រប់គ្រងបានដោយខ្លួនឯង មិនចាំបាច់ចេះ server ទេ។</p>
           </div>
-          <p class="desc">ប្រព័ន្ធតាមដានម៉ូឌែលថ្មីពី provider នីមួយៗ (Groq, NovAI, Suno, Magic Hour, MusicAPI…) — ពេលមានម៉ូឌែលថ្មី វានឹងបង្ហាញនៅទីនេះឲ្យ Admin ចុច Approve ឬ «មិនចាំបាច់ Update»។ បើបើក Auto-Apply ហើយ Admin មិនសម្រេចក្នុងពេលកំណត់ ប្រព័ន្ធនឹងអនុវត្តដោយខ្លួនឯង ហើយផ្ដល់ដំណឹងតាម Telegram។ បញ្ជីនេះផ្ទុកអូតូរាល់ 60 វិនាទីពេលកំពុងមើលផ្នែកនេះ។</p>
 
           <div class="toolbar" style="margin-top:0;">
-            <button class="btn btn-primary" id="updCheckBtn" type="button">🔍 ពិនិត្យឥឡូវ · Check now</button>
-            <button class="btn" id="updRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ · Refresh</button>
+            <button class="btn btn-primary" id="updCheckBtn" type="button">🔍 ពិនិត្យឥឡូវ</button>
+            <button class="btn" id="updRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
           <p class="upd-lastcheck" id="updLastCheck">ពិនិត្យចុងក្រោយ៖ —</p>
           <div class="alert alert-error" id="updError" role="alert"></div>
           <p class="save-status" id="updStatus" style="text-align:left;"></p>
 
           <div class="upd-block">
-            <h3>អនុវត្តអូតូ · Auto-Apply</h3>
+            <h3>Auto-Apply</h3>
             <div class="switch-row">
               <label class="switch">
                 <input type="checkbox" id="updAutoApplyToggle" aria-label="Auto-Apply បើក ឬ បិទ" />
@@ -1659,33 +1656,31 @@
                 <div class="switch-state" id="updAutoApplyState">បិទ (OFF)</div>
               </div>
             </div>
-            <p class="upd-note">ពេលបើក ON ហើយ Admin មិនសម្រេចក្នុងចំនួនម៉ោងដែលកំណត់ខាងក្រោម ប្រព័ន្ធនឹងអនុវត្ត Update ដោយខ្លួនឯង ហើយផ្ដល់ដំណឹងតាម Telegram។</p>
+            <p class="upd-note">ON + ហួសម៉ោងកំណត់ → អនុវត្តអូតូ + Telegram</p>
             <div class="upd-nums">
               <div class="ctl">
-                <label class="field-label" for="updAutoApplyHours">អនុវត្តអូតូក្រោយ (ម៉ោង) · Auto-apply after (hours)</label>
+                <label class="field-label" for="updAutoApplyHours">អូតូក្រោយ (ម៉ោង)</label>
                 <input class="text-input" id="updAutoApplyHours" type="number" min="1" max="720" step="1" inputmode="numeric" value="24" />
               </div>
               <div class="ctl">
-                <label class="field-label" for="updCheckIntervalHours">ពិនិត្យរាល់ (ម៉ោង) · Check every (hours)</label>
+                <label class="field-label" for="updCheckIntervalHours">ពិនិត្យរាល់ (ម៉ោង)</label>
                 <input class="text-input" id="updCheckIntervalHours" type="number" min="1" max="168" step="1" inputmode="numeric" value="6" />
               </div>
             </div>
             <div class="alert alert-error" id="updSettingsError" role="alert"></div>
             <div class="alert alert-ok" id="updSettingsOk" role="status"></div>
-            <button class="btn btn-primary btn-block" id="updSettingsSaveBtn" type="button" style="margin-top:14px;">រក្សាទុកការកំណត់ · Save settings</button>
+            <button class="btn btn-primary btn-block" id="updSettingsSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក</button>
             <p class="save-status" id="updSettingsStatus"></p>
           </div>
 
-          <h3 class="upd-h3">កំពុងរង់ចាំការសម្រេច · Pending</h3>
+          <h3 class="upd-h3">រង់ចាំ</h3>
           <div id="updPendingList"></div>
           <div class="state-box hidden" id="updPendingEmpty">
             <div class="big">មិនមាន Update រង់ចាំទេ</div>
-            <div>ពេលប្រព័ន្ធចាប់បានម៉ូឌែលថ្មីពី provider វានឹងបង្ហាញនៅទីនេះ។</div>
           </div>
 
           <div class="upd-block" style="margin-top:18px;">
-            <h3>បន្ថែមម៉ូឌែលដោយដៃ · Add manually</h3>
-            <p class="upd-note" style="margin:0 0 12px;">ប្រើពេល provider ប្រកាសម៉ូឌែលថ្មីនៅកន្លែងផ្សេង (ឧ. Suno v6.5 ក្នុង blog) ហើយប្រព័ន្ធមិនទាន់ចាប់បាន។</p>
+            <h3>បន្ថែមដោយដៃ</h3>
             <div class="ctl">
               <label class="field-label" for="updAddProvider">Provider</label>
               <select class="text-input" id="updAddProvider">
@@ -1701,24 +1696,23 @@
               </select>
             </div>
             <div class="ctl">
-              <label class="field-label" for="updAddModel">ឈ្មោះម៉ូឌែល · Model</label>
+              <label class="field-label" for="updAddModel">Model</label>
               <input class="text-input" id="updAddModel" type="text" autocomplete="off" placeholder="ឧ. chirp-v6-5" />
             </div>
             <div class="ctl">
-              <label class="field-label" for="updAddNote">កំណត់ចំណាំ · Note</label>
+              <label class="field-label" for="updAddNote">Note</label>
               <input class="text-input" id="updAddNote" type="text" autocomplete="off" placeholder="ឧ. ប្រកាសក្នុង blog របស់ Suno" />
             </div>
             <div class="alert alert-error" id="updAddError" role="alert"></div>
             <div class="alert alert-ok" id="updAddOk" role="status"></div>
-            <button class="btn btn-primary btn-block" id="updAddBtn" type="button">＋ បន្ថែម · Add</button>
+            <button class="btn btn-primary btn-block" id="updAddBtn" type="button">＋ បន្ថែម</button>
             <p class="save-status" id="updAddStatus"></p>
           </div>
 
-          <h3 class="upd-h3">ប្រវត្តិ · History</h3>
+          <h3 class="upd-h3">ប្រវត្តិ</h3>
           <div id="updHistoryList"></div>
           <div class="state-box hidden" id="updHistoryEmpty">
             <div class="big">មិនទាន់មានប្រវត្តិ</div>
-            <div>Update ដែលបានអនុម័ត អនុវត្តអូតូ ឬបដិសេធ នឹងបង្ហាញនៅទីនេះ។</div>
           </div>
         </div>
       </div>
@@ -1726,13 +1720,12 @@
       <!-- ================= TELEGRAM SETTINGS ================= -->
       <div id="panel-telegram" class="hidden">
         <div class="section-card">
-          <h2>Telegram Settings</h2>
-          <p class="desc">ភ្ជាប់ Telegram របស់ Admin — ពេលដាក់ Bot Token និង Chat ID រួច server នឹងផ្ញើដំណឹងពិតៗទៅ Telegram របស់អ្នករាល់ពេលមានអ្នក log in ទិញកញ្ចប់ ឬទទួលកាដូ។ ដើម្បីសុវត្ថិភាព server មិនផ្ញើ Bot Token ត្រឡប់មកវិញទេ — ក្រោយ Save ហើយ refresh ប្រអប់ Bot Token នឹងបង្ហាញ «•••• បានរក្សាទុក» (មិនមែនបាត់ទេ) ហើយចុច Save ពេលប្រអប់ទទេ ក៏មិនលុប Token ដែលរក្សាទុករួចដែរ។</p>
+          <h2>Telegram</h2>
 
           <div class="ctl">
             <label class="field-label" for="tgBotTokenInput">Bot Token</label>
             <input class="text-input" id="tgBotTokenInput" type="password" autocomplete="off" placeholder="123456789:AA… (បានពី @BotFather)" />
-            <p class="save-status hidden" id="tgTokenHint" style="text-align:left; color:var(--lime);">✓ Bot Token បានរក្សាទុកនៅ server រួចហើយ — server មិនបង្ហាញ Token ម្ដងទៀតទេ ដើម្បីសុវត្ថិភាព។ ទុកប្រអប់នេះទទេ ហើយចុច Save ក៏ Token មិនបាត់ដែរ។ វាយបញ្ចូល Token ថ្មី បើចង់ផ្លាស់ប្ដូរ។</p>
+            <p class="save-status hidden" id="tgTokenHint" style="text-align:left; color:var(--lime);">✓ Token បានរក្សាទុករួច · ទុកទទេក៏មិនបាត់</p>
           </div>
 
           <div class="ctl">
@@ -1741,14 +1734,14 @@
           </div>
 
           <div class="note-box">
-            របៀបយក៖ ១) បើក Telegram ស្វែងរក <b>@BotFather</b> → /newbot → បាន <b>Bot Token</b>។ ២) ឆាតជាមួយ Bot របស់អ្នកម្ដងសិន រួចបើក <b>@userinfobot</b> → បាន <b>Chat ID</b> របស់អ្នក។ ៣) ដាក់ទាំងពីរនៅទីនេះ ហើយចុច Save — server នឹងផ្ញើដំណឹងទៅ Telegram នោះ។
+            Bot Token ពី <b>@BotFather</b> (/newbot) · Chat ID ពី <b>@userinfobot</b>
           </div>
 
           <div class="alert alert-error" id="tgError" role="alert"></div>
           <div class="alert alert-ok" id="tgOk" role="status"></div>
-          <button class="btn btn-primary btn-block" id="tgSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក Telegram · Save</button>
-          <button class="btn btn-block" id="tgReloadBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកពី server ឡើងវិញ</button>
-          <button class="btn btn-block hidden" id="tgClearTokenBtn" type="button" style="margin-top:8px;">លុប Bot Token ដែលរក្សាទុក (បិទ Telegram)</button>
+          <button class="btn btn-primary btn-block" id="tgSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក</button>
+          <button class="btn btn-block" id="tgReloadBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកឡើងវិញ</button>
+          <button class="btn btn-block hidden" id="tgClearTokenBtn" type="button" style="margin-top:8px;">លុប Bot Token</button>
           <p class="save-status" id="tgStatus"></p>
         </div>
       </div>
@@ -1756,33 +1749,32 @@
       <!-- ================= EMAIL SETTINGS ================= -->
       <div id="panel-email" class="hidden">
         <div class="section-card">
-          <h2>Email Settings</h2>
-          <p class="desc">Gmail ដែល server ប្រើផ្ញើ email verify (Link + លេខកូដ 6 ខ្ទង់) ទៅអ្នកប្រើពេល Log in ចូល MovAi។ ដើម្បីសុវត្ថិភាព server មិនផ្ញើ App Password ត្រឡប់មកវិញទេ — ក្រោយ Save ហើយ refresh ប្រអប់ App Password នឹងបង្ហាញ «•••••••• បានរក្សាទុករួចហើយ» (មិនមែនបាត់ទេ) ហើយចុច Save ពេលប្រអប់ទទេ ក៏មិនលុប Password ដែលរក្សាទុករួចដែរ។</p>
+          <h2>Email</h2>
 
           <div class="note-box" id="emailVerifyBox" style="margin:0 0 18px;">
-            ស្ថានភាព Email verify · Status៖ <b id="emailVerifyState">កំពុងពិនិត្យ…</b>
+            Email verify៖ <b id="emailVerifyState">កំពុងពិនិត្យ…</b>
           </div>
 
           <div class="ctl">
-            <label class="field-label" for="emailUserInput">Gmail (អាសយដ្ឋានផ្ញើ · From address)</label>
+            <label class="field-label" for="emailUserInput">Gmail</label>
             <input class="text-input" id="emailUserInput" type="email" autocomplete="off" placeholder="sokhoeun7788@gmail.com" value="sokhoeun7788@gmail.com" />
           </div>
 
           <div class="ctl">
             <label class="field-label" for="emailPassInput">App Password (16 តួ)</label>
             <input class="text-input" id="emailPassInput" type="password" autocomplete="off" placeholder="xxxx xxxx xxxx xxxx (16 តួ ពី Google Account)" />
-            <p class="save-status hidden" id="emailPassHint" style="text-align:left; color:var(--lime);">✓ App Password បានរក្សាទុកនៅ server រួចហើយ — server មិនបង្ហាញ Password ម្ដងទៀតទេ ដើម្បីសុវត្ថិភាព។ ទុកប្រអប់នេះទទេ ហើយចុច Save ក៏ Password មិនបាត់ដែរ។ វាយបញ្ចូល Password ថ្មី បើចង់ផ្លាស់ប្ដូរ។</p>
+            <p class="save-status hidden" id="emailPassHint" style="text-align:left; color:var(--lime);">✓ Password បានរក្សាទុករួច · ទុកទទេក៏មិនបាត់</p>
           </div>
 
           <div class="note-box">
-            របៀបយក App Password៖ ១) បើក <b>Google Account</b> របស់ Gmail ខាងលើ → <b>Security</b> → បើក <b>2-Step Verification</b>។ ២) ចូល <b>App passwords</b> → បង្កើតមួយឈ្មោះ «MovAi» → Google ឲ្យលេខ <b>16 តួ</b>។ ៣) ដាក់ Gmail និងលេខ 16 តួហ្នឹងនៅទីនេះ ហើយចុច Save — server នឹងផ្ញើ email verify ពី Gmail នេះ។
+            App Password៖ <b>Google Account</b> → <b>Security</b> → <b>2-Step</b> → <b>App passwords</b> (16 តួ)
           </div>
 
           <div class="alert alert-error" id="emailError" role="alert"></div>
           <div class="alert alert-ok" id="emailOk" role="status"></div>
-          <button class="btn btn-primary btn-block" id="emailSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក Email · Save</button>
-          <button class="btn btn-block" id="emailReloadBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកពី server ឡើងវិញ</button>
-          <button class="btn btn-block hidden" id="emailClearPassBtn" type="button" style="margin-top:8px;">លុប App Password ដែលរក្សាទុក (បិទ Email verify)</button>
+          <button class="btn btn-primary btn-block" id="emailSaveBtn" type="button" style="margin-top:14px;">រក្សាទុក</button>
+          <button class="btn btn-block" id="emailReloadBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកឡើងវិញ</button>
+          <button class="btn btn-block hidden" id="emailClearPassBtn" type="button" style="margin-top:8px;">លុប App Password</button>
           <p class="save-status" id="emailStatus"></p>
         </div>
       </div>
@@ -1814,12 +1806,12 @@
     <div class="confirm-backdrop" id="delPostBackdrop">
       <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="delPostHeading" aria-describedby="delPostText">
         <h3 id="delPostHeading">លុប post នេះ?</h3>
-        <p id="delPostText">post នេះនឹងត្រូវលុបចេញពី Public feed ភ្លាមៗ ហើយអ្នកប្រើទាំងអស់នឹងលែងឃើញវាទៀត។ ការលុបនេះមិនអាចត្រឡប់វិញបានទេ។</p>
+        <p id="delPostText">លុបចេញពី Public ភ្លាម · ត្រឡប់វិញមិនបាន</p>
         <p class="confirm-title" id="delPostTitle"></p>
         <div class="confirm-status" id="delPostStatus" role="alert"></div>
         <div class="confirm-actions">
-          <button class="btn" id="delPostCancelBtn" type="button">បោះបង់ · Cancel</button>
-          <button class="btn btn-danger" id="delPostConfirmBtn" type="button">លុប · Delete</button>
+          <button class="btn" id="delPostCancelBtn" type="button">បោះបង់</button>
+          <button class="btn btn-danger" id="delPostConfirmBtn" type="button">លុប</button>
         </div>
       </div>
     </div>
@@ -1831,6 +1823,7 @@
           <div class="who">
             <div class="u-name" id="sheetName">—</div>
             <div class="u-email" id="sheetEmail">—</div>
+            <div style="margin-top:6px;"><span class="plan-badge" id="sheetPlanBadge">Free</span></div>
           </div>
           <button class="close-btn" id="sheetClose" type="button" aria-label="បិទ">✕</button>
         </div>
@@ -1841,27 +1834,27 @@
             <div class="v small u-id" id="sheetId">—</div>
           </div>
           <div class="detail-cell">
-            <div class="k">នាម · គោត្តនាម</div>
+            <div class="k">ឈ្មោះពេញ</div>
             <div class="v small" id="sheetFullName">—</div>
           </div>
           <div class="detail-cell">
-            <div class="k">Credit រូបភាព/វីដេអូ</div>
+            <div class="k">Media Credit</div>
             <div class="v" id="sheetMedia" style="color:var(--purple);">0</div>
           </div>
           <div class="detail-cell">
-            <div class="k">Credit បទចម្រៀង</div>
+            <div class="k">Song Credit</div>
             <div class="v" id="sheetSong" style="color:var(--yellow);">0</div>
           </div>
           <div class="detail-cell">
-            <div class="k">កញ្ចប់ដែលទិញ</div>
+            <div class="k">កញ្ចប់</div>
             <div class="v small" id="sheetPlan">—</div>
           </div>
           <div class="detail-cell">
-            <div class="k">សមាជិកតាំងពី</div>
+            <div class="k">តាំងពី</div>
             <div class="v small" id="sheetSince">—</div>
           </div>
           <div class="detail-cell">
-            <div class="k">IP address</div>
+            <div class="k">IP</div>
             <div class="v small" id="sheetIp">—</div>
           </div>
           <div class="detail-cell">
@@ -1869,11 +1862,11 @@
             <div class="v small" id="sheetDevice">—</div>
           </div>
           <div class="detail-cell">
-            <div class="k">ម៉ូឌែល · Model</div>
+            <div class="k">Model</div>
             <div class="v small model-code" id="sheetModel">—</div>
           </div>
           <div class="detail-cell">
-            <div class="k">ចូលតាមម៉ូឌែលនេះ · Model logins</div>
+            <div class="k">Model logins</div>
             <div class="v small" id="sheetModelLogins">—</div>
           </div>
           <div class="detail-cell">
@@ -1889,7 +1882,7 @@
             <button type="button" id="segSong">បទចម្រៀង</button>
           </div>
           <div class="grant-row">
-            <label class="field-label" for="amountInput">ចំនួនដែលត្រូវបន្ថែម</label>
+            <label class="field-label" for="amountInput">ចំនួនបន្ថែម</label>
             <input class="text-input" id="amountInput" type="number" inputmode="numeric" min="1" step="1" placeholder="ឧ. 500" />
             <div class="quick-amounts" id="quickAmounts">
               <button type="button" data-amt="100">+100</button>
@@ -1900,25 +1893,25 @@
             </div>
           </div>
           <div class="grant-row">
-            <label class="field-label" for="noteInput">មូលហេតុ / កំណត់ចំណាំ</label>
+            <label class="field-label" for="noteInput">កំណត់ចំណាំ</label>
             <textarea class="text-input" id="noteInput" placeholder="ឧ. ទិញកញ្ចប់ Monthly / ផ្ដល់សំណង…"></textarea>
           </div>
           <div class="alert alert-error" id="grantError" role="alert"></div>
           <div class="alert alert-ok" id="grantOk" role="status"></div>
           <button class="btn btn-primary btn-block" id="grantBtn" type="button" style="margin-top:14px;">ផ្ដល់ឥឡូវនេះ</button>
           <p class="grant-status" id="grantStatus"></p>
-          <button class="btn btn-block hidden" id="grantRecheckBtn" type="button" style="margin-top:10px;">ពិនិត្យលើ server ម្ដងទៀត · Re-check</button>
+          <button class="btn btn-block hidden" id="grantRecheckBtn" type="button" style="margin-top:10px;">ពិនិត្យម្ដងទៀត</button>
         </div>
 
         <div class="grant-box deduct-box">
-          <h3>កាត់ Credit · Deduct</h3>
+          <h3>កាត់ Credit</h3>
           <div class="seg" role="group" aria-label="ប្រភេទ Credit ដែលត្រូវកាត់">
             <button type="button" id="dsegMedia" class="on-media">រូបភាព / វីដេអូ</button>
             <button type="button" id="dsegSong">បទចម្រៀង</button>
           </div>
           <p class="deduct-balance" id="deductBalance"></p>
           <div class="grant-row">
-            <label class="field-label" for="deductAmountInput">ចំនួនដែលត្រូវកាត់</label>
+            <label class="field-label" for="deductAmountInput">ចំនួនកាត់</label>
             <input class="text-input" id="deductAmountInput" type="number" inputmode="numeric" min="1" step="1" placeholder="ឧ. 500" />
             <div class="quick-amounts" id="deductQuickAmounts">
               <button type="button" data-damt="100">−100</button>
@@ -1930,43 +1923,43 @@
             </div>
           </div>
           <div class="grant-row">
-            <label class="field-label" for="deductNoteInput">មូលហេតុ / កំណត់សម្គាល់</label>
+            <label class="field-label" for="deductNoteInput">កំណត់សម្គាល់</label>
             <textarea class="text-input" id="deductNoteInput" placeholder="ឧ. ខុសលក្ខខណ្ឌប្រើប្រាស់…"></textarea>
           </div>
           <div class="alert alert-error" id="deductError" role="alert"></div>
           <div class="alert alert-ok" id="deductOk" role="status"></div>
-          <button class="btn btn-danger btn-block" id="deductBtn" type="button" style="margin-top:14px;">កាត់ឥឡូវនេះ · Deduct</button>
+          <button class="btn btn-danger btn-block" id="deductBtn" type="button" style="margin-top:14px;">កាត់ឥឡូវនេះ</button>
           <p class="grant-status" id="deductStatus"></p>
-          <button class="btn btn-block hidden" id="deductRecheckBtn" type="button" style="margin-top:10px;">ពិនិត្យលើ server ម្ដងទៀត · Re-check</button>
+          <button class="btn btn-block hidden" id="deductRecheckBtn" type="button" style="margin-top:10px;">ពិនិត្យម្ដងទៀត</button>
         </div>
 
         <div class="grant-box block-model-box">
-          <h3>ប្លុកម៉ូឌែល · Block model</h3>
+          <h3>ប្លុកម៉ូឌែល</h3>
           <p class="block-model-info" id="blockModelInfo"></p>
           <div class="alert alert-error" id="blockError" role="alert"></div>
           <div class="alert alert-ok" id="blockOk" role="status"></div>
-          <button class="btn btn-danger btn-block hidden" id="blockModelBtn" type="button">ប្លុកម៉ូឌែល · Block model</button>
-          <button class="btn btn-block hidden" id="unblockModelBtn" type="button">ដកប្លុក · Unblock</button>
+          <button class="btn btn-danger btn-block hidden" id="blockModelBtn" type="button">ប្លុកម៉ូឌែល</button>
+          <button class="btn btn-block hidden" id="unblockModelBtn" type="button">ដកប្លុក</button>
           <p class="grant-status" id="blockStatus"></p>
         </div>
 
         <div class="grant-box block-model-box">
-          <h3>ប្លុក IP · Block IP</h3>
+          <h3>ប្លុក IP</h3>
           <p class="block-model-info" id="blockIpInfo"></p>
           <div class="alert alert-error" id="blockIpError" role="alert"></div>
           <div class="alert alert-ok" id="blockIpOk" role="status"></div>
-          <button class="btn btn-danger btn-block hidden" id="blockIpBtn" type="button">ប្លុក IP · Block IP</button>
-          <button class="btn btn-block hidden" id="unblockIpBtn" type="button">ដកប្លុក · Unblock</button>
+          <button class="btn btn-danger btn-block hidden" id="blockIpBtn" type="button">ប្លុក IP</button>
+          <button class="btn btn-block hidden" id="unblockIpBtn" type="button">ដកប្លុក</button>
           <p class="grant-status" id="blockIpStatus"></p>
         </div>
 
         <div class="grant-box block-model-box">
-          <h3>ប្លុក Gmail · Block Gmail</h3>
+          <h3>ប្លុក Gmail</h3>
           <p class="block-model-info" id="blockEmailInfo"></p>
           <div class="alert alert-error" id="blockEmailError" role="alert"></div>
           <div class="alert alert-ok" id="blockEmailOk" role="status"></div>
-          <button class="btn btn-danger btn-block hidden" id="blockEmailBtn" type="button">ប្លុក Gmail · Block Gmail</button>
-          <button class="btn btn-block hidden" id="unblockEmailBtn" type="button">ដកប្លុក · Unblock</button>
+          <button class="btn btn-danger btn-block hidden" id="blockEmailBtn" type="button">ប្លុក Gmail</button>
+          <button class="btn btn-block hidden" id="unblockEmailBtn" type="button">ដកប្លុក</button>
           <p class="grant-status" id="blockEmailStatus"></p>
         </div>
       </div>
@@ -1976,12 +1969,12 @@
     <div class="confirm-backdrop" id="blockModelBackdrop">
       <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="blockModelHeading" aria-describedby="blockModelText">
         <h3 id="blockModelHeading">ប្លុកម៉ូឌែលនេះ?</h3>
-        <p id="blockModelText">ឧបករណ៍ទាំងអស់ដែលប្រើម៉ូឌែលនេះនឹងចូលប្រើ MovAi លែងបានទៀត រហូតដល់អ្នកចុច «ដកប្លុក» វិញ។</p>
+        <p id="blockModelText">ចូល MovAi លែងបាន រហូតដល់ដកប្លុក</p>
         <p class="confirm-title model-code" id="blockModelTitle"></p>
         <div class="confirm-status" id="blockModelConfirmStatus" role="alert"></div>
         <div class="confirm-actions">
-          <button class="btn" id="blockModelCancelBtn" type="button">បោះបង់ · Cancel</button>
-          <button class="btn btn-danger" id="blockModelConfirmBtn" type="button">ប្លុក · Block</button>
+          <button class="btn" id="blockModelCancelBtn" type="button">បោះបង់</button>
+          <button class="btn btn-danger" id="blockModelConfirmBtn" type="button">ប្លុក</button>
         </div>
       </div>
     </div>
@@ -1990,12 +1983,12 @@
     <div class="confirm-backdrop" id="blockIpBackdrop">
       <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="blockIpHeading" aria-describedby="blockIpText">
         <h3 id="blockIpHeading">ប្លុក IP នេះ?</h3>
-        <p id="blockIpText">ការតភ្ជាប់ទាំងអស់ពី IP នេះនឹងចូលប្រើ MovAi លែងបានទៀត រហូតដល់អ្នកចុច «ដកប្លុក» វិញ។</p>
+        <p id="blockIpText">ចូល MovAi លែងបាន រហូតដល់ដកប្លុក</p>
         <p class="confirm-title model-code" id="blockIpTitle"></p>
         <div class="confirm-status" id="blockIpConfirmStatus" role="alert"></div>
         <div class="confirm-actions">
-          <button class="btn" id="blockIpCancelBtn" type="button">បោះបង់ · Cancel</button>
-          <button class="btn btn-danger" id="blockIpConfirmBtn" type="button">ប្លុក · Block</button>
+          <button class="btn" id="blockIpCancelBtn" type="button">បោះបង់</button>
+          <button class="btn btn-danger" id="blockIpConfirmBtn" type="button">ប្លុក</button>
         </div>
       </div>
     </div>
@@ -2004,12 +1997,12 @@
     <div class="confirm-backdrop" id="blockEmailBackdrop">
       <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="blockEmailHeading" aria-describedby="blockEmailText">
         <h3 id="blockEmailHeading">ប្លុក Gmail នេះ?</h3>
-        <p id="blockEmailText">គណនី Gmail នេះនឹងចូលប្រើ MovAi លែងបានទៀត រហូតដល់អ្នកចុច «ដកប្លុក» វិញ។</p>
+        <p id="blockEmailText">ចូល MovAi លែងបាន រហូតដល់ដកប្លុក</p>
         <p class="confirm-title" id="blockEmailTitle" style="word-break:break-all;"></p>
         <div class="confirm-status" id="blockEmailConfirmStatus" role="alert"></div>
         <div class="confirm-actions">
-          <button class="btn" id="blockEmailCancelBtn" type="button">បោះបង់ · Cancel</button>
-          <button class="btn btn-danger" id="blockEmailConfirmBtn" type="button">ប្លុក · Block</button>
+          <button class="btn" id="blockEmailCancelBtn" type="button">បោះបង់</button>
+          <button class="btn btn-danger" id="blockEmailConfirmBtn" type="button">ប្លុក</button>
         </div>
       </div>
     </div>
@@ -2021,7 +2014,7 @@
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         </div>
         <h3 id="pushPromptTitle">បើកដំណឹងពីទូរស័ព្ទ?</h3>
-        <p>ទទួលដំណឹងពិតៗលោតលើទូរស័ព្ទរបស់អ្នកភ្លាមៗ — ពេលមានអ្នក log in ទិញកញ្ចប់ ឬទទួលកាដូ — ទោះបីអ្នកមិនបានបើក Admin app ក៏ដោយ។</p>
+        <p>ដំណឹងលោតលើទូរស័ព្ទភ្លាមៗ ពេលមានអ្នក log in / ទិញ / ទទួលកាដូ</p>
         <div class="push-prompt-actions">
           <button class="btn" id="pushDeclineBtn" type="button">មិនទាន់ទេ</button>
           <button class="btn btn-primary" id="pushAcceptBtn" type="button">បើកដំណឹង</button>
@@ -2066,6 +2059,7 @@
         var sheetMedia = document.getElementById("sheetMedia");
         var sheetSong = document.getElementById("sheetSong");
         var sheetPlan = document.getElementById("sheetPlan");
+        var sheetPlanBadge = document.getElementById("sheetPlanBadge");
         var sheetSince = document.getElementById("sheetSince");
         var sheetIp = document.getElementById("sheetIp");
         var sheetDevice = document.getElementById("sheetDevice");
@@ -2480,7 +2474,7 @@
           loading = true;
           if (!opts.silent) setLoading(true);
           var stop = opts.silent ? function () {} : makeTicker(loadingTimer, function (s) {
-            return s + " វិនាទី — server អាចចំណាយពេលបន្តិចពេលបើកដំបូង";
+            return s + " វិនាទី";
           });
           return api("/api/admin/users")
             .then(function (data) {
@@ -2495,6 +2489,8 @@
                   sheetMedia.textContent = fmtNum(fresh.media);
                   sheetSong.textContent = fmtNum(fresh.song);
                   sheetPlan.textContent = fresh.plan;
+            setSheetPlanBadge(fresh.isPro || isPaidPlan(fresh.plan));
+                  setSheetPlanBadge(fresh.isPro || isPaidPlan(fresh.plan));
                   sheetIp.textContent = fresh.lastIp || "—";
                   sheetDevice.textContent = fresh.device || "—";
                   sheetModel.textContent = fresh.model || "—";
@@ -2546,7 +2542,47 @@
           usersTbody.innerHTML = "";
           usersCards.innerHTML = "";
 
-          list.forEach(function (u) {
+          /* Group accounts that share one phone model into one block:
+             same model code = same phone, even with different Gmails.
+             Multi-account groups get a header row in the table and a
+             swipeable block in the cards view (2 cards visible). */
+          var groups = [];
+          var byKey = {};
+          list.forEach(function (u, idx) {
+            var m = u.model ? String(u.model).trim() : "";
+            var key = (m && m !== "—") ? "m:" + m.toLowerCase() : "solo:" + idx;
+            var g = byKey[key];
+            if (!g) {
+              g = { model: key.indexOf("m:") === 0 ? m : "", users: [] };
+              byKey[key] = g;
+              groups.push(g);
+            }
+            g.users.push(u);
+          });
+          var grouped = [];
+          groups.forEach(function (g) {
+            var track = null;
+            if (g.model && g.users.length > 1) {
+              var gtr = document.createElement("tr");
+              gtr.className = "group-head-row";
+              gtr.innerHTML = "<td colspan='11'><span class='model-code'></span></td>";
+              gtr.querySelector(".model-code").textContent = g.model + " · " + g.users.length;
+              usersTbody.appendChild(gtr);
+              var block = document.createElement("div");
+              block.className = "model-group-block";
+              block.innerHTML =
+                "<div class='mg-head'><span class='model-code'></span><span class='mg-count'></span></div>" +
+                "<div class='mg-track'></div>";
+              block.querySelector(".model-code").textContent = g.model;
+              block.querySelector(".mg-count").textContent = g.users.length;
+              track = block.querySelector(".mg-track");
+              usersCards.appendChild(block);
+            }
+            g.users.forEach(function (u) { grouped.push({ u: u, track: track }); });
+          });
+
+          grouped.forEach(function (item) {
+            var u = item.u;
             var tr = document.createElement("tr");
             tr.tabIndex = 0;
             tr.setAttribute("role", "button");
@@ -2595,17 +2631,10 @@
             card.innerHTML =
               "<span class='row1'><span class='u-name'></span><span class='plan-badge'></span></span>" +
               "<span class='u-email' style='display:block;'></span>" +
-              "<span class='u-id' style='display:block;margin-top:2px;'></span>" +
+              "<span class='row-meta'><span class='u-id'></span><span class='u-model model-code'></span></span>" +
               "<span class='row2'>" +
                 "<span class='credit-chip chip-media'><span class='dot'></span></span>" +
                 "<span class='credit-chip chip-song'><span class='dot'></span></span>" +
-                "<span class='u-since'></span>" +
-              "</span>" +
-              "<span class='row3'>" +
-                "<span class='u-ip'></span>" +
-                "<span class='u-device'></span>" +
-                "<span class='u-modellogins'></span>" +
-                "<span class='u-seen'></span>" +
               "</span>";
             card.querySelector(".u-name").textContent = u.name;
             card.querySelector(".u-id").textContent = "ID · " + (u.id || "—");
@@ -2615,19 +2644,17 @@
             card.querySelector(".u-email").textContent = u.email;
             card.querySelector(".chip-media").appendChild(document.createTextNode(fmtNum(u.media)));
             card.querySelector(".chip-song").appendChild(document.createTextNode(fmtNum(u.song)));
-            card.querySelector(".u-since").textContent = fmtDate(u.since);
-            card.querySelector(".u-ip").textContent = "IP · " + ipLabel(u);
-            card.querySelector(".u-device").textContent = "Device · " + deviceLabel(u);
-            var mlEl = card.querySelector(".u-modellogins");
-            if (u.model) {
-              mlEl.textContent = "Model logins · " + (u.modelLogins !== undefined ? fmtNum(u.modelLogins) : "—") +
-                (u.modelBlocked ? " · ត្រូវបានប្លុក" : "");
-            } else {
-              mlEl.style.display = "none";
+            var umEl = card.querySelector(".u-model");
+            if (u.model) umEl.textContent = String(u.model);
+            else umEl.style.display = "none";
+            if (u.modelBlocked) {
+              var mbEl = document.createElement("span");
+              mbEl.className = "lock-chip locked";
+              mbEl.textContent = "ត្រូវបានប្លុក";
+              card.querySelector(".row-meta").appendChild(mbEl);
             }
-            card.querySelector(".u-seen").textContent = "Last seen · " + fmtDateTime(u.lastSeen);
             card.addEventListener("click", function () { openSheet(u); });
-            usersCards.appendChild(card);
+            (item.track || usersCards).appendChild(card);
           });
 
           var has = list.length > 0;
@@ -2637,6 +2664,12 @@
         }
 
         /* ---------- Detail / grant sheet ---------- */
+        function setSheetPlanBadge(isPro) {
+          if (!sheetPlanBadge) return;
+          sheetPlanBadge.textContent = isPro ? "Pro" : "Free";
+          sheetPlanBadge.classList.toggle("pro", !!isPro);
+        }
+
         function openSheet(u) {
           selectedUser = u;
           sheetName.textContent = u.name;
@@ -2647,6 +2680,7 @@
           sheetMedia.textContent = fmtNum(u.media);
           sheetSong.textContent = fmtNum(u.song);
           sheetPlan.textContent = u.plan;
+          setSheetPlanBadge(u.isPro);
           sheetSince.textContent = fmtDate(u.since);
           sheetIp.textContent = ipLabel(u);
           sheetDevice.textContent = u.device || "—";
@@ -3943,7 +3977,7 @@
             var toggleBtn = document.createElement("button");
             toggleBtn.type = "button";
             toggleBtn.className = "btn";
-            toggleBtn.textContent = acc.enabled === false ? "បើក · Enable" : "បិទ · Disable";
+            toggleBtn.textContent = acc.enabled === false ? "បើក" : "បិទ";
             toggleBtn.addEventListener("click", function () { cldToggleAccount(acc, toggleBtn); });
             actions.appendChild(toggleBtn);
             var resetBtn = document.createElement("button");
@@ -3957,7 +3991,7 @@
               var delBtn = document.createElement("button");
               delBtn.type = "button";
               delBtn.className = "btn btn-reject";
-              delBtn.textContent = "លុប · Delete";
+              delBtn.textContent = "លុប";
               cldArmDelete(delBtn, acc);
               actions.appendChild(delBtn);
             }
@@ -4555,11 +4589,11 @@
         function setSmoothUI() {
           smoothToggle.checked = smoothAuto;
           smoothState.textContent = smoothAuto
-            ? "បើក (ON) — MovAi អនុវត្ត Smooth ឲ្យអ្នកប្រើទាំងអស់"
-            : "បិទ (OFF) — អ្នកប្រើគ្រប់គ្រង Smooth ខ្លួនឯងក្នុង website";
+            ? "បើក (ON)"
+            : "បិទ (OFF)";
           if (smoothSavedLine) {
             smoothSavedLine.textContent = smoothSavedKnown
-              ? "ស្ថានភាពដែលបានរក្សាទុកនៅ server៖ Smooth " + (smoothAuto ? "ON" : "OFF")
+              ? "Server៖ Smooth " + (smoothAuto ? "ON" : "OFF")
               : "";
           }
         }
@@ -5549,7 +5583,7 @@
           sorted.forEach(function (r) {
             var card = document.createElement("div");
             card.className = "req-card";
-            var badgeText = r.status === "pending" ? "រង់ចាំអនុម័ត" : r.status === "approved" ? "បានអនុម័ត" : "បានបដិសេធ";
+            var badgeText = r.status === "pending" ? "រង់ចាំ" : r.status === "approved" ? "អនុម័ត" : "បដិសេធ";
             card.innerHTML =
               "<div class='req-head'>" +
                 "<div class='req-who'><div class='u-email'></div><div class='req-buyer-id'></div></div>" +
@@ -5557,11 +5591,10 @@
               "</div>" +
               "<div class='req-plan'></div>" +
               "<div class='req-meta'></div>" +
-              "<div class='req-fulltime'></div>" +
               "<div class='req-receipt'></div>" +
               (r.status === "pending"
                 ? "<div class='req-actions'>" +
-                    "<button class='btn btn-primary req-approve' type='button'>✓ អនុម័ត · ផ្ដល់ Credit</button>" +
+                    "<button class='btn btn-primary req-approve' type='button'>✓ អនុម័ត</button>" +
                     "<button class='btn btn-reject req-reject' type='button'>✕ បដិសេធ</button>" +
                   "</div>"
                 : "") +
@@ -5579,11 +5612,8 @@
             if (buyerId) buyerIdEl.textContent = "ID: " + buyerId; else buyerIdEl.remove();
             var planLine = String(r.plan) + (r.amount !== undefined && r.amount !== null && r.amount !== "" ? " · $" + r.amount : "");
             card.querySelector(".req-plan").textContent = planLine;
-            var typeLabel = r.type === "song" ? "Credit បទចម្រៀង (លឿង)" : "Credit រូបភាព/វីដេអូ (ស្វាយ)";
+            var typeLabel = r.type === "song" ? "Song Credit" : "Media Credit";
             card.querySelector(".req-meta").textContent = typeLabel + (r.createdAt ? " · " + fmtDate(r.createdAt) : "");
-            var fullTimeEl = card.querySelector(".req-fulltime");
-            var fullTime = fmtFullDateTime(r.createdAt);
-            if (fullTime) fullTimeEl.textContent = "🕐 " + fullTime + " · ម៉ោងភ្នំពេញ (Phnom Penh)"; else fullTimeEl.remove();
             var receiptBox = card.querySelector(".req-receipt");
             if (r.receiptUrl) {
               var thumbLink = document.createElement("a");
@@ -5605,12 +5635,12 @@
               receiptBtn.href = r.receiptUrl;
               receiptBtn.target = "_blank";
               receiptBtn.rel = "noopener noreferrer";
-              receiptBtn.textContent = "🧾 មើលវិក្កយបត្រ · View receipt";
+              receiptBtn.textContent = "🧾 វិក្កយបត្រ";
               receiptBox.appendChild(receiptBtn);
             } else {
               var noReceipt = document.createElement("div");
               noReceipt.className = "req-receipt-none";
-              noReceipt.textContent = "គ្មានវិក្កយបត្រ · No receipt";
+              noReceipt.textContent = "គ្មានវិក្កយបត្រ";
               receiptBox.appendChild(noReceipt);
             }
             purchasesList.appendChild(card);
@@ -5760,8 +5790,8 @@
 
         function setPostPublicUI() {
           postPublicState.textContent = postPublicToggle.checked
-            ? "Public — គ្រប់គ្នាមើលឃើញក្នុង Public feed"
-            : "Private — មិនបង្ហាញក្នុង Public feed ទេ";
+            ? "Public"
+            : "Private";
         }
         postPublicToggle.addEventListener("change", setPostPublicUI);
         setPostPublicUI();
@@ -5917,7 +5947,7 @@
               var delBtn = document.createElement("button");
               delBtn.type = "button";
               delBtn.className = "live-post-del";
-              delBtn.textContent = "លុប · Delete";
+              delBtn.textContent = "លុប";
               delBtn.setAttribute("aria-label", "លុប post «" + String(p.title || "") + "»");
               delBtn.addEventListener("click", function () {
                 askDeletePost(String(postId), String(p.title || "—"), delBtn);
@@ -6257,16 +6287,16 @@
           form.className = "pkg-edit-form";
           form.innerHTML =
             "<div class='ctl'>" +
-              "<label class='field-label'>តម្លៃលក់ · Price ($)</label>" +
+              "<label class='field-label'>តម្លៃលក់ ($)</label>" +
               "<input class='text-input' type='number' min='0' step='0.01' inputmode='decimal' data-pkg-price='" + p.id + "'>" +
             "</div>" +
             "<div class='ctl'>" +
-              "<label class='field-label'>តម្លៃដើម · Original price ($)</label>" +
+              "<label class='field-label'>តម្លៃដើម ($)</label>" +
               "<input class='text-input' type='number' min='0' step='0.01' inputmode='decimal' data-pkg-original='" + p.id + "'>" +
             "</div>" +
             "<div class='pkg-edit-preview'></div>" +
             "<div class='pkg-edit-actions'>" +
-              "<button type='button' class='btn btn-primary' data-act='save'>រក្សាទុក · Save</button>" +
+              "<button type='button' class='btn btn-primary' data-act='save'>រក្សាទុក</button>" +
               "<button type='button' class='btn btn-cancel' data-act='cancel'>បោះបង់</button>" +
             "</div>" +
             "<div class='pkg-edit-status' role='status'></div>";
@@ -6515,12 +6545,12 @@
         var notifications = [];
         var notifLoading = false;
         var NOTIF_LABELS = {
-          login: "ចូលប្រើ · Log in",
-          purchase: "ទិញកញ្ចប់ · Purchase",
-          gift: "កាដូ · Gift",
-          grant: "ផ្ដល់ Credit · Grant",
-          deduct: "កាត់ Credit · Deduct",
-          other: "ដំណឹង · Info"
+          login: "Log in",
+          purchase: "ទិញកញ្ចប់",
+          gift: "កាដូ",
+          grant: "+ Credit",
+          deduct: "− Credit",
+          other: "ដំណឹង"
         };
 
         /* Purchase notifications carry the package facts either as
@@ -6665,11 +6695,10 @@
                   "<div class='notif-pkg-price'></div>" +
                   "<div class='notif-pkg-credit'></div>" +
                   "<div class='notif-buyer'></div>" +
-                  "<div class='notif-fulltime'></div>" +
                 "</div>" +
                 "<span class='fail-time'></span>";
               var decEl = row.querySelector(".notif-decision");
-              if (n.decision === "approved") { decEl.textContent = "✅ អនុម័តរួច"; decEl.classList.add("approved"); }
+              if (n.decision === "approved") { decEl.textContent = "✅ អនុម័ត"; decEl.classList.add("approved"); }
               else if (n.decision === "rejected") { decEl.textContent = "❌ បដិសេធ"; decEl.classList.add("rejected"); }
               else decEl.remove();
               var pkgNameEl = row.querySelector(".notif-pkg-name");
@@ -6694,27 +6723,17 @@
                   "<div class='notif-meta'><span class='notif-chip'></span></div>" +
                   "<div class='notif-title'></div>" +
                   "<div class='notif-detail'></div>" +
-                  "<div class='notif-who'></div>" +
-                  "<div class='notif-fulltime'></div>" +
                 "</div>" +
                 "<span class='fail-time'></span>";
               var titleText = String(n.title || NOTIF_LABELS[n.type] || "ដំណឹង");
               row.querySelector(".notif-title").textContent = titleText;
               var detailEl = row.querySelector(".notif-detail");
               if (n.detail) detailEl.textContent = String(n.detail); else detailEl.remove();
-              var whoEl = row.querySelector(".notif-who");
-              if (n.who) whoEl.textContent = String(n.who); else whoEl.remove();
             }
             var chip = row.querySelector(".notif-chip");
             chip.textContent = NOTIF_LABELS[n.type] || n.type;
             chip.classList.add(n.type);
             row.querySelector(".fail-time").textContent = fmtDateTime(n.time);
-            var notifFullEl = row.querySelector(".notif-fulltime");
-            var notifFull = fmtFullDateTime(n.time);
-            if (notifFullEl) {
-              if (notifFull) notifFullEl.textContent = "🕐 " + notifFull + " · ម៉ោងភ្នំពេញ (Phnom Penh)";
-              else notifFullEl.remove();
-            }
             function activate() { markNotificationRead(n); }
             row.addEventListener("click", activate);
             row.addEventListener("keydown", function (e) {
@@ -6852,7 +6871,7 @@
           if (!popupToggle) return;
           var on = popupEnabled();
           popupToggle.checked = on;
-          if (popupState) popupState.textContent = on ? "បើក (ON) — ដំណឹងថ្មីលោតក្នុង App" : "បិទ (OFF)";
+          if (popupState) popupState.textContent = on ? "បើក (ON)" : "បិទ (OFF)";
         }
         function hideNotifPopup() {
           if (notifPopupTimer) { clearTimeout(notifPopupTimer); notifPopupTimer = null; }
@@ -7081,9 +7100,9 @@
           return source === "manual" ? "បន្ថែមដោយដៃ · Manual" : "ចាប់អូតូ · Auto-detect";
         }
         function updStatusLabel(status) {
-          if (status === "approved") return "បានអនុម័ត · Approved";
-          if (status === "auto-applied") return "អនុវត្តអូតូ · Auto-applied";
-          if (status === "rejected") return "មិនចាំបាច់ Update · Rejected";
+          if (status === "approved") return "អនុម័ត";
+          if (status === "auto-applied") return "អូតូ";
+          if (status === "rejected") return "មិនចាំបាច់";
           return "រង់ចាំ · Pending";
         }
         function updByLabel(by) {
@@ -7126,7 +7145,7 @@
             var approveBtn = document.createElement("button");
             approveBtn.type = "button";
             approveBtn.className = "btn btn-primary";
-            approveBtn.textContent = "✓ អនុម័ត · Approve";
+            approveBtn.textContent = "✓ អនុម័ត";
             var rejectBtn = document.createElement("button");
             rejectBtn.type = "button";
             rejectBtn.className = "btn btn-danger";
@@ -7155,7 +7174,7 @@
 
         function applyUpdatesData(data) {
           updItems = Array.isArray(data.updates) ? data.updates : [];
-          updLastCheck.textContent = "ពិនិត្យចុងក្រោយ · Last check: " + fmtDateTime(data.lastCheckAt) +
+          updLastCheck.textContent = "ពិនិត្យចុងក្រោយ៖ " + fmtDateTime(data.lastCheckAt) +
             (data.lastCheckResult ? " · " + String(data.lastCheckResult) : "");
           /* Never stomp settings the admin is in the middle of editing. */
           if (!updSettingsDirty && data.settings) {
@@ -8224,14 +8243,14 @@
           if (mode === "unsupported") {
             pushToggle.checked = false;
             pushState.textContent = "មិនគាំទ្រទេ";
-            pushNote.textContent = "Browser / ទូរស័ព្ទនេះមិនគាំទ្រ Web Push ទេ — តែ «ដំណឹងលោតក្នុង App» ខាងក្រោមនៅដំណើរការធម្មតា ហើយដំណឹងទាំងអស់នៅតែមានក្នុងផ្នែក «ដំណឹង» និង Telegram ដដែល។";
+            pushNote.textContent = "ទូរស័ព្ទនេះមិនគាំទ្រ Web Push ទេ";
           } else if (mode === "denied") {
             pushToggle.checked = false;
             pushState.textContent = "ត្រូវបានបិទនៅ Browser";
-            pushNote.textContent = "ដំណឹងត្រូវបានបិទ (Blocked) — ក្នុងទិដ្ឋភាព App នេះ ប្រអប់សុំសិទ្ធិដំណឹងលោតមិនចេញទេ ទើបបើក Web Push មិនបាន។ សូមប្រើ «ដំណឹងលោតក្នុង App» ខាងក្រោមជំនួស (ដំណឹងថ្មីលោតក្នុង App ភ្លាមៗ) ឬបើកទំព័រនេះក្នុង Chrome រួចអនុញ្ញាត Notifications។";
+            pushNote.textContent = "Notifications ត្រូវបានបិទ (Blocked) — ប្រើ «ដំណឹងលោតក្នុង App» ជំនួស";
           } else if (mode === "on") {
             pushToggle.checked = true;
-            pushState.textContent = "បើក (ON) — ទទួលដំណឹងលើទូរស័ព្ទ";
+            pushState.textContent = "បើក (ON)";
           } else {
             pushToggle.checked = false;
             pushState.textContent = "បិទ (OFF)";
