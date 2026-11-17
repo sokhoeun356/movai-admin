@@ -1370,6 +1370,45 @@
           <p class="note-box" style="margin-top:12px;">ចំណាំ៖ ពេល Key មួយអស់ credit ឬដល់ limit server នឹងអូតូប្ដូរទៅ Key បន្ទាប់ដោយខ្លួនឯង — មិនបាច់ប្ដូរដោយដៃទេ។</p>
           <p class="save-status" id="keysStatus" style="text-align:left;"></p>
           <div id="keysList"></div>
+
+          <!-- Cloudinary — same accounts as the drawer Cloudinary section -->
+          <div class="key-card" id="keysCldCard">
+            <div class="kc-head">
+              <span class="kc-name">Cloudinary</span>
+              <span class="key-status none" id="keysCldCount">មិនទាន់ផ្ទុក</span>
+            </div>
+            <p style="color:var(--text-dim);font-size:13.5px;margin:0 0 14px;">គណនី Cloudinary សម្រាប់ផ្ទុកបទចម្រៀង (Magic Hour WAV → MP3)។ ពេលគណនីមួយអស់ Credit server នឹងប្ដូរទៅគណនីបន្ទាប់ដោយអូតូ — ដូចផ្នែក Cloudinary ក្នុង menu ដែរ។</p>
+            <div class="ctl">
+              <label class="field-label" for="keysCldCloudNameInput">Cloud Name</label>
+              <input class="text-input" id="keysCldCloudNameInput" type="text" autocomplete="off" placeholder="ឧ. bg08mr3i" />
+            </div>
+            <div class="ctl">
+              <label class="field-label" for="keysCldApiKeyInput">API Key</label>
+              <input class="text-input" id="keysCldApiKeyInput" type="text" autocomplete="off" placeholder="ឧ. 836343377168915" />
+            </div>
+            <div class="ctl">
+              <label class="field-label" for="keysCldApiSecretInput">API Secret</label>
+              <input class="text-input" id="keysCldApiSecretInput" type="password" autocomplete="off" placeholder="API Secret របស់គណនីនោះ (ត្រូវគ្នានឹង API Key ខាងលើ)" />
+            </div>
+            <div class="alert alert-error" id="keysCldError" role="alert"></div>
+            <div class="alert alert-ok" id="keysCldOk" role="status"></div>
+            <button class="btn btn-primary btn-block" id="keysCldSaveBtn" type="button" style="margin-top:14px;">រក្សាទុកគណនី · Save</button>
+            <button class="btn btn-block" id="keysCldRefreshBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកបញ្ជីឡើងវិញ</button>
+            <p class="save-status" id="keysCldStatus"></p>
+            <h3 style="margin:20px 0 4px; font-size:15.5px;">គណនីទាំងអស់ · All accounts</h3>
+            <div class="cld-legend" aria-label="អត្ថន័យភ្លើងស្ថានភាព">
+              <span class="cld-leg"><span class="cld-light green"></span>ដំណើរការល្អ</span>
+              <span class="cld-leg"><span class="cld-light red"></span>មានបញ្ហា (Key/Secret ខុស ឬអស់ Credit)</span>
+              <span class="cld-leg"><span class="cld-light yellow"></span>បញ្ហាផ្សេង / Credit ជិតអស់ / ពិនិត្យមិនបាន</span>
+              <span class="cld-leg"><span class="cld-light grey"></span>បានបិទ</span>
+              <span class="cld-leg"><span class="cld-light blue"></span>Credit នៅសល់</span>
+            </div>
+            <div id="keysCldList"></div>
+            <div class="state-box hidden" id="keysCldEmpty">
+              <div class="big">មិនទាន់មានគណនី Cloudinary ទេ</div>
+              <div>ដាក់ Cloud Name, API Key និង API Secret ខាងលើ ហើយចុច Save ដើម្បីបន្ថែមគណនីដំបូង។</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3535,6 +3574,7 @@
           if (name === "telegram") loadTelegramSettings();
           if (name === "email") loadEmailSettings();
           if (name === "cloudinary") loadCloudinaryAccounts();
+          if (name === "keys") loadCloudinaryAccounts();
         }
         drawerItems.forEach(function (btn) {
           btn.addEventListener("click", function () {
@@ -3612,8 +3652,41 @@
         var cldCloudNameInput = document.getElementById("cldCloudNameInput");
         var cldApiKeyInput = document.getElementById("cldApiKeyInput");
         var cldApiSecretInput = document.getElementById("cldApiSecretInput");
+        /* Same Cloudinary accounts, mirrored inside the API Keys panel
+           (below Groq). Both places share cldAccounts + the same
+           endpoints; every render / alert updates both. */
+        var keysCldError = document.getElementById("keysCldError");
+        var keysCldOk = document.getElementById("keysCldOk");
+        var keysCldStatus = document.getElementById("keysCldStatus");
+        var keysCldList = document.getElementById("keysCldList");
+        var keysCldEmpty = document.getElementById("keysCldEmpty");
+        var keysCldCount = document.getElementById("keysCldCount");
+        var keysCldSaveBtn = document.getElementById("keysCldSaveBtn");
+        var keysCldRefreshBtn = document.getElementById("keysCldRefreshBtn");
+        var keysCldCloudNameInput = document.getElementById("keysCldCloudNameInput");
+        var keysCldApiKeyInput = document.getElementById("keysCldApiKeyInput");
+        var keysCldApiSecretInput = document.getElementById("keysCldApiSecretInput");
         var cldLoading = false;
         var cldAccounts = [];
+
+        function cldShowError(msg) {
+          showAlert(cldError, msg);
+          if (keysCldError) showAlert(keysCldError, msg);
+        }
+        function cldShowOk(msg) {
+          showAlert(cldOk, msg);
+          if (keysCldOk) showAlert(keysCldOk, msg);
+        }
+        function cldHideAlerts() {
+          hideAlert(cldError);
+          hideAlert(cldOk);
+          if (keysCldError) hideAlert(keysCldError);
+          if (keysCldOk) hideAlert(keysCldOk);
+        }
+        function cldSetStatus(msg) {
+          if (cldStatus) cldStatus.textContent = msg;
+          if (keysCldStatus) keysCldStatus.textContent = msg;
+        }
 
         function cldLightClass(acc) {
           var s = acc && acc.status;
@@ -3650,10 +3723,7 @@
             isFinite(Number(acc.creditsRemaining));
         }
 
-        function renderCloudinaryAccounts() {
-          cldList.innerHTML = "";
-          cldEmpty.classList.toggle("hidden", cldAccounts.length > 0);
-          cldAccounts.forEach(function (acc) {
+        function buildCldCard(acc) {
             var card = document.createElement("div");
             card.className = "cld-card";
 
@@ -3760,27 +3830,53 @@
               actions.appendChild(delBtn);
             }
             card.appendChild(actions);
+            return card;
+        }
 
-            cldList.appendChild(card);
+        function renderCloudinaryAccounts() {
+          if (cldList) cldList.innerHTML = "";
+          if (keysCldList) keysCldList.innerHTML = "";
+          if (cldEmpty) cldEmpty.classList.toggle("hidden", cldAccounts.length > 0);
+          if (keysCldEmpty) keysCldEmpty.classList.toggle("hidden", cldAccounts.length > 0);
+          if (keysCldCount) {
+            if (cldAccounts.length > 0) {
+              keysCldCount.textContent = cldAccounts.length + (cldAccounts.length === 1 ? " គណនី" : " គណនី");
+              keysCldCount.className = "key-status has";
+            } else {
+              keysCldCount.textContent = "មិនទាន់មានគណនី";
+              keysCldCount.className = "key-status none";
+            }
+          }
+          cldAccounts.forEach(function (acc) {
+            if (cldList) cldList.appendChild(buildCldCard(acc));
+            if (keysCldList) keysCldList.appendChild(buildCldCard(acc));
           });
+        }
+
+        function makeCldTicker(template) {
+          var stops = [];
+          if (cldStatus) stops.push(makeTicker(cldStatus, template));
+          if (keysCldStatus) stops.push(makeTicker(keysCldStatus, template));
+          return function () { stops.forEach(function (s) { s(); }); cldSetStatus(""); };
         }
 
         function loadCloudinaryAccounts() {
           if (cldLoading) return Promise.resolve();
           cldLoading = true;
-          hideAlert(cldError);
+          cldHideAlerts();
           if (cldRefreshBtn) cldRefreshBtn.disabled = true;
-          var stop = makeTicker(cldStatus, function (s) {
+          if (keysCldRefreshBtn) keysCldRefreshBtn.disabled = true;
+          var stop = makeCldTicker(function (s) {
             return "កំពុងផ្ទុកគណនី Cloudinary ពី server… " + s + " វិនាទី";
           });
           return api("/api/admin/cloudinary-accounts")
             .then(function (data) {
               stop();
               cldLoading = false;
-              cldStatus.textContent = "";
               if (cldRefreshBtn) cldRefreshBtn.disabled = false;
+              if (keysCldRefreshBtn) keysCldRefreshBtn.disabled = false;
               if (data && data.ok === false) {
-                showAlert(cldError, "ផ្ទុកគណនី Cloudinary មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                cldShowError("ផ្ទុកគណនី Cloudinary មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
                 return;
               }
               cldAccounts = (data && Array.isArray(data.accounts)) ? data.accounts : [];
@@ -3789,66 +3885,71 @@
             .catch(function (err) {
               stop();
               cldLoading = false;
-              cldStatus.textContent = "";
               if (cldRefreshBtn) cldRefreshBtn.disabled = false;
+              if (keysCldRefreshBtn) keysCldRefreshBtn.disabled = false;
               if (err.code === "AUTH") { handleSectionError(err, null); return; }
-              showAlert(cldError, "ផ្ទុកគណនី Cloudinary ពី server មិនបាន៖ " + err.message);
+              cldShowError("ផ្ទុកគណនី Cloudinary ពី server មិនបាន៖ " + err.message);
             });
         }
 
         if (cldRefreshBtn) {
           cldRefreshBtn.addEventListener("click", function () { loadCloudinaryAccounts(); });
         }
+        if (keysCldRefreshBtn) {
+          keysCldRefreshBtn.addEventListener("click", function () { loadCloudinaryAccounts(); });
+        }
 
-        if (cldSaveBtn) {
-          cldSaveBtn.addEventListener("click", function () {
-            hideAlert(cldError);
-            hideAlert(cldOk);
-            var cloudName = cldCloudNameInput.value.trim();
-            var apiKey = cldApiKeyInput.value.trim();
-            var apiSecret = cldApiSecretInput.value.trim();
-            if (!cloudName || !apiKey || !apiSecret) {
-              showAlert(cldError, "ត្រូវដាក់ទាំង 3 — Cloud Name, API Key និង API Secret។");
-              (!cloudName ? cldCloudNameInput : (!apiKey ? cldApiKeyInput : cldApiSecretInput)).focus();
-              return;
-            }
-            cldSaveBtn.disabled = true;
-            var stop = makeTicker(cldStatus, function (s) {
-              return "កំពុងរក្សាទុក និងពិនិត្យគណនី… " + s + " វិនាទី";
-            });
-            api("/api/admin/cloudinary-accounts", {
-              method: "POST",
-              body: { cloudName: cloudName, apiKey: apiKey, apiSecret: apiSecret }
-            })
-              .then(function (data) {
-                stop();
-                cldStatus.textContent = "";
-                cldSaveBtn.disabled = false;
-                if (data && data.ok === false) {
-                  showAlert(cldError, "រក្សាទុកមិនបាន៖ " + (data.error || data.message || "server បដិសេធ — សូមពិនិត្យ Key/Secret ម្ដងទៀត។"));
-                  return;
-                }
-                cldCloudNameInput.value = "";
-                cldApiKeyInput.value = "";
-                cldApiSecretInput.value = "";
-                showAlert(cldOk, "បានរក្សាទុកគណនី Cloudinary «" + cloudName + "» រួចរាល់។");
-                loadCloudinaryAccounts();
-              })
-              .catch(function (err) {
-                stop();
-                cldStatus.textContent = "";
-                cldSaveBtn.disabled = false;
-                if (err.code === "AUTH") { handleSectionError(err, null); return; }
-                showAlert(cldError, "រក្សាទុកមិនបាន៖ " + err.message);
-              });
+        function cldSaveFrom(nameInput, keyInput, secretInput, btn) {
+          cldHideAlerts();
+          var cloudName = nameInput.value.trim();
+          var apiKey = keyInput.value.trim();
+          var apiSecret = secretInput.value.trim();
+          if (!cloudName || !apiKey || !apiSecret) {
+            cldShowError("ត្រូវដាក់ទាំង 3 — Cloud Name, API Key និង API Secret។");
+            (!cloudName ? nameInput : (!apiKey ? keyInput : secretInput)).focus();
+            return;
+          }
+          if (btn) btn.disabled = true;
+          if (cldSaveBtn) cldSaveBtn.disabled = true;
+          if (keysCldSaveBtn) keysCldSaveBtn.disabled = true;
+          var stop = makeCldTicker(function (s) {
+            return "កំពុងរក្សាទុក និងពិនិត្យគណនី… " + s + " វិនាទី";
           });
+          api("/api/admin/cloudinary-accounts", {
+            method: "POST",
+            body: { cloudName: cloudName, apiKey: apiKey, apiSecret: apiSecret }
+          })
+            .then(function (data) {
+              stop();
+              if (cldSaveBtn) cldSaveBtn.disabled = false;
+              if (keysCldSaveBtn) keysCldSaveBtn.disabled = false;
+              if (data && data.ok === false) {
+                cldShowError("រក្សាទុកមិនបាន៖ " + (data.error || data.message || "server បដិសេធ — សូមពិនិត្យ Key/Secret ម្ដងទៀត។"));
+                return;
+              }
+              [cldCloudNameInput, cldApiKeyInput, cldApiSecretInput, keysCldCloudNameInput, keysCldApiKeyInput, keysCldApiSecretInput].forEach(function (el) { if (el) el.value = ""; });
+              cldShowOk("បានរក្សាទុកគណនី Cloudinary «" + cloudName + "» រួចរាល់។");
+              loadCloudinaryAccounts();
+            })
+            .catch(function (err) {
+              stop();
+              if (cldSaveBtn) cldSaveBtn.disabled = false;
+              if (keysCldSaveBtn) keysCldSaveBtn.disabled = false;
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              cldShowError("រក្សាទុកមិនបាន៖ " + err.message);
+            });
+        }
+        if (cldSaveBtn) {
+          cldSaveBtn.addEventListener("click", function () { cldSaveFrom(cldCloudNameInput, cldApiKeyInput, cldApiSecretInput, cldSaveBtn); });
+        }
+        if (keysCldSaveBtn) {
+          keysCldSaveBtn.addEventListener("click", function () { cldSaveFrom(keysCldCloudNameInput, keysCldApiKeyInput, keysCldApiSecretInput, keysCldSaveBtn); });
         }
 
         function cldToggleAccount(acc, btn) {
-          hideAlert(cldError);
-          hideAlert(cldOk);
+          cldHideAlerts();
           btn.disabled = true;
-          var stop = makeTicker(cldStatus, function (s) {
+          var stop = makeCldTicker(function (s) {
             return "កំពុង" + (acc.enabled === false ? "បើក" : "បិទ") + "គណនី… " + s + " វិនាទី";
           });
           api("/api/admin/cloudinary-accounts/toggle", {
@@ -3857,29 +3958,26 @@
           })
             .then(function (data) {
               stop();
-              cldStatus.textContent = "";
               if (data && data.ok === false) {
                 btn.disabled = false;
-                showAlert(cldError, "ប្ដូរស្ថានភាពមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                cldShowError("ប្ដូរស្ថានភាពមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
                 return;
               }
-              showAlert(cldOk, "បាន" + (acc.enabled === false ? "បើក" : "បិទ") + "គណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់។");
+              cldShowOk("បាន" + (acc.enabled === false ? "បើក" : "បិទ") + "គណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់។");
               loadCloudinaryAccounts();
             })
             .catch(function (err) {
               stop();
-              cldStatus.textContent = "";
               btn.disabled = false;
               if (err.code === "AUTH") { handleSectionError(err, null); return; }
-              showAlert(cldError, "ប្ដូរស្ថានភាពមិនបាន៖ " + err.message);
+              cldShowError("ប្ដូរស្ថានភាពមិនបាន៖ " + err.message);
             });
         }
 
         function cldResetAccount(acc, btn) {
-          hideAlert(cldError);
-          hideAlert(cldOk);
+          cldHideAlerts();
           btn.disabled = true;
-          var stop = makeTicker(cldStatus, function (s) {
+          var stop = makeCldTicker(function (s) {
             return "កំពុង Reset គណនី… " + s + " វិនាទី";
           });
           api("/api/admin/cloudinary-accounts/reset", {
@@ -3888,21 +3986,19 @@
           })
             .then(function (data) {
               stop();
-              cldStatus.textContent = "";
               if (data && data.ok === false) {
                 btn.disabled = false;
-                showAlert(cldError, "Reset មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                cldShowError("Reset មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
                 return;
               }
-              showAlert(cldOk, "បាន Reset គណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់ — ស្ថានភាពអស់ Credit ត្រូវបានសម្អាត។");
+              cldShowOk("បាន Reset គណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់ — ស្ថានភាពអស់ Credit ត្រូវបានសម្អាត។");
               loadCloudinaryAccounts();
             })
             .catch(function (err) {
               stop();
-              cldStatus.textContent = "";
               btn.disabled = false;
               if (err.code === "AUTH") { handleSectionError(err, null); return; }
-              showAlert(cldError, "Reset មិនបាន៖ " + err.message);
+              cldShowError("Reset មិនបាន៖ " + err.message);
             });
         }
 
@@ -3913,8 +4009,7 @@
           var timer = null;
           var label = btn.textContent;
           btn.addEventListener("click", function () {
-            hideAlert(cldError);
-            hideAlert(cldOk);
+            cldHideAlerts();
             if (!armed) {
               armed = true;
               btn.textContent = "ចុចម្ដងទៀតដើម្បីបញ្ជាក់ការលុប";
@@ -3928,29 +4023,27 @@
             armed = false;
             btn.disabled = true;
             btn.textContent = "កំពុងលុប…";
-            var stop = makeTicker(cldStatus, function (s) {
+            var stop = makeCldTicker(function (s) {
               return "កំពុងលុបគណនី… " + s + " វិនាទី";
             });
             api("/api/admin/cloudinary-accounts?id=" + encodeURIComponent(acc.id), { method: "DELETE" })
               .then(function (data) {
                 stop();
-                cldStatus.textContent = "";
                 if (data && data.ok === false) {
                   btn.disabled = false;
                   btn.textContent = label;
-                  showAlert(cldError, "លុបមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                  cldShowError("លុបមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
                   return;
                 }
-                showAlert(cldOk, "បានលុបគណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់។");
+                cldShowOk("បានលុបគណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់។");
                 loadCloudinaryAccounts();
               })
               .catch(function (err) {
                 stop();
-                cldStatus.textContent = "";
                 btn.disabled = false;
                 btn.textContent = label;
                 if (err.code === "AUTH") { handleSectionError(err, null); return; }
-                showAlert(cldError, "លុបមិនបាន៖ " + err.message);
+                cldShowError("លុបមិនបាន៖ " + err.message);
               });
           });
         }
@@ -8094,6 +8187,7 @@
         function loadControlData() {
           loadSettings();
           loadKeys();
+          loadCloudinaryAccounts();
           loadProviders();
           loadPurchases();
           loadStats();
