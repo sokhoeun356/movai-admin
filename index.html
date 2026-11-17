@@ -166,6 +166,11 @@
         color: var(--text-dim); white-space: nowrap;
       }
       .plan-badge.paid { color: var(--lime); border-color: rgba(173,220,41,.45); background: var(--green-bg); }
+      .plan-badge.pro {
+        color: #fff; background: #DC2626; border-color: #DC2626;
+        font-weight: 800; letter-spacing: .02em;
+        box-shadow: 0 0 0 1px rgba(220,38,38,.25), 0 2px 8px rgba(220,38,38,.35);
+      }
       .u-since { color: var(--text-dim); font-size: 13.5px; white-space: nowrap; }
       .u-ip, .u-device, .u-seen, .u-modellogins { color: var(--text-dim); font-size: 13.5px; white-space: nowrap; }
       .chev { color: var(--text-faint); }
@@ -906,6 +911,42 @@
         border-radius: 999px; background: var(--red); color: #fff;
         font-size: 10.5px; font-weight: 800; line-height: 1;
         border: 2px solid #16191D;
+      }
+
+      /* ---------- Dock row + Add-API floating button ---------- */
+      .dock-wrap {
+        position: fixed; z-index: 36;
+        left: 0; right: 0;
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        display: flex; align-items: center; justify-content: center;
+        gap: 10px; padding: 0 8px;
+        pointer-events: none;
+      }
+      .dock-wrap .dock-bar {
+        position: static; left: auto; bottom: auto; transform: none;
+        flex: 0 0 auto; pointer-events: auto;
+      }
+      .fab-add-api {
+        pointer-events: auto;
+        flex: 0 0 auto;
+        width: 56px; height: 56px; min-height: 56px; padding: 0;
+        border-radius: 50%;
+        background: var(--lime); border: 1px solid rgba(173,220,41,.65);
+        color: var(--lime-dark);
+        font-size: 34px; font-weight: 800; line-height: 1;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 10px 26px rgba(0,0,0,.55), 0 0 14px rgba(173,220,41,.35);
+      }
+      .fab-add-api:hover { filter: brightness(1.07); }
+      .fab-add-api:active { transform: scale(.94); }
+      @media (max-width: 400px) {
+        .dock-wrap { gap: 8px; }
+        .fab-add-api { width: 50px; height: 50px; min-height: 50px; font-size: 30px; }
+      }
+      @media (max-width: 360px) {
+        .dock-wrap { padding: 0 4px; }
+        .dock-wrap .dock-item .di-icon { width: 42px; height: 42px; }
+        .fab-add-api { width: 48px; height: 48px; min-height: 48px; font-size: 28px; }
       }
 
       .mode-block { border-top: 1px solid var(--line-soft); padding-top: 16px; margin-top: 16px; }
@@ -1746,7 +1787,8 @@
         </div>
       </div>
 
-      <!-- ================= BOTTOM DOCK BAR (iPhone-style) ================= -->
+      <!-- ================= BOTTOM DOCK BAR (iPhone-style) + ADD-API FAB ================= -->
+      <div class="dock-wrap">
       <nav class="dock-bar" id="dockBar" aria-label="របារមីនុយខាងក្រោម">
         <button type="button" class="dock-item" data-section="post" aria-label="ផុស · Post" title="ផុស · Post">
           <span class="di-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span>
@@ -1764,6 +1806,8 @@
           <span class="di-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
         </button>
       </nav>
+      <button type="button" class="fab-add-api" id="fabAddApi" aria-label="បន្ថែម API · Add API" title="បន្ថែម API · Add API">+</button>
+      </div>
     </div>
 
     <!-- ================= DELETE POST CONFIRM ================= -->
@@ -2165,6 +2209,43 @@
           return undefined;
         }
 
+        /* Parse an expiry value (epoch seconds/ms, numeric string, or
+           date string) to epoch-ms. Returns null when there is no
+           usable expiry — callers treat "no expiry recorded" as
+           still valid when a paid plan is present, and only an
+           expiry that is actually in the past marks it expired. */
+        function expiryMs(v) {
+          if (v === undefined || v === null || v === "") return null;
+          if (typeof v === "number" && isFinite(v)) {
+            if (v <= 0) return null;
+            return v < 100000000000 ? v * 1000 : v;
+          }
+          if (typeof v === "string") {
+            var t = v.trim();
+            if (!t) return null;
+            if (/^\d+(\.\d+)?$/.test(t)) {
+              var n = Number(t);
+              if (!isFinite(n) || n <= 0) return null;
+              return n < 100000000000 ? n * 1000 : n;
+            }
+            var d = Date.parse(t);
+            return isNaN(d) ? null : d;
+          }
+          if (v instanceof Date) {
+            var dv = v.getTime();
+            return isNaN(dv) ? null : dv;
+          }
+          return null;
+        }
+        function expiryStillValid(v) {
+          var ms = expiryMs(v);
+          return ms === null || ms > Date.now();
+        }
+        function expiryFrom(obj, names) {
+          if (!obj || typeof obj !== "object") return undefined;
+          return pick(obj, names);
+        }
+
         function normalizeUser(raw) {
           var u = raw || {};
           /* Unwrap a nested account record if the server nests it. */
@@ -2192,6 +2273,28 @@
           if (typeof planRaw === "string" && planRaw) planStr = planRaw;
           else if (planRaw && typeof planRaw === "object") planStr = planRaw.name || planRaw.id || planRaw.title || "Free";
           else if (planRaw !== undefined && planRaw !== null && planRaw !== "") planStr = String(planRaw);
+          var expiryNames = ["planExpiresAt", "plan_expires_at", "planExpiry", "plan_expiry", "planExpires", "premiumExpiresAt", "premium_expires_at", "subscriptionExpiresAt", "subscription_expires_at", "expiresAt", "expires_at", "expiry", "validUntil", "valid_until", "endsAt", "endAt"];
+          var planExpiresRaw = pick(u, expiryNames);
+          if (planExpiresRaw === undefined && planRaw && typeof planRaw === "object") planExpiresRaw = expiryFrom(planRaw, expiryNames);
+          var songPlanRaw = pick(u, ["songPlan", "song_plan", "songPackage", "song_package", "songTier", "song_tier"]);
+          var songPlanStr = "";
+          if (typeof songPlanRaw === "string" && songPlanRaw) songPlanStr = songPlanRaw;
+          else if (songPlanRaw && typeof songPlanRaw === "object") songPlanStr = songPlanRaw.name || songPlanRaw.id || songPlanRaw.title || "";
+          var songExpiryNames = ["songPlanExpiresAt", "song_plan_expires_at", "songPlanExpiry", "song_plan_expiry", "songPlanExpires", "songExpiresAt", "song_expires_at"].concat(expiryNames);
+          var songPlanExpiresRaw = pick(u, songExpiryNames.slice(0, 7));
+          if (songPlanExpiresRaw === undefined && songPlanRaw && typeof songPlanRaw === "object") songPlanExpiresRaw = expiryFrom(songPlanRaw, expiryNames);
+          /* Pro = a paid plan that is still valid (plan is not Free
+             and its expiry, when recorded, is in the future), OR a
+             song plan that is still valid. Expired plans fall back
+             to Free. */
+          var hasPaidPlan = isPaidPlan(planStr) && expiryStillValid(planExpiresRaw);
+          var songPlanPresent = false;
+          if (songPlanRaw === true) songPlanPresent = true;
+          else if (typeof songPlanRaw === "string" && songPlanRaw) songPlanPresent = isPaidPlan(songPlanRaw);
+          else if (songPlanRaw && typeof songPlanRaw === "object") songPlanPresent = songPlanStr ? isPaidPlan(songPlanStr) : Object.keys(songPlanRaw).length > 0;
+          var hasSongPlan = songPlanPresent && expiryStillValid(songPlanExpiresRaw);
+          var proFlag = truthyVal(pick(u, ["isPro", "is_pro", "isPremium", "is_premium", "pro", "premium"]));
+          var isProUser = hasPaidPlan || hasSongPlan || (proFlag && expiryStillValid(planExpiresRaw));
           var fullName = pick(u, ["name", "displayName", "display_name"]) || "";
           var first = pick(u, ["firstName", "first_name", "givenName", "given_name"]);
           var last = pick(u, ["lastName", "last_name", "familyName", "family_name", "surname"]);
@@ -2215,6 +2318,10 @@
             media: mediaVal !== undefined ? mediaVal : 0,
             song: songVal !== undefined ? songVal : 0,
             plan: planStr,
+            planExpiresAt: planExpiresRaw,
+            songPlan: songPlanStr,
+            songPlanExpiresAt: songPlanExpiresRaw,
+            isPro: isProUser,
             since: pick(u, ["memberSince", "member_since", "createdAt", "created_at", "joinedAt", "since"]),
             lastIp: pick(u, ["lastIp", "last_ip", "ip", "ipAddress", "ip_address"]) || "",
             countryCode: pick(u, ["countryCode", "country_code", "countrycode", "cc"]) || "",
@@ -2462,8 +2569,8 @@
             tr.children[3].firstChild.appendChild(document.createTextNode(fmtNum(u.media)));
             tr.children[4].firstChild.appendChild(document.createTextNode(fmtNum(u.song)));
             var pb = tr.children[5].firstChild;
-            pb.textContent = u.plan;
-            if (isPaidPlan(u.plan)) pb.classList.add("paid");
+            if (u.isPro) { pb.textContent = "Pro"; pb.classList.add("pro"); }
+            else { pb.textContent = "Free"; }
             tr.children[6].firstChild.textContent = fmtDate(u.since);
             tr.children[7].firstChild.textContent = ipLabel(u);
             var devSpan = tr.children[8].firstChild;
@@ -2503,8 +2610,8 @@
             card.querySelector(".u-name").textContent = u.name;
             card.querySelector(".u-id").textContent = "ID · " + (u.id || "—");
             var cpb = card.querySelector(".plan-badge");
-            cpb.textContent = u.plan;
-            if (isPaidPlan(u.plan)) cpb.classList.add("paid");
+            if (u.isPro) { cpb.textContent = "Pro"; cpb.classList.add("pro"); }
+            else { cpb.textContent = "Free"; }
             card.querySelector(".u-email").textContent = u.email;
             card.querySelector(".chip-media").appendChild(document.createTextNode(fmtNum(u.media)));
             card.querySelector(".chip-song").appendChild(document.createTextNode(fmtNum(u.song)));
@@ -3608,6 +3715,15 @@
             window.scrollTo(0, 0);
           });
         });
+        /* Floating "+" button beside the dock: jumps straight to the
+           API Keys panel so a new key can be added without the drawer. */
+        var fabAddApi = document.getElementById("fabAddApi");
+        if (fabAddApi) {
+          fabAddApi.addEventListener("click", function () {
+            showSection("keys");
+            window.scrollTo(0, 0);
+          });
+        }
         function syncDockActive(name) {
           dockItems.forEach(function (b) {
             b.classList.toggle("on", b.getAttribute("data-section") === name);
