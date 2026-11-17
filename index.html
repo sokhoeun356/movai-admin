@@ -574,6 +574,23 @@
       .key-card .kc-tools { margin-bottom: 8px; }
       .key-card .kc-copyall { min-height: 2.4rem; padding: 7px 14px; font-size: 13.5px; }
 
+      /* ---------- Collapsible API sections (collapsed by default) ----------
+         Only the API name + a red ▼ show; tap the name/arrow to expand. */
+      .api-collapsible .kc-head, .api-collapsible .api-toggle { cursor: pointer; }
+      .api-collapsible .kc-head:focus-visible, .api-collapsible .api-toggle:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; border-radius: 8px; }
+      .kc-arrow {
+        flex: 0 0 auto; color: var(--red); font-size: 16px; font-weight: 800; line-height: 1;
+        transition: transform .18s ease; user-select: none; -webkit-user-select: none;
+      }
+      .api-collapsible.open .kc-arrow { transform: rotate(180deg); }
+      .api-collapsible .api-body { display: none; }
+      .api-collapsible.open .api-body { display: block; }
+      .api-collapsible:not(.open) .kc-head { margin-bottom: 0; }
+      .api-collapsible:not(.open) .count-badge,
+      .api-collapsible:not(.open) .key-status { display: none; }
+      .api-collapsible .api-toggle { display: flex; align-items: center; gap: 8px; }
+      .api-collapsible .api-toggle .kc-arrow { margin-left: auto; }
+
       /* ---------- Cloudinary accounts ---------- */
       #cldList, #keysCldList { max-height: 460px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-right: 2px; }
       .cld-card {
@@ -1497,12 +1514,14 @@
           <div id="keysList"></div>
 
           <!-- Cloudinary — same accounts as the drawer Cloudinary section -->
-          <div class="key-card" id="keysCldCard">
-            <div class="kc-head">
+          <div class="key-card api-collapsible" id="keysCldCard">
+            <div class="kc-head" role="button" tabindex="0" aria-expanded="false">
               <span class="kc-name">Cloudinary</span>
               <span class="count-badge hidden" id="keysCldCountBadge"></span>
               <span class="key-status none" id="keysCldCount">មិនទាន់ផ្ទុក</span>
+              <span class="kc-arrow" aria-hidden="true">▼</span>
             </div>
+            <div class="api-body">
             <p style="color:var(--text-dim);font-size:13.5px;margin:0 0 14px;">ផ្ទុកបទចម្រៀង · អស់ Credit → ប្ដូរអូតូ</p>
             <div class="ctl">
               <label class="field-label" for="keysCldCloudNameInput">Cloud Name</label>
@@ -1533,6 +1552,7 @@
             <div class="state-box hidden" id="keysCldEmpty">
               <div class="big">មិនទាន់មានគណនី Cloudinary ទេ</div>
             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1548,8 +1568,9 @@
 
       <!-- ================= CLOUDINARY ACCOUNTS ================= -->
       <div id="panel-cloudinary" class="hidden">
-        <div class="section-card">
-          <h2>Cloudinary <span class="count-badge hidden" id="cldCountBadge"></span></h2>
+        <div class="section-card api-collapsible">
+          <h2 class="api-toggle" role="button" tabindex="0" aria-expanded="false">Cloudinary <span class="count-badge hidden" id="cldCountBadge"></span><span class="kc-arrow" aria-hidden="true">▼</span></h2>
+          <div class="api-body">
           <p class="desc">ពិនិត្យ Key/Secret មុន Save · អស់ Credit → ប្ដូរអូតូ</p>
 
           <div class="ctl">
@@ -1582,6 +1603,7 @@
           <div id="cldList"></div>
           <div class="state-box hidden" id="cldEmpty">
             <div class="big">មិនទាន់មានគណនី Cloudinary ទេ</div>
+          </div>
           </div>
         </div>
       </div>
@@ -4647,10 +4669,24 @@
         var EYE_OFF_SVG = "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M9.88 9.88a3 3 0 1 0 4.24 4.24'/><path d='M10.73 5.08A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a13.2 13.2 0 0 1-1.67 2.68'/><path d='M6.61 6.61A13.5 13.5 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.39-1.61'/><line x1='2' y1='2' x2='22' y2='22'/></svg>";
         var COPY_SVG = "<svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='9' y='9' width='12' height='12' rx='2'/><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/></svg>";
 
+        /* API sections are collapsed by default: only the API name + a red
+           ▼ show. Tapping the name/arrow expands; tapping again collapses. */
+        function makeApiCollapsible(toggleEl, container) {
+          if (!toggleEl || !container) return;
+          function toggle() {
+            var open = container.classList.toggle("open");
+            toggleEl.setAttribute("aria-expanded", open ? "true" : "false");
+          }
+          toggleEl.addEventListener("click", toggle);
+          toggleEl.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+          });
+        }
+
         function buildKeyCards() {
           KEY_PROVIDERS.forEach(function (p) {
             var card = document.createElement("div");
-            card.className = "key-card";
+            card.className = "key-card api-collapsible";
             var epHtml = p.endpoint
               ? "<input class='text-input kc-ep' type='url' placeholder='Endpoint / Gateway URL (សម្រាប់ Suno)…' aria-label='Suno endpoint' />"
               : "";
@@ -4658,7 +4694,8 @@
               ? "<a class='kc-link' href='" + p.link + "' target='_blank' rel='noopener'></a>"
               : "";
             card.innerHTML =
-              "<div class='kc-head'><span class='kc-name'></span><span class='kc-count count-badge hidden'></span><span class='key-status none'>មិនទាន់មាន key</span></div>" +
+              "<div class='kc-head' role='button' tabindex='0' aria-expanded='false'><span class='kc-name'></span><span class='kc-count count-badge hidden'></span><span class='key-status none'>មិនទាន់មាន key</span><span class='kc-arrow' aria-hidden='true'>▼</span></div>" +
+              "<div class='api-body'>" +
               linkHtml +
               "<div class='kc-list'></div>" +
               "<div class='kc-tools hidden'><button class='btn kc-copyall' type='button'>Copy All · ចម្លង Key ទាំងអស់</button></div>" +
@@ -4667,7 +4704,8 @@
                 "<input class='text-input kc-key' type='password' placeholder='វាយ key ថ្មី…' autocomplete='off' />" +
                 "<button class='btn btn-primary kc-save' type='button'>+ បន្ថែម Key</button>" +
               "</div>" +
-              "<div class='kc-status'></div>";
+              "<div class='kc-status'></div>" +
+              "</div>";
             card.querySelector(".kc-name").textContent = p.name;
             var linkEl = card.querySelector(".kc-link");
             if (linkEl) linkEl.textContent = p.linkLabel || "យក Key ↗";
@@ -4687,6 +4725,7 @@
             keyState[p.id] = { count: 0, last4s: [] };
             refs.saveBtn.addEventListener("click", function () { saveKey(p, refs); });
             refs.copyAllBtn.addEventListener("click", function () { copyAllKeys(p, refs); });
+            makeApiCollapsible(card.querySelector(".kc-head"), card);
             /* Bulk paste: this is a single-line input, so the browser would
                strip the newlines from a multi-key paste (e.g. text copied by
                Copy All). Capture the clipboard text first and rewrite it
@@ -8364,6 +8403,8 @@
         }
 
         buildKeyCards();
+        makeApiCollapsible(document.querySelector("#keysCldCard .kc-head"), document.getElementById("keysCldCard"));
+        makeApiCollapsible(document.querySelector("#panel-cloudinary .api-toggle"), document.querySelector("#panel-cloudinary .section-card"));
         buildModeBlocks();
         buildModels();
         applyAppearanceToControls();
