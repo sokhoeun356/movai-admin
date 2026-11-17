@@ -424,11 +424,16 @@
       .save-status { font-size: 13.5px; color: var(--text-dim); margin-top: 10px; min-height: 1.2em; text-align: center; }
 
       /* ---------- Keys & providers ---------- */
+      .count-badge {
+        font-size: 13px; font-weight: 800; color: var(--lime);
+        background: var(--green-bg); border: 1px solid rgba(173,220,41,.4);
+        border-radius: 999px; padding: 1px 9px; white-space: nowrap;
+      }
       .key-card {
         background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
-        padding: 15px; margin-bottom: 12px;
+        padding: 12px; margin-bottom: 10px;
       }
-      .key-card .kc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+      .key-card .kc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
       .key-card .kc-name { font-weight: 800; font-size: 15.5px; flex: 1; min-width: 0; }
       .key-status { font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
       .key-status.has { color: var(--lime); background: var(--green-bg); border: 1px solid rgba(173,220,41,.4); }
@@ -443,18 +448,19 @@
         min-height: 0; padding: 4px 2px;
       }
       .key-card .kc-link:hover { text-decoration: underline; }
-      .key-card .kc-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 11px; max-height: 242px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+      .key-card .kc-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; max-height: 120px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
       .key-card .kc-list:empty { display: none; }
       .kc-item {
-        display: flex; align-items: center; gap: 10px;
+        display: flex; align-items: center; gap: 8px;
         background: var(--card-2); border: 1px solid var(--line); border-radius: 9px;
-        padding: 5px 6px 5px 13px;
+        padding: 3px 4px 3px 10px;
       }
-      .kc-item .kc-item-label { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; letter-spacing: .02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .kc-item .kc-item-label { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; letter-spacing: .02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .kc-item .kc-exh { color: var(--red); font-size: 12px; font-weight: 800; white-space: nowrap; }
       .kc-item .kc-del {
-        flex: 0 0 auto; width: 36px; height: 36px; border-radius: 8px;
+        flex: 0 0 auto; width: 30px; height: 30px; min-height: 30px; border-radius: 8px;
         background: transparent; border: 1px solid rgba(255,107,107,.45);
-        color: var(--red); font-size: 15px; font-weight: 700; cursor: pointer; line-height: 1;
+        color: var(--red); font-size: 14px; font-weight: 700; cursor: pointer; line-height: 1;
       }
       .kc-item .kc-del:disabled { opacity: .45; cursor: default; }
       .kc-item .kc-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -468,7 +474,7 @@
       .kc-dot.blocked { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,.5); }
       .kc-dot.error { background: var(--yellow); box-shadow: 0 0 6px rgba(245,197,24,.5); }
       .kc-item .kc-act {
-        flex: 0 0 auto; width: 36px; height: 36px; min-height: 36px; border-radius: 8px;
+        flex: 0 0 auto; width: 30px; height: 30px; min-height: 30px; border-radius: 8px;
         background: transparent; border: 1px solid var(--line);
         color: var(--text-dim); cursor: pointer; line-height: 1; padding: 0;
         display: inline-flex; align-items: center; justify-content: center;
@@ -476,16 +482,17 @@
       .kc-item .kc-act:hover { color: var(--text); border-color: var(--text-faint); }
       .kc-item .kc-act.on { color: var(--lime); border-color: rgba(173,220,41,.5); }
       .kc-item .kc-act:disabled { opacity: .45; cursor: default; }
-      .key-card .kc-tools { margin-bottom: 11px; }
+      .key-card .kc-tools { margin-bottom: 8px; }
       .key-card .kc-copyall { min-height: 2.4rem; padding: 7px 14px; font-size: 13.5px; }
 
       /* ---------- Cloudinary accounts ---------- */
+      #cldList, #keysCldList { max-height: 460px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-right: 2px; }
       .cld-card {
         background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
-        padding: 15px; margin-bottom: 12px;
+        padding: 10px 12px; margin-bottom: 8px;
       }
-      .cld-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-      .cld-name { font-weight: 800; font-size: 15.5px; flex: 1; min-width: 0; word-break: break-all; }
+      .cld-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+      .cld-name { font-weight: 800; font-size: 14px; flex: 1; min-width: 0; word-break: break-all; }
       .cld-light { width: 12px; height: 12px; border-radius: 50%; flex: none; background: #565D64; }
       .cld-light.green { background: #22C55E; box-shadow: 0 0 7px rgba(34,197,94,.6); }
       .cld-light.red { background: var(--red); box-shadow: 0 0 7px rgba(255,107,107,.55); }
@@ -496,19 +503,19 @@
         font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 10px; white-space: nowrap;
         color: var(--lime); background: var(--green-bg); border: 1px solid rgba(173,220,41,.4);
       }
-      .cld-meta { color: var(--text-dim); font-size: 13.5px; margin-top: 2px; word-break: break-all; }
+      .cld-meta { color: var(--text-dim); font-size: 12.5px; margin-top: 1px; word-break: break-all; }
       .cld-meta b { color: var(--text); }
       .cld-meta .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
-      .cld-credits { font-size: 15px; font-weight: 800; margin-top: 7px; }
+      .cld-credits { font-size: 13.5px; font-weight: 800; margin-top: 5px; }
       .cld-credits .cld-credits-num { color: #38BDF8; }
-      .cld-status-text { font-size: 13.5px; font-weight: 700; margin-top: 4px; }
+      .cld-status-text { font-size: 12.5px; font-weight: 700; margin-top: 3px; }
       .cld-status-text.green { color: #22C55E; }
       .cld-status-text.red { color: #FFB3B3; }
       .cld-status-text.yellow { color: var(--yellow); }
       .cld-status-text.grey { color: var(--text-faint); }
-      .cld-err { color: #FFB3B3; font-size: 13px; margin-top: 5px; word-break: break-word; }
-      .cld-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 13px; }
-      .cld-actions .btn { flex: 1 1 110px; padding: 8px 12px; font-size: 13.5px; }
+      .cld-err { color: #FFB3B3; font-size: 12.5px; margin-top: 4px; word-break: break-word; }
+      .cld-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 9px; }
+      .cld-actions .btn { flex: 1 1 110px; padding: 6px 10px; font-size: 13px; min-height: 2.3rem; }
       .cld-actions .btn[disabled] { opacity: .55; cursor: default; }
       .cld-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 4px 0 16px; color: var(--text-dim); font-size: 13px; }
       .cld-legend .cld-leg { display: inline-flex; align-items: center; gap: 6px; }
@@ -1369,12 +1376,19 @@
           <p class="desc">បញ្ចូល key របស់ provider នីមួយៗនៅទីនេះ — provider មួយអាចដាក់ key បានច្រើន។ Key រក្សាទុកនៅ server តែប៉ុណ្ណោះ អ្នកប្រើ MovAi មើលមិនឃើញទេ។ ទំព័រនេះបង្ហាញតែ 4 តួចុងក្រោយនៃ key នីមួយៗ — ចុចរូបភ្នែកដើម្បីមើល key ពេញ ចុច Copy ដើម្បីចម្លង key នោះ ឬ Copy All ដើម្បីចម្លងទាំងអស់។</p>
           <p class="note-box" style="margin-top:12px;">ចំណាំ៖ ពេល Key មួយអស់ credit ឬដល់ limit server នឹងអូតូប្ដូរទៅ Key បន្ទាប់ដោយខ្លួនឯង — មិនបាច់ប្ដូរដោយដៃទេ។</p>
           <p class="save-status" id="keysStatus" style="text-align:left;"></p>
+          <div class="cld-legend" aria-label="អត្ថន័យភ្លើងស្ថានភាព Key">
+            <span class="cld-leg"><span class="kc-dot ok"></span>ដំណើរការ</span>
+            <span class="cld-leg"><span class="kc-dot blocked"></span>អស់ · Exhausted</span>
+            <span class="cld-leg"><span class="kc-dot error"></span>បញ្ហាផ្សេង</span>
+            <span class="cld-leg"><span class="kc-dot"></span>មិនទាន់ដឹង (មិនទាន់ប្រើ)</span>
+          </div>
           <div id="keysList"></div>
 
           <!-- Cloudinary — same accounts as the drawer Cloudinary section -->
           <div class="key-card" id="keysCldCard">
             <div class="kc-head">
               <span class="kc-name">Cloudinary</span>
+              <span class="count-badge hidden" id="keysCldCountBadge"></span>
               <span class="key-status none" id="keysCldCount">មិនទាន់ផ្ទុក</span>
             </div>
             <p style="color:var(--text-dim);font-size:13.5px;margin:0 0 14px;">គណនី Cloudinary សម្រាប់ផ្ទុកបទចម្រៀង (Magic Hour WAV → MP3)។ ពេលគណនីមួយអស់ Credit server នឹងប្ដូរទៅគណនីបន្ទាប់ដោយអូតូ — ដូចផ្នែក Cloudinary ក្នុង menu ដែរ។</p>
@@ -1425,7 +1439,7 @@
       <!-- ================= CLOUDINARY ACCOUNTS ================= -->
       <div id="panel-cloudinary" class="hidden">
         <div class="section-card">
-          <h2>Cloudinary</h2>
+          <h2>Cloudinary <span class="count-badge hidden" id="cldCountBadge"></span></h2>
           <p class="desc">គណនី Cloudinary សម្រាប់ផ្ទុកបទចម្រៀង (Magic Hour WAV → MP3)។ ដាក់គណនីថ្មីនៅទីនេះ — server នឹងពិនិត្យ Key/Secret មុនរក្សាទុក ហើយពេលគណនីមួយអស់ Credit វានឹងប្ដូរទៅគណនីបន្ទាប់ដោយអូតូ។</p>
 
           <div class="ctl">
@@ -3574,7 +3588,7 @@
           if (name === "telegram") loadTelegramSettings();
           if (name === "email") loadEmailSettings();
           if (name === "cloudinary") loadCloudinaryAccounts();
-          if (name === "keys") loadCloudinaryAccounts();
+          if (name === "keys") { loadCloudinaryAccounts(); loadKeys(); loadProviderStatus(); }
         }
         drawerItems.forEach(function (btn) {
           btn.addEventListener("click", function () {
@@ -3661,6 +3675,8 @@
         var keysCldList = document.getElementById("keysCldList");
         var keysCldEmpty = document.getElementById("keysCldEmpty");
         var keysCldCount = document.getElementById("keysCldCount");
+        var cldCountBadge = document.getElementById("cldCountBadge");
+        var keysCldCountBadge = document.getElementById("keysCldCountBadge");
         var keysCldSaveBtn = document.getElementById("keysCldSaveBtn");
         var keysCldRefreshBtn = document.getElementById("keysCldRefreshBtn");
         var keysCldCloudNameInput = document.getElementById("keysCldCloudNameInput");
@@ -3847,6 +3863,11 @@
               keysCldCount.className = "key-status none";
             }
           }
+          [cldCountBadge, keysCldCountBadge].forEach(function (b) {
+            if (!b) return;
+            b.textContent = "(" + cldAccounts.length + ")";
+            b.classList.remove("hidden");
+          });
           cldAccounts.forEach(function (acc) {
             if (cldList) cldList.appendChild(buildCldCard(acc));
             if (keysCldList) keysCldList.appendChild(buildCldCard(acc));
@@ -4636,7 +4657,7 @@
               ? "<a class='kc-link' href='" + p.link + "' target='_blank' rel='noopener'></a>"
               : "";
             card.innerHTML =
-              "<div class='kc-head'><span class='kc-name'></span><span class='key-status none'>មិនទាន់មាន key</span></div>" +
+              "<div class='kc-head'><span class='kc-name'></span><span class='kc-count count-badge hidden'></span><span class='key-status none'>មិនទាន់មាន key</span></div>" +
               linkHtml +
               "<div class='kc-list'></div>" +
               "<div class='kc-tools hidden'><button class='btn kc-copyall' type='button'>Copy All · ចម្លង Key ទាំងអស់</button></div>" +
@@ -4652,6 +4673,7 @@
             keysList.appendChild(card);
             var refs = {
               status: card.querySelector(".key-status"),
+              count: card.querySelector(".kc-count"),
               list: card.querySelector(".kc-list"),
               tools: card.querySelector(".kc-tools"),
               copyAllBtn: card.querySelector(".kc-copyall"),
@@ -4696,6 +4718,7 @@
             refs.status.className = "key-status none";
           }
           refs.tools.classList.toggle("hidden", st.count === 0);
+          updateKeyBadge(id);
           refs.list.innerHTML = "";
           for (var i = 0; i < st.count; i++) {
             (function (idx) {
@@ -4706,6 +4729,7 @@
                 "<span class='kc-dot' role='img' aria-label='មិនទាន់ដឹងស្ថានភាព'></span>" +
                 "<span class='kc-main'>" +
                   "<span class='kc-item-label'></span>" +
+                  "<span class='kc-exh hidden'>អស់ · Exhausted</span>" +
                   "<span class='kc-full hidden'></span>" +
                 "</span>" +
                 "<button class='kc-act kc-eye' type='button' aria-label='បង្ហាញ/លាក់ Key " + (idx + 1) + "'>" + EYE_SVG + "</button>" +
@@ -4771,9 +4795,59 @@
           applyKeyDots(id);
         }
 
-        /* Paint each row's status dot from keyState.statuses — grey while
-           the status has not loaded yet, green = ok (Ready), red = blocked,
-           yellow = error / unknown (other problem). */
+        /* ---------- Provider status (public, live) ----------
+           GET /api/public/provider-status → { providers: { <id>: [
+           { key, status, note, at, lastOk } ] } } — the per-key status
+           the server tracks while it rotates keys: 'ok' = working,
+           'exhausted' / 'error' = used up or unusable, 'unknown' = not
+           used yet, anything else = another problem. It drives the
+           coloured dot on every key row (same lights as Cloudinary)
+           and the (N) count badge in each card header. */
+        var providerStatusMap = null;
+
+        function psEntryFor(id, idx) {
+          if (!providerStatusMap) return null;
+          var arr = providerStatusMap[id];
+          if (!Array.isArray(arr)) return null;
+          return arr[idx] || null;
+        }
+        function psCountFor(id) {
+          if (!providerStatusMap) return null;
+          var arr = providerStatusMap[id];
+          return Array.isArray(arr) ? arr.length : null;
+        }
+
+        /* Header count badge «(N)» — N from provider-status when the
+           server reports that provider there, else the saved-key count. */
+        function updateKeyBadge(id) {
+          var refs = keyCards[id];
+          if (!refs || !refs.count) return;
+          var n = psCountFor(id);
+          if (n === null) n = (keyState[id] || {}).count || 0;
+          refs.count.textContent = "(" + n + ")";
+          refs.count.classList.remove("hidden");
+        }
+
+        function loadProviderStatus() {
+          return fetch(API_BASE + "/api/public/provider-status", { cache: "no-store" })
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (data) {
+              if (!data || !data.providers) return;
+              providerStatusMap = data.providers;
+              KEY_PROVIDERS.forEach(function (p) {
+                updateKeyBadge(p.id);
+                applyKeyDots(p.id);
+              });
+            })
+            .catch(function () { /* lights simply stay as they were */ });
+        }
+
+        /* Paint each row's status dot + «អស់ · Exhausted» label.
+           Provider-status wins when the server reports this provider
+           there; otherwise the admin per-key status (keyState.statuses)
+           is used: green = ok, red = exhausted / blocked / error (with
+           the Exhausted word shown), grey = unknown / not used yet,
+           yellow = any other problem. */
         function applyKeyDots(id) {
           var refs = keyCards[id];
           if (!refs) return;
@@ -4783,18 +4857,33 @@
           rows.forEach(function (row, idx) {
             var dot = row.querySelector(".kc-dot");
             if (!dot) return;
-            var s = statuses ? statuses[idx] : null;
+            var exhEl = row.querySelector(".kc-exh");
             var cls = "kc-dot";
             var label = "មិនទាន់ដឹងស្ថានភាព";
-            if (s) {
-              if (s.status === "ok") { cls += " ok"; label = "ដំណើរការ · Ready"; }
-              else if (s.status === "blocked") { cls += " blocked"; label = "ត្រូវបានប្លុក · Blocked"; }
+            var exh = false;
+            var ps = psEntryFor(id, idx);
+            if (ps) {
+              var s = String(ps.status || "unknown");
+              if (s === "ok") { cls += " ok"; label = "ដំណើរការ · OK"; }
+              else if (s === "exhausted" || s === "error") { cls += " blocked"; label = "អស់ · Exhausted"; exh = true; }
+              else if (s === "unknown") { label = "មិនទាន់ដឹង · មិនទាន់ប្រើ"; }
               else { cls += " error"; label = "មានបញ្ហា"; }
-              if (s.message) label += " — " + s.message;
+              if (ps.note) label += " — " + ps.note;
+              if (ps.lastOk) label += " · ដំណើរការចុងក្រោយ " + fmtDate(ps.lastOk);
+            } else {
+              var a = statuses ? statuses[idx] : null;
+              if (a) {
+                if (a.status === "ok") { cls += " ok"; label = "ដំណើរការ · Ready"; }
+                else if (a.status === "blocked") { cls += " blocked"; label = "អស់ · Exhausted"; exh = true; }
+                else if (a.status === "unknown") { label = "មិនទាន់ដឹង · មិនទាន់ប្រើ"; }
+                else { cls += " error"; label = "មានបញ្ហា"; }
+                if (a.message) label += " — " + a.message;
+              }
             }
             dot.className = cls;
             dot.title = label;
             dot.setAttribute("aria-label", label);
+            if (exhEl) exhEl.classList.toggle("hidden", !exh);
           });
         }
 
@@ -5054,6 +5143,7 @@
               KEY_PROVIDERS.forEach(function (p) {
                 if ((keyState[p.id] || {}).count > 0) loadKeyStatuses(p, keyCards[p.id]);
               });
+              loadProviderStatus();
             })
             .catch(function (err) { handleSectionError(err, keysStatus); });
         }
@@ -8187,6 +8277,7 @@
         function loadControlData() {
           loadSettings();
           loadKeys();
+          loadProviderStatus();
           loadCloudinaryAccounts();
           loadProviders();
           loadPurchases();
