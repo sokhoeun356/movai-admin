@@ -478,6 +478,40 @@
       .kc-item .kc-act:disabled { opacity: .45; cursor: default; }
       .key-card .kc-tools { margin-bottom: 11px; }
       .key-card .kc-copyall { min-height: 2.4rem; padding: 7px 14px; font-size: 13.5px; }
+
+      /* ---------- Cloudinary accounts ---------- */
+      .cld-card {
+        background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
+        padding: 15px; margin-bottom: 12px;
+      }
+      .cld-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+      .cld-name { font-weight: 800; font-size: 15.5px; flex: 1; min-width: 0; word-break: break-all; }
+      .cld-light { width: 12px; height: 12px; border-radius: 50%; flex: none; background: #565D64; }
+      .cld-light.green { background: #22C55E; box-shadow: 0 0 7px rgba(34,197,94,.6); }
+      .cld-light.red { background: var(--red); box-shadow: 0 0 7px rgba(255,107,107,.55); }
+      .cld-light.yellow { background: var(--yellow); box-shadow: 0 0 7px rgba(245,197,24,.55); }
+      .cld-light.grey { background: #565D64; box-shadow: none; }
+      .cld-light.blue { background: #38BDF8; box-shadow: 0 0 7px rgba(56,189,248,.6); }
+      .cld-badge {
+        font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 10px; white-space: nowrap;
+        color: var(--lime); background: var(--green-bg); border: 1px solid rgba(173,220,41,.4);
+      }
+      .cld-meta { color: var(--text-dim); font-size: 13.5px; margin-top: 2px; word-break: break-all; }
+      .cld-meta b { color: var(--text); }
+      .cld-meta .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+      .cld-credits { font-size: 15px; font-weight: 800; margin-top: 7px; }
+      .cld-credits .cld-credits-num { color: #38BDF8; }
+      .cld-status-text { font-size: 13.5px; font-weight: 700; margin-top: 4px; }
+      .cld-status-text.green { color: #22C55E; }
+      .cld-status-text.red { color: #FFB3B3; }
+      .cld-status-text.yellow { color: var(--yellow); }
+      .cld-status-text.grey { color: var(--text-faint); }
+      .cld-err { color: #FFB3B3; font-size: 13px; margin-top: 5px; word-break: break-word; }
+      .cld-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 13px; }
+      .cld-actions .btn { flex: 1 1 110px; padding: 8px 12px; font-size: 13.5px; }
+      .cld-actions .btn[disabled] { opacity: .55; cursor: default; }
+      .cld-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 4px 0 16px; color: var(--text-dim); font-size: 13px; }
+      .cld-legend .cld-leg { display: inline-flex; align-items: center; gap: 6px; }
       /* ---------- Tab badge ---------- */
       .tab-badge {
         display: inline-flex; align-items: center; justify-content: center;
@@ -923,6 +957,7 @@
         <button type="button" class="drawer-item" data-section="models">ម៉ូឌែល · ចាក់សោ/បើក</button>
         <button type="button" class="drawer-item" data-section="keys">API Keys</button>
         <button type="button" class="drawer-item" data-section="providers">Providers</button>
+        <button type="button" class="drawer-item" data-section="cloudinary">Cloudinary</button>
         <button type="button" class="drawer-item" data-section="appearance">រូបរាង · Appearance</button>
         <button type="button" class="drawer-item" data-section="smooth">របៀបស្មូត · Smooth mode</button>
         <button type="button" class="drawer-item" data-section="telegram">Telegram Settings</button>
@@ -1345,6 +1380,47 @@
           <p class="desc">ជ្រើស provider និង model ដែល server ប្រើសម្រាប់ mode នីមួយៗ — អ្នកប្រើ MovAi មើលមិនឃើញការជ្រើសរើសនេះទេ។</p>
           <p class="save-status" id="providersStatus" style="text-align:left;"></p>
           <div id="providerModes"></div>
+        </div>
+      </div>
+
+      <!-- ================= CLOUDINARY ACCOUNTS ================= -->
+      <div id="panel-cloudinary" class="hidden">
+        <div class="section-card">
+          <h2>Cloudinary</h2>
+          <p class="desc">គណនី Cloudinary សម្រាប់ផ្ទុកបទចម្រៀង (Magic Hour WAV → MP3)។ ដាក់គណនីថ្មីនៅទីនេះ — server នឹងពិនិត្យ Key/Secret មុនរក្សាទុក ហើយពេលគណនីមួយអស់ Credit វានឹងប្ដូរទៅគណនីបន្ទាប់ដោយអូតូ។</p>
+
+          <div class="ctl">
+            <label class="field-label" for="cldCloudNameInput">Cloud Name</label>
+            <input class="text-input" id="cldCloudNameInput" type="text" autocomplete="off" placeholder="ឧ. bg08mr3i" />
+          </div>
+          <div class="ctl">
+            <label class="field-label" for="cldApiKeyInput">API Key</label>
+            <input class="text-input" id="cldApiKeyInput" type="text" autocomplete="off" placeholder="ឧ. 836343377168915" />
+          </div>
+          <div class="ctl">
+            <label class="field-label" for="cldApiSecretInput">API Secret</label>
+            <input class="text-input" id="cldApiSecretInput" type="password" autocomplete="off" placeholder="API Secret របស់គណនីនោះ (ត្រូវគ្នានឹង API Key ខាងលើ)" />
+          </div>
+
+          <div class="alert alert-error" id="cldError" role="alert"></div>
+          <div class="alert alert-ok" id="cldOk" role="status"></div>
+          <button class="btn btn-primary btn-block" id="cldSaveBtn" type="button" style="margin-top:14px;">រក្សាទុកគណនី · Save</button>
+          <button class="btn btn-block" id="cldRefreshBtn" type="button" style="margin-top:8px;">↻ ផ្ទុកបញ្ជីឡើងវិញ</button>
+          <p class="save-status" id="cldStatus"></p>
+
+          <h3 style="margin:20px 0 4px; font-size:15.5px;">គណនីទាំងអស់ · All accounts</h3>
+          <div class="cld-legend" aria-label="អត្ថន័យភ្លើងស្ថានភាព">
+            <span class="cld-leg"><span class="cld-light green"></span>ដំណើរការល្អ</span>
+            <span class="cld-leg"><span class="cld-light red"></span>មានបញ្ហា (Key/Secret ខុស ឬអស់ Credit)</span>
+            <span class="cld-leg"><span class="cld-light yellow"></span>បញ្ហាផ្សេង / Credit ជិតអស់ / ពិនិត្យមិនបាន</span>
+            <span class="cld-leg"><span class="cld-light grey"></span>បានបិទ</span>
+            <span class="cld-leg"><span class="cld-light blue"></span>Credit នៅសល់</span>
+          </div>
+          <div id="cldList"></div>
+          <div class="state-box hidden" id="cldEmpty">
+            <div class="big">មិនទាន់មានគណនី Cloudinary ទេ</div>
+            <div>ដាក់ Cloud Name, API Key និង API Secret ខាងលើ ហើយចុច Save ដើម្បីបន្ថែមគណនីដំបូង។</div>
+          </div>
         </div>
       </div>
 
@@ -3398,6 +3474,7 @@
         var panelSmooth = document.getElementById("panel-smooth");
         var panelKeys = document.getElementById("panel-keys");
         var panelProviders = document.getElementById("panel-providers");
+        var panelCloudinary = document.getElementById("panel-cloudinary");
         var panelAnalytics = document.getElementById("panel-analytics");
         var panelNotifications = document.getElementById("panel-notifications");
         var panelSecurity = document.getElementById("panel-security");
@@ -3408,7 +3485,7 @@
           users: panelUsers, purchases: panelPurchases, post: panelPost, packages: panelPackages,
           payment: panelPayment, models: panelModels,
           appearance: panelAppearance, smooth: panelSmooth,
-          keys: panelKeys, providers: panelProviders, analytics: panelAnalytics,
+          keys: panelKeys, providers: panelProviders, cloudinary: panelCloudinary, analytics: panelAnalytics,
           notifications: panelNotifications, security: panelSecurity, updates: panelUpdates, telegram: panelTelegram,
           email: panelEmail
         };
@@ -3457,6 +3534,7 @@
           if (name === "updates") loadUpdates();
           if (name === "telegram") loadTelegramSettings();
           if (name === "email") loadEmailSettings();
+          if (name === "cloudinary") loadCloudinaryAccounts();
         }
         drawerItems.forEach(function (btn) {
           btn.addEventListener("click", function () {
@@ -3513,6 +3591,368 @@
             return;
           }
           if (statusEl) statusEl.textContent = "ភ្ជាប់ទៅ server មិនបាន៖ " + err.message;
+        }
+
+        /* ---------- Cloudinary accounts ----------
+           Song storage accounts (Magic Hour WAV → MP3). The list comes
+           from GET /api/admin/cloudinary-accounts; each account carries a
+           server-checked `status` ('ok' | 'low' | 'exhausted' |
+           'invalid' | 'disabled' | 'unknown') plus creditsRemaining /
+           creditsLimit. Status light: green = ok, red = invalid key or
+           credits exhausted, yellow = low / other problem / cannot
+           check, grey = disabled. A second blue light shows only while
+           credits remain, next to the numeric "remaining / limit". */
+        var cldError = document.getElementById("cldError");
+        var cldOk = document.getElementById("cldOk");
+        var cldStatus = document.getElementById("cldStatus");
+        var cldList = document.getElementById("cldList");
+        var cldEmpty = document.getElementById("cldEmpty");
+        var cldSaveBtn = document.getElementById("cldSaveBtn");
+        var cldRefreshBtn = document.getElementById("cldRefreshBtn");
+        var cldCloudNameInput = document.getElementById("cldCloudNameInput");
+        var cldApiKeyInput = document.getElementById("cldApiKeyInput");
+        var cldApiSecretInput = document.getElementById("cldApiSecretInput");
+        var cldLoading = false;
+        var cldAccounts = [];
+
+        function cldLightClass(acc) {
+          var s = acc && acc.status;
+          if (s === "ok") return "green";
+          if (s === "exhausted" || s === "invalid") return "red";
+          if (s === "low" || s === "unknown") return "yellow";
+          if (s === "disabled") return "grey";
+          /* Fallback when the server sent no status. */
+          if (acc && acc.enabled === false) return "grey";
+          if (acc && acc.exhausted) return "red";
+          if (acc && acc.lastError) return "yellow";
+          return "green";
+        }
+        function cldStatusLabel(acc) {
+          var s = acc && acc.status;
+          if (s === "ok") return "ដំណើរការល្អ";
+          if (s === "exhausted") return "អស់ Credit ហើយ";
+          if (s === "invalid") return "Key / Secret មិនត្រឹមត្រូវ";
+          if (s === "low") return "Credit ជិតអស់";
+          if (s === "disabled") return "បានបិទ (Disabled)";
+          if (s === "unknown") return "មិនអាចពិនិត្យបាន";
+          if (acc && acc.enabled === false) return "បានបិទ (Disabled)";
+          if (acc && acc.exhausted) return "អស់ Credit ហើយ";
+          if (acc && acc.lastError) return "មានបញ្ហា";
+          return "ដំណើរការល្អ";
+        }
+        function fmtCredit(v) {
+          var n = Number(v);
+          if (!isFinite(n)) return "—";
+          return (Math.round(n * 100) / 100).toLocaleString("en-US", { maximumFractionDigits: 2 });
+        }
+        function cldHasCredits(acc) {
+          return acc && acc.creditsRemaining !== null && acc.creditsRemaining !== undefined &&
+            isFinite(Number(acc.creditsRemaining));
+        }
+
+        function renderCloudinaryAccounts() {
+          cldList.innerHTML = "";
+          cldEmpty.classList.toggle("hidden", cldAccounts.length > 0);
+          cldAccounts.forEach(function (acc) {
+            var card = document.createElement("div");
+            card.className = "cld-card";
+
+            var head = document.createElement("div");
+            head.className = "cld-head";
+            var light = document.createElement("span");
+            var lc = cldLightClass(acc);
+            light.className = "cld-light " + lc;
+            light.title = cldStatusLabel(acc);
+            head.appendChild(light);
+            if (cldHasCredits(acc) && Number(acc.creditsRemaining) > 0) {
+              var blue = document.createElement("span");
+              blue.className = "cld-light blue";
+              blue.title = "Credit នៅសល់";
+              head.appendChild(blue);
+            }
+            var name = document.createElement("span");
+            name.className = "cld-name";
+            name.textContent = acc.label || acc.cloudName || "Cloudinary";
+            head.appendChild(name);
+            if (acc.readonly) {
+              var badge = document.createElement("span");
+              badge.className = "cld-badge";
+              badge.textContent = "Main · Render";
+              head.appendChild(badge);
+            }
+            card.appendChild(head);
+
+            var meta = document.createElement("div");
+            meta.className = "cld-meta";
+            var cn = document.createElement("span");
+            cn.textContent = "Cloud Name: ";
+            var cnV = document.createElement("b");
+            cnV.className = "mono";
+            cnV.textContent = acc.cloudName || "—";
+            meta.appendChild(cn); meta.appendChild(cnV);
+            if (acc.apiKeyMasked) {
+              meta.appendChild(document.createTextNode("  ·  API Key: "));
+              var ak = document.createElement("span");
+              ak.className = "mono";
+              ak.textContent = acc.apiKeyMasked;
+              meta.appendChild(ak);
+            }
+            card.appendChild(meta);
+
+            var st = document.createElement("div");
+            st.className = "cld-status-text " + lc;
+            st.textContent = cldStatusLabel(acc) + (acc.detail ? " — " + acc.detail : "");
+            card.appendChild(st);
+
+            if (cldHasCredits(acc)) {
+              var cr = document.createElement("div");
+              cr.className = "cld-credits";
+              cr.appendChild(document.createTextNode("Credit នៅសល់៖ "));
+              var crN = document.createElement("span");
+              crN.className = "cld-credits-num";
+              crN.textContent = fmtCredit(acc.creditsRemaining) +
+                (acc.creditsLimit !== null && acc.creditsLimit !== undefined ? " / " + fmtCredit(acc.creditsLimit) : "");
+              cr.appendChild(crN);
+              card.appendChild(cr);
+            }
+
+            if (acc.lastError) {
+              var er = document.createElement("div");
+              er.className = "cld-err";
+              er.textContent = "កំហុសចុងក្រោយ៖ " + acc.lastError +
+                (acc.lastErrorAt ? " (" + fmtDate(acc.lastErrorAt) + ")" : "");
+              card.appendChild(er);
+            }
+            if (acc.exhausted && acc.exhaustedAt) {
+              var ex = document.createElement("div");
+              ex.className = "cld-meta";
+              ex.textContent = "អស់ Credit នៅ៖ " + fmtDate(acc.exhaustedAt);
+              card.appendChild(ex);
+            }
+            if (acc.createdAt) {
+              var ca = document.createElement("div");
+              ca.className = "cld-meta";
+              ca.textContent = "បានបន្ថែមនៅ៖ " + fmtDate(acc.createdAt);
+              card.appendChild(ca);
+            }
+
+            var actions = document.createElement("div");
+            actions.className = "cld-actions";
+            var toggleBtn = document.createElement("button");
+            toggleBtn.type = "button";
+            toggleBtn.className = "btn";
+            toggleBtn.textContent = acc.enabled === false ? "បើក · Enable" : "បិទ · Disable";
+            toggleBtn.addEventListener("click", function () { cldToggleAccount(acc, toggleBtn); });
+            actions.appendChild(toggleBtn);
+            var resetBtn = document.createElement("button");
+            resetBtn.type = "button";
+            resetBtn.className = "btn";
+            resetBtn.textContent = "Reset";
+            resetBtn.title = "សម្អាតស្ថានភាពអស់ Credit";
+            resetBtn.addEventListener("click", function () { cldResetAccount(acc, resetBtn); });
+            actions.appendChild(resetBtn);
+            if (!acc.readonly) {
+              var delBtn = document.createElement("button");
+              delBtn.type = "button";
+              delBtn.className = "btn btn-reject";
+              delBtn.textContent = "លុប · Delete";
+              cldArmDelete(delBtn, acc);
+              actions.appendChild(delBtn);
+            }
+            card.appendChild(actions);
+
+            cldList.appendChild(card);
+          });
+        }
+
+        function loadCloudinaryAccounts() {
+          if (cldLoading) return Promise.resolve();
+          cldLoading = true;
+          hideAlert(cldError);
+          if (cldRefreshBtn) cldRefreshBtn.disabled = true;
+          var stop = makeTicker(cldStatus, function (s) {
+            return "កំពុងផ្ទុកគណនី Cloudinary ពី server… " + s + " វិនាទី";
+          });
+          return api("/api/admin/cloudinary-accounts")
+            .then(function (data) {
+              stop();
+              cldLoading = false;
+              cldStatus.textContent = "";
+              if (cldRefreshBtn) cldRefreshBtn.disabled = false;
+              if (data && data.ok === false) {
+                showAlert(cldError, "ផ្ទុកគណនី Cloudinary មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                return;
+              }
+              cldAccounts = (data && Array.isArray(data.accounts)) ? data.accounts : [];
+              renderCloudinaryAccounts();
+            })
+            .catch(function (err) {
+              stop();
+              cldLoading = false;
+              cldStatus.textContent = "";
+              if (cldRefreshBtn) cldRefreshBtn.disabled = false;
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              showAlert(cldError, "ផ្ទុកគណនី Cloudinary ពី server មិនបាន៖ " + err.message);
+            });
+        }
+
+        if (cldRefreshBtn) {
+          cldRefreshBtn.addEventListener("click", function () { loadCloudinaryAccounts(); });
+        }
+
+        if (cldSaveBtn) {
+          cldSaveBtn.addEventListener("click", function () {
+            hideAlert(cldError);
+            hideAlert(cldOk);
+            var cloudName = cldCloudNameInput.value.trim();
+            var apiKey = cldApiKeyInput.value.trim();
+            var apiSecret = cldApiSecretInput.value.trim();
+            if (!cloudName || !apiKey || !apiSecret) {
+              showAlert(cldError, "ត្រូវដាក់ទាំង 3 — Cloud Name, API Key និង API Secret។");
+              (!cloudName ? cldCloudNameInput : (!apiKey ? cldApiKeyInput : cldApiSecretInput)).focus();
+              return;
+            }
+            cldSaveBtn.disabled = true;
+            var stop = makeTicker(cldStatus, function (s) {
+              return "កំពុងរក្សាទុក និងពិនិត្យគណនី… " + s + " វិនាទី";
+            });
+            api("/api/admin/cloudinary-accounts", {
+              method: "POST",
+              body: { cloudName: cloudName, apiKey: apiKey, apiSecret: apiSecret }
+            })
+              .then(function (data) {
+                stop();
+                cldStatus.textContent = "";
+                cldSaveBtn.disabled = false;
+                if (data && data.ok === false) {
+                  showAlert(cldError, "រក្សាទុកមិនបាន៖ " + (data.error || data.message || "server បដិសេធ — សូមពិនិត្យ Key/Secret ម្ដងទៀត។"));
+                  return;
+                }
+                cldCloudNameInput.value = "";
+                cldApiKeyInput.value = "";
+                cldApiSecretInput.value = "";
+                showAlert(cldOk, "បានរក្សាទុកគណនី Cloudinary «" + cloudName + "» រួចរាល់។");
+                loadCloudinaryAccounts();
+              })
+              .catch(function (err) {
+                stop();
+                cldStatus.textContent = "";
+                cldSaveBtn.disabled = false;
+                if (err.code === "AUTH") { handleSectionError(err, null); return; }
+                showAlert(cldError, "រក្សាទុកមិនបាន៖ " + err.message);
+              });
+          });
+        }
+
+        function cldToggleAccount(acc, btn) {
+          hideAlert(cldError);
+          hideAlert(cldOk);
+          btn.disabled = true;
+          var stop = makeTicker(cldStatus, function (s) {
+            return "កំពុង" + (acc.enabled === false ? "បើក" : "បិទ") + "គណនី… " + s + " វិនាទី";
+          });
+          api("/api/admin/cloudinary-accounts/toggle", {
+            method: "POST",
+            body: { id: acc.id, enabled: acc.enabled === false }
+          })
+            .then(function (data) {
+              stop();
+              cldStatus.textContent = "";
+              if (data && data.ok === false) {
+                btn.disabled = false;
+                showAlert(cldError, "ប្ដូរស្ថានភាពមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                return;
+              }
+              showAlert(cldOk, "បាន" + (acc.enabled === false ? "បើក" : "បិទ") + "គណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់។");
+              loadCloudinaryAccounts();
+            })
+            .catch(function (err) {
+              stop();
+              cldStatus.textContent = "";
+              btn.disabled = false;
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              showAlert(cldError, "ប្ដូរស្ថានភាពមិនបាន៖ " + err.message);
+            });
+        }
+
+        function cldResetAccount(acc, btn) {
+          hideAlert(cldError);
+          hideAlert(cldOk);
+          btn.disabled = true;
+          var stop = makeTicker(cldStatus, function (s) {
+            return "កំពុង Reset គណនី… " + s + " វិនាទី";
+          });
+          api("/api/admin/cloudinary-accounts/reset", {
+            method: "POST",
+            body: { id: acc.id }
+          })
+            .then(function (data) {
+              stop();
+              cldStatus.textContent = "";
+              if (data && data.ok === false) {
+                btn.disabled = false;
+                showAlert(cldError, "Reset មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                return;
+              }
+              showAlert(cldOk, "បាន Reset គណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់ — ស្ថានភាពអស់ Credit ត្រូវបានសម្អាត។");
+              loadCloudinaryAccounts();
+            })
+            .catch(function (err) {
+              stop();
+              cldStatus.textContent = "";
+              btn.disabled = false;
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              showAlert(cldError, "Reset មិនបាន៖ " + err.message);
+            });
+        }
+
+        /* Delete is two-step: first tap arms the button, second tap
+           confirms — in-page UI only, no native dialog calls. */
+        function cldArmDelete(btn, acc) {
+          var armed = false;
+          var timer = null;
+          var label = btn.textContent;
+          btn.addEventListener("click", function () {
+            hideAlert(cldError);
+            hideAlert(cldOk);
+            if (!armed) {
+              armed = true;
+              btn.textContent = "ចុចម្ដងទៀតដើម្បីបញ្ជាក់ការលុប";
+              timer = setTimeout(function () {
+                armed = false;
+                btn.textContent = label;
+              }, 4000);
+              return;
+            }
+            clearTimeout(timer);
+            armed = false;
+            btn.disabled = true;
+            btn.textContent = "កំពុងលុប…";
+            var stop = makeTicker(cldStatus, function (s) {
+              return "កំពុងលុបគណនី… " + s + " វិនាទី";
+            });
+            api("/api/admin/cloudinary-accounts?id=" + encodeURIComponent(acc.id), { method: "DELETE" })
+              .then(function (data) {
+                stop();
+                cldStatus.textContent = "";
+                if (data && data.ok === false) {
+                  btn.disabled = false;
+                  btn.textContent = label;
+                  showAlert(cldError, "លុបមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                  return;
+                }
+                showAlert(cldOk, "បានលុបគណនី «" + (acc.label || acc.cloudName || "") + "» រួចរាល់។");
+                loadCloudinaryAccounts();
+              })
+              .catch(function (err) {
+                stop();
+                cldStatus.textContent = "";
+                btn.disabled = false;
+                btn.textContent = label;
+                if (err.code === "AUTH") { handleSectionError(err, null); return; }
+                showAlert(cldError, "លុបមិនបាន៖ " + err.message);
+              });
+          });
         }
 
         /* ---------- Appearance + settings ---------- */
