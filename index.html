@@ -333,9 +333,37 @@
         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
         font-weight: 700; letter-spacing: .4px;
       }
-      .block-model-box h3 { color: #FFB3B3; }
-      .block-model-info { font-size: 13.5px; color: var(--text-dim); margin: -2px 0 12px; }
-      .block-model-info b { color: var(--text); }
+      /* ---------- Block rows (detail sheet): ON/OFF toggle + small name only ---------- */
+      .block-box h3 { margin: 0 0 2px; font-size: 15px; }
+      .block-row {
+        display: flex; align-items: center; gap: 10px;
+        padding: 7px 0; border-bottom: 1px solid var(--line-soft);
+      }
+      .block-row:last-of-type { border-bottom: none; }
+      .block-name {
+        flex: 1; min-width: 0; font-size: 13px; color: var(--text-dim);
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .block-name b { color: var(--text); font-weight: 700; }
+      .block-ctl { display: flex; align-items: center; gap: 9px; flex: none; }
+      .blk-toggle {
+        position: relative; width: 52px; height: 29px; min-height: 29px; flex: none;
+        border-radius: 999px; border: 1px solid var(--line); background: var(--card-2);
+        padding: 0; transition: background .2s, border-color .2s;
+      }
+      .blk-toggle .knob {
+        position: absolute; top: 3px; left: 3px; width: 21px; height: 21px;
+        border-radius: 50%; background: var(--text-dim); transition: left .2s, background .2s;
+      }
+      .blk-toggle[aria-checked="true"] { background: var(--red); border-color: var(--red); }
+      .blk-toggle[aria-checked="true"] .knob { left: 26px; background: #fff; }
+      .blk-toggle[disabled] { opacity: .45; cursor: default; }
+      .blk-toggle:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+      .unlock-btn {
+        background: none; border: none; padding: 6px 2px; min-height: 0;
+        color: var(--red); font-weight: 800; font-size: 13.5px; text-decoration: underline;
+      }
+      .unlock-btn[disabled] { opacity: .55; cursor: default; }
 
       /* ---------- Hamburger + drawer navigation ---------- */
       .hamburger {
@@ -1972,76 +2000,35 @@
           <button class="btn btn-block hidden" id="deductRecheckBtn" type="button" style="margin-top:10px;">ពិនិត្យម្ដងទៀត</button>
         </div>
 
-        <div class="grant-box block-model-box">
-          <h3>ប្លុកម៉ូឌែល</h3>
-          <p class="block-model-info" id="blockModelInfo"></p>
+        <div class="grant-box block-box">
+          <h3>ប្លុក · Block</h3>
+          <div class="block-row">
+            <span class="block-name">Model · <b class="model-code" id="blockModelName">—</b></span>
+            <span class="block-ctl">
+              <span class="lock-chip locked hidden" id="blockModelLocked">Locked</span>
+              <button class="unlock-btn hidden" id="unblockModelBtn" type="button">Unlock</button>
+              <button class="blk-toggle" id="blockModelToggle" type="button" role="switch" aria-checked="false" aria-label="ប្លុក Model"><span class="knob"></span></button>
+            </span>
+          </div>
+          <div class="block-row">
+            <span class="block-name">IP · <b class="model-code" id="blockIpName">—</b></span>
+            <span class="block-ctl">
+              <span class="lock-chip locked hidden" id="blockIpLocked">Locked</span>
+              <button class="unlock-btn hidden" id="unblockIpBtn" type="button">Unlock</button>
+              <button class="blk-toggle" id="blockIpToggle" type="button" role="switch" aria-checked="false" aria-label="ប្លុក IP"><span class="knob"></span></button>
+            </span>
+          </div>
+          <div class="block-row">
+            <span class="block-name">Gmail · <b id="blockEmailName">—</b></span>
+            <span class="block-ctl">
+              <span class="lock-chip locked hidden" id="blockEmailLocked">Locked</span>
+              <button class="unlock-btn hidden" id="unblockEmailBtn" type="button">Unlock</button>
+              <button class="blk-toggle" id="blockEmailToggle" type="button" role="switch" aria-checked="false" aria-label="ប្លុក Gmail"><span class="knob"></span></button>
+            </span>
+          </div>
           <div class="alert alert-error" id="blockError" role="alert"></div>
           <div class="alert alert-ok" id="blockOk" role="status"></div>
-          <button class="btn btn-danger btn-block hidden" id="blockModelBtn" type="button">ប្លុកម៉ូឌែល</button>
-          <button class="btn btn-block hidden" id="unblockModelBtn" type="button">ដកប្លុក</button>
           <p class="grant-status" id="blockStatus"></p>
-        </div>
-
-        <div class="grant-box block-model-box">
-          <h3>ប្លុក IP</h3>
-          <p class="block-model-info" id="blockIpInfo"></p>
-          <div class="alert alert-error" id="blockIpError" role="alert"></div>
-          <div class="alert alert-ok" id="blockIpOk" role="status"></div>
-          <button class="btn btn-danger btn-block hidden" id="blockIpBtn" type="button">ប្លុក IP</button>
-          <button class="btn btn-block hidden" id="unblockIpBtn" type="button">ដកប្លុក</button>
-          <p class="grant-status" id="blockIpStatus"></p>
-        </div>
-
-        <div class="grant-box block-model-box">
-          <h3>ប្លុក Gmail</h3>
-          <p class="block-model-info" id="blockEmailInfo"></p>
-          <div class="alert alert-error" id="blockEmailError" role="alert"></div>
-          <div class="alert alert-ok" id="blockEmailOk" role="status"></div>
-          <button class="btn btn-danger btn-block hidden" id="blockEmailBtn" type="button">ប្លុក Gmail</button>
-          <button class="btn btn-block hidden" id="unblockEmailBtn" type="button">ដកប្លុក</button>
-          <p class="grant-status" id="blockEmailStatus"></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= BLOCK MODEL CONFIRM ================= -->
-    <div class="confirm-backdrop" id="blockModelBackdrop">
-      <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="blockModelHeading" aria-describedby="blockModelText">
-        <h3 id="blockModelHeading">ប្លុកម៉ូឌែលនេះ?</h3>
-        <p id="blockModelText">ចូល MovAi លែងបាន រហូតដល់ដកប្លុក</p>
-        <p class="confirm-title model-code" id="blockModelTitle"></p>
-        <div class="confirm-status" id="blockModelConfirmStatus" role="alert"></div>
-        <div class="confirm-actions">
-          <button class="btn" id="blockModelCancelBtn" type="button">បោះបង់</button>
-          <button class="btn btn-danger" id="blockModelConfirmBtn" type="button">ប្លុក</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= BLOCK IP CONFIRM ================= -->
-    <div class="confirm-backdrop" id="blockIpBackdrop">
-      <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="blockIpHeading" aria-describedby="blockIpText">
-        <h3 id="blockIpHeading">ប្លុក IP នេះ?</h3>
-        <p id="blockIpText">ចូល MovAi លែងបាន រហូតដល់ដកប្លុក</p>
-        <p class="confirm-title model-code" id="blockIpTitle"></p>
-        <div class="confirm-status" id="blockIpConfirmStatus" role="alert"></div>
-        <div class="confirm-actions">
-          <button class="btn" id="blockIpCancelBtn" type="button">បោះបង់</button>
-          <button class="btn btn-danger" id="blockIpConfirmBtn" type="button">ប្លុក</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= BLOCK GMAIL CONFIRM ================= -->
-    <div class="confirm-backdrop" id="blockEmailBackdrop">
-      <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="blockEmailHeading" aria-describedby="blockEmailText">
-        <h3 id="blockEmailHeading">ប្លុក Gmail នេះ?</h3>
-        <p id="blockEmailText">ចូល MovAi លែងបាន រហូតដល់ដកប្លុក</p>
-        <p class="confirm-title" id="blockEmailTitle" style="word-break:break-all;"></p>
-        <div class="confirm-status" id="blockEmailConfirmStatus" role="alert"></div>
-        <div class="confirm-actions">
-          <button class="btn" id="blockEmailCancelBtn" type="button">បោះបង់</button>
-          <button class="btn btn-danger" id="blockEmailConfirmBtn" type="button">ប្លុក</button>
         </div>
       </div>
     </div>
@@ -2106,39 +2093,21 @@
         var sheetModel = document.getElementById("sheetModel");
         var sheetModelLogins = document.getElementById("sheetModelLogins");
         var sheetSeen = document.getElementById("sheetSeen");
-        var blockModelInfo = document.getElementById("blockModelInfo");
         var blockError = document.getElementById("blockError");
         var blockOk = document.getElementById("blockOk");
         var blockStatus = document.getElementById("blockStatus");
-        var blockModelBtn = document.getElementById("blockModelBtn");
+        var blockModelName = document.getElementById("blockModelName");
+        var blockModelToggle = document.getElementById("blockModelToggle");
+        var blockModelLocked = document.getElementById("blockModelLocked");
         var unblockModelBtn = document.getElementById("unblockModelBtn");
-        var blockModelBackdrop = document.getElementById("blockModelBackdrop");
-        var blockModelTitle = document.getElementById("blockModelTitle");
-        var blockModelConfirmStatus = document.getElementById("blockModelConfirmStatus");
-        var blockModelCancelBtn = document.getElementById("blockModelCancelBtn");
-        var blockModelConfirmBtn = document.getElementById("blockModelConfirmBtn");
-        var blockIpInfo = document.getElementById("blockIpInfo");
-        var blockIpError = document.getElementById("blockIpError");
-        var blockIpOk = document.getElementById("blockIpOk");
-        var blockIpStatus = document.getElementById("blockIpStatus");
-        var blockIpBtn = document.getElementById("blockIpBtn");
+        var blockIpName = document.getElementById("blockIpName");
+        var blockIpToggle = document.getElementById("blockIpToggle");
+        var blockIpLocked = document.getElementById("blockIpLocked");
         var unblockIpBtn = document.getElementById("unblockIpBtn");
-        var blockIpBackdrop = document.getElementById("blockIpBackdrop");
-        var blockIpTitle = document.getElementById("blockIpTitle");
-        var blockIpConfirmStatus = document.getElementById("blockIpConfirmStatus");
-        var blockIpCancelBtn = document.getElementById("blockIpCancelBtn");
-        var blockIpConfirmBtn = document.getElementById("blockIpConfirmBtn");
-        var blockEmailInfo = document.getElementById("blockEmailInfo");
-        var blockEmailError = document.getElementById("blockEmailError");
-        var blockEmailOk = document.getElementById("blockEmailOk");
-        var blockEmailStatus = document.getElementById("blockEmailStatus");
-        var blockEmailBtn = document.getElementById("blockEmailBtn");
+        var blockEmailName = document.getElementById("blockEmailName");
+        var blockEmailToggle = document.getElementById("blockEmailToggle");
+        var blockEmailLocked = document.getElementById("blockEmailLocked");
         var unblockEmailBtn = document.getElementById("unblockEmailBtn");
-        var blockEmailBackdrop = document.getElementById("blockEmailBackdrop");
-        var blockEmailTitle = document.getElementById("blockEmailTitle");
-        var blockEmailConfirmStatus = document.getElementById("blockEmailConfirmStatus");
-        var blockEmailCancelBtn = document.getElementById("blockEmailCancelBtn");
-        var blockEmailConfirmBtn = document.getElementById("blockEmailConfirmBtn");
         var segMedia = document.getElementById("segMedia");
         var segSong = document.getElementById("segSong");
         var amountInput = document.getElementById("amountInput");
@@ -2343,6 +2312,48 @@
             }
           }
           var name = fullName || ((first || "") + " " + (last || "")).trim() || "—";
+          /* Blocked state, in every shape the server may report it:
+             a per-kind flag, or one nested blocked record — `true`
+             (the account itself is blocked), an object of per-kind
+             flags / blocked-value lists, or a plain list of the
+             blocked values. A block the server reports must survive
+             every reload of this page; it only clears when the
+             server says it was unlocked. */
+          var selfModel = pick(u, ["deviceModel", "device_model", "model", "modelCode", "model_code", "phoneModel"]) || "";
+          var selfIp = pick(u, ["lastIp", "last_ip", "ip", "ipAddress", "ip_address"]) || "";
+          var selfEmail = pick(u, ["email", "gmail", "mail"]) || "";
+          var modelBlocked = truthyVal(pick(u, ["modelBlocked", "model_blocked", "blockedModel", "modelIsBlocked", "deviceBlocked", "device_blocked", "blockedDevice", "modelBanned", "deviceBanned"]));
+          var ipBlocked = truthyVal(pick(u, ["ipBlocked", "ip_blocked", "blockedIp", "ipIsBlocked", "ipBanned", "bannedIp"]));
+          var emailBlocked = truthyVal(pick(u, ["emailBlocked", "email_blocked", "blockedEmail", "emailIsBlocked", "gmailBlocked", "accountBlocked", "account_blocked", "blockedUser", "userBlocked", "banned", "isBanned", "is_banned"]));
+          var blkRec = pick(u, ["blocked", "blocks", "blockState", "block_state", "banState"]);
+          if (blkRec === true || blkRec === 1) {
+            emailBlocked = true;
+          } else if (Array.isArray(blkRec)) {
+            blkRec.forEach(function (v) {
+              var s = String(v === null || v === undefined ? "" : (typeof v === "object" ? (v.model || v.ip || v.email || v.value || "") : v));
+              if (!s) return;
+              if (selfModel && s === String(selfModel)) modelBlocked = true;
+              if (selfIp && s === String(selfIp)) ipBlocked = true;
+              if (selfEmail && s === String(selfEmail)) emailBlocked = true;
+            });
+          } else if (blkRec && typeof blkRec === "object") {
+            if (truthyVal(blkRec.model) || truthyVal(blkRec.device) || truthyVal(blkRec.deviceModel) || truthyVal(blkRec.modelBlocked)) modelBlocked = true;
+            if (truthyVal(blkRec.ip) || truthyVal(blkRec.ipBlocked)) ipBlocked = true;
+            if (truthyVal(blkRec.email) || truthyVal(blkRec.gmail) || truthyVal(blkRec.account) || truthyVal(blkRec.emailBlocked)) emailBlocked = true;
+            var blkLists = [
+              [blkRec.models || blkRec.blockedModels, String(selfModel), "model"],
+              [blkRec.ips || blkRec.blockedIps || blkRec.blockedIPs, String(selfIp), "ip"],
+              [blkRec.emails || blkRec.blockedEmails, String(selfEmail), "email"]
+            ];
+            blkLists.forEach(function (t) {
+              if (!Array.isArray(t[0]) || !t[1]) return;
+              if (t[0].map(function (x) { return String(x); }).indexOf(t[1]) !== -1) {
+                if (t[2] === "model") modelBlocked = true;
+                else if (t[2] === "ip") ipBlocked = true;
+                else emailBlocked = true;
+              }
+            });
+          }
           return {
             id: pick(u, ["id", "userId", "user_id", "uid", "publicId", "public_id"]) || "",
             name: name,
@@ -2363,15 +2374,42 @@
             device: pick(u, ["device", "deviceType", "device_type"]) || "",
             model: pick(u, ["deviceModel", "device_model", "model", "modelCode", "model_code", "phoneModel"]) || "",
             modelLogins: numVal(pick(u, ["modelLogins", "model_logins", "modelLoginCount", "model_login_count"])),
-            modelBlocked: truthyVal(pick(u, ["modelBlocked", "model_blocked", "blockedModel", "modelIsBlocked"])),
-            ipBlocked: truthyVal(pick(u, ["ipBlocked", "ip_blocked", "blockedIp", "ipIsBlocked"])),
-            emailBlocked: truthyVal(pick(u, ["emailBlocked", "email_blocked", "blockedEmail", "emailIsBlocked", "gmailBlocked"])),
+            modelBlocked: modelBlocked,
+            ipBlocked: ipBlocked,
+            emailBlocked: emailBlocked,
             lastSeen: pick(u, ["lastSeen", "last_seen", "lastActive", "last_active", "lastLogin", "last_login"])
           };
         }
 
         function truthyVal(v) {
           return v === true || v === 1 || v === "true" || v === "1";
+        }
+
+        /* The users answer may also carry the server's block lists
+           at the top level (blockedModels / blockedIps /
+           blockedEmails). Apply them on top of the per-user flags so
+           a blocked model / IP / Gmail still shows Locked — with its
+           Unlock button — every time Admin is opened, until the
+           admin unlocks it on the server. */
+        function applyServerBlockLists(data) {
+          if (!data || typeof data !== "object" || Array.isArray(data)) return;
+          function strList(v) {
+            if (!Array.isArray(v)) return [];
+            return v.map(function (x) {
+              if (x === null || x === undefined) return "";
+              if (typeof x === "object") return String(x.model || x.ip || x.email || x.value || x.id || "");
+              return String(x);
+            }).filter(function (s) { return s !== ""; });
+          }
+          var models = strList(data.blockedModels || data.blocked_models || data.blockedDevices || data.blocked_devices);
+          var ips = strList(data.blockedIps || data.blocked_ips || data.blockedIPs);
+          var emails = strList(data.blockedEmails || data.blocked_emails || data.bannedEmails);
+          if (!models.length && !ips.length && !emails.length) return;
+          users.forEach(function (x) {
+            if (x.model && models.indexOf(String(x.model)) !== -1) x.modelBlocked = true;
+            if (x.lastIp && ips.indexOf(String(x.lastIp)) !== -1) x.ipBlocked = true;
+            if (x.email && emails.indexOf(String(x.email)) !== -1) x.emailBlocked = true;
+          });
         }
 
         /* «Android · CPH2325» — the platform type plus the device
@@ -2520,6 +2558,7 @@
             .then(function (data) {
               var list = Array.isArray(data) ? data : (data && (data.users || data.data)) || [];
               users = list.map(normalizeUser);
+              applyServerBlockLists(data);
               renderUsers();
               /* Keep an open detail sheet in step with the server too. */
               if (selectedUser) {
@@ -2528,9 +2567,8 @@
                   selectedUser = fresh;
                   sheetMedia.textContent = fmtNum(fresh.media);
                   sheetSong.textContent = fmtNum(fresh.song);
-                  sheetPlan.textContent = fresh.plan;
-            setSheetPlanBadge(fresh.isPro || isPaidPlan(fresh.plan));
-                  setSheetPlanBadge(fresh.isPro || isPaidPlan(fresh.plan));
+                  sheetPlan.textContent = fresh.isPro ? fresh.plan : "Free";
+                  setSheetPlanBadge(fresh.isPro);
                   setSheetPlanExpiry(fresh);
                   sheetIp.textContent = fresh.lastIp || "—";
                   sheetDevice.textContent = fresh.device || "—";
@@ -2539,8 +2577,6 @@
                   sheetSeen.textContent = fmtDateTime(fresh.lastSeen);
                   updateDeductBalance();
                   updateBlockUI();
-                  updateBlockIpUI();
-                  updateBlockEmailUI();
                 }
               }
             })
@@ -2768,7 +2804,7 @@
           sheetFullName.textContent = full || u.name;
           sheetMedia.textContent = fmtNum(u.media);
           sheetSong.textContent = fmtNum(u.song);
-          sheetPlan.textContent = u.plan;
+          sheetPlan.textContent = u.isPro ? u.plan : "Free";
           setSheetPlanBadge(u.isPro);
           setSheetPlanExpiry(u);
           sheetSince.textContent = fmtDate(u.since);
@@ -2781,14 +2817,6 @@
           hideAlert(blockOk);
           blockStatus.textContent = "";
           updateBlockUI();
-          hideAlert(blockIpError);
-          hideAlert(blockIpOk);
-          blockIpStatus.textContent = "";
-          updateBlockIpUI();
-          hideAlert(blockEmailError);
-          hideAlert(blockEmailOk);
-          blockEmailStatus.textContent = "";
-          updateBlockEmailUI();
           amountInput.value = "";
           noteInput.value = "";
           hideAlert(grantError);
@@ -2845,9 +2873,6 @@
         overlay.addEventListener("click", function (e) { if (e.target === overlay) closeSheet(); });
         document.addEventListener("keydown", function (e) {
           if (e.key !== "Escape") return;
-          if (blockModelBackdrop.classList.contains("open") && !blockModelConfirmBtn.disabled) closeBlockModelDialog();
-          if (blockIpBackdrop.classList.contains("open") && !blockIpConfirmBtn.disabled) closeBlockIpDialog();
-          if (blockEmailBackdrop.classList.contains("open") && !blockEmailConfirmBtn.disabled) closeBlockEmailDialog();
           if (overlay.classList.contains("open")) closeSheet();
           if (drawer.classList.contains("open")) closeDrawer();
         });
@@ -2929,6 +2954,7 @@
           return api("/api/admin/users").then(function (data) {
             var list = Array.isArray(data) ? data : (data && (data.users || data.data)) || [];
             users = list.map(normalizeUser);
+            applyServerBlockLists(data);
             renderUsers();
             var found = null;
             users.forEach(function (x) { if (x.email === email) found = x; });
@@ -3098,7 +3124,7 @@
             selectedUser = fresh;
             sheetMedia.textContent = fmtNum(fresh.media);
             sheetSong.textContent = fmtNum(fresh.song);
-            sheetPlan.textContent = fresh.plan;
+            sheetPlan.textContent = fresh.isPro ? fresh.plan : "Free";
             updateDeductBalance();
           }
           var msg = (ctx.signed >= 0 ? "បានផ្ដល់ " : "បានកាត់ ") + fmtNum(Math.abs(ctx.signed)) +
@@ -3363,412 +3389,122 @@
             });
         });
 
-        /* ---------- Block / unblock a device model ----------
-           Blocking is confirmed in an in-page dialog first (the
-           sandboxed iframe swallows the native confirm dialog), then
-           POST /api/admin/block-model with the Admin key (via api())
-           and body { model }. Unblock is POST /api/admin/unblock-model
-           with the same body. The server may answer HTTP 200 with
-           { ok:false, error } — that is a failure and the server's
-           real error is shown, never hidden. A blocked model is
-           marked on every user in the list who logs in with it. */
-        var pendingBlockModel = "";
+        /* ---------- Block / unblock: Model · IP · Gmail ----------
+           One compact row per kind in the detail sheet: a small name
+           plus an ON/OFF toggle — nothing else. Flipping the toggle
+           ON posts the block to the server (POST
+           /api/admin/block-model | block-ip | block-email, body
+           { model } | { ip } | { email }); the server enforces it —
+           a blocked IP cannot connect, a blocked Gmail account can
+           no longer be used, and blocking a model locks out every
+           Gmail that logs in with that device model — until the
+           admin unlocks it here (POST /api/admin/unblock-*). While
+           blocked, the row stays ON with a Locked chip and an
+           «Unlock» button; that state is re-read from the server on
+           every users load, so re-entering Admin never resets it or
+           offers «block» again for something already blocked. A
+           server answer of { ok:false, error } is a failure and its
+           real error is shown, never hidden. */
+        var blockCfg = {
+          model: {
+            toggle: blockModelToggle, lockedChip: blockModelLocked, unlockBtn: unblockModelBtn,
+            nameEl: blockModelName, key: "model", flag: "modelBlocked", label: "Model",
+            blockPath: "/api/admin/block-model", unblockPath: "/api/admin/unblock-model"
+          },
+          ip: {
+            toggle: blockIpToggle, lockedChip: blockIpLocked, unlockBtn: unblockIpBtn,
+            nameEl: blockIpName, key: "lastIp", flag: "ipBlocked", label: "IP",
+            blockPath: "/api/admin/block-ip", unblockPath: "/api/admin/unblock-ip"
+          },
+          email: {
+            toggle: blockEmailToggle, lockedChip: blockEmailLocked, unlockBtn: unblockEmailBtn,
+            nameEl: blockEmailName, key: "email", flag: "emailBlocked", label: "Gmail",
+            blockPath: "/api/admin/block-email", unblockPath: "/api/admin/unblock-email"
+          }
+        };
+        var blockPending = { model: false, ip: false, email: false };
 
-        function updateBlockUI() {
-          blockModelBtn.classList.add("hidden");
-          unblockModelBtn.classList.add("hidden");
-          if (!selectedUser) { blockModelInfo.textContent = ""; return; }
-          var model = String(selectedUser.model || "");
-          if (!model) {
-            blockModelInfo.textContent = "អ្នកប្រើនេះមិនទាន់មានកូដម៉ូឌែលដែលបានកត់ត្រាទេ — មិនអាចប្លុកបាន។";
-            return;
-          }
-          if (selectedUser.modelBlocked) {
-            blockModelInfo.innerHTML = "";
-            blockModelInfo.appendChild(document.createTextNode("ម៉ូឌែល "));
-            var b = document.createElement("b");
-            b.className = "model-code";
-            b.textContent = model;
-            blockModelInfo.appendChild(b);
-            blockModelInfo.appendChild(document.createTextNode(" "));
-            var chip = document.createElement("span");
-            chip.className = "lock-chip locked";
-            chip.textContent = "ត្រូវបានប្លុក";
-            blockModelInfo.appendChild(chip);
-            blockModelInfo.appendChild(document.createTextNode(" — ឧបករណ៍ម៉ូឌែលនេះចូលប្រើលែងបាន។"));
-            unblockModelBtn.classList.remove("hidden");
-          } else {
-            blockModelInfo.innerHTML = "";
-            blockModelInfo.appendChild(document.createTextNode("ម៉ូឌែល "));
-            var b2 = document.createElement("b");
-            b2.className = "model-code";
-            b2.textContent = model;
-            blockModelInfo.appendChild(b2);
-            blockModelInfo.appendChild(document.createTextNode(" — ចូលបាន " +
-              (selectedUser.modelLogins !== undefined ? fmtNum(selectedUser.modelLogins) : "—") + " ដង។ ប្លុកម៉ូឌែលនេះ ឧបករណ៍ទាំងអស់ដែលប្រើវានឹងចូលប្រើលែងបាន។"));
-            blockModelBtn.classList.remove("hidden");
-          }
+        function blockValue(kind) {
+          if (!selectedUser) return "";
+          return String(selectedUser[blockCfg[kind].key] || "");
         }
 
-        function setModelBlockedEverywhere(model, blocked) {
+        function updateBlockRow(kind) {
+          var cfg = blockCfg[kind];
+          var value = blockValue(kind);
+          var blocked = !!(selectedUser && selectedUser[cfg.flag]);
+          cfg.nameEl.textContent = value || "—";
+          cfg.toggle.setAttribute("aria-checked", blocked ? "true" : "false");
+          cfg.toggle.disabled = !value || blockPending[kind];
+          cfg.lockedChip.classList.toggle("hidden", !blocked);
+          cfg.unlockBtn.classList.toggle("hidden", !blocked);
+          cfg.unlockBtn.disabled = blockPending[kind];
+        }
+
+        function updateBlockUI() {
+          updateBlockRow("model");
+          updateBlockRow("ip");
+          updateBlockRow("email");
+        }
+
+        function setBlockedEverywhere(kind, value, blocked) {
+          var cfg = blockCfg[kind];
           users.forEach(function (x) {
-            if (String(x.model || "") === model) x.modelBlocked = blocked;
+            if (String(x[cfg.key] || "") === value) x[cfg.flag] = blocked;
           });
-          if (selectedUser && String(selectedUser.model || "") === model) selectedUser.modelBlocked = blocked;
+          if (selectedUser && String(selectedUser[cfg.key] || "") === value) selectedUser[cfg.flag] = blocked;
           renderUsers();
           updateBlockUI();
         }
 
-        function askBlockModel() {
-          if (!selectedUser || !selectedUser.model) return;
-          pendingBlockModel = String(selectedUser.model);
-          blockModelTitle.textContent = pendingBlockModel;
-          blockModelConfirmStatus.textContent = "";
-          blockModelConfirmBtn.disabled = false;
-          blockModelCancelBtn.disabled = false;
-          blockModelBackdrop.classList.add("open");
-          blockModelCancelBtn.focus();
-        }
-        function closeBlockModelDialog() {
-          blockModelBackdrop.classList.remove("open");
-          pendingBlockModel = "";
-        }
-        blockModelBtn.addEventListener("click", askBlockModel);
-        blockModelCancelBtn.addEventListener("click", closeBlockModelDialog);
-        blockModelBackdrop.addEventListener("click", function (e) {
-          if (e.target === blockModelBackdrop && !blockModelConfirmBtn.disabled) closeBlockModelDialog();
-        });
-
-        blockModelConfirmBtn.addEventListener("click", function () {
-          if (!pendingBlockModel) return;
-          var model = pendingBlockModel;
+        function applyBlock(kind, blocked) {
+          if (!selectedUser || blockPending[kind]) return;
+          var cfg = blockCfg[kind];
+          var value = blockValue(kind);
+          if (!value) return;
           hideAlert(blockError);
           hideAlert(blockOk);
-          blockModelConfirmBtn.disabled = true;
-          blockModelCancelBtn.disabled = true;
-          blockModelConfirmStatus.textContent = "កំពុងប្លុក…";
-          api("/api/admin/block-model", { method: "POST", body: { model: model } })
-            .then(function (data) {
-              blockModelCancelBtn.disabled = false;
-              if (data && data.ok === false) {
-                blockModelConfirmBtn.disabled = false;
-                blockModelConfirmStatus.textContent = "Server បដិសេធការប្លុក៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ");
-                return;
-              }
-              closeBlockModelDialog();
-              setModelBlockedEverywhere(model, true);
-              showAlert(blockOk, "បានប្លុកម៉ូឌែល " + model + " រួចរាល់ — ឧបករណ៍ម៉ូឌែលនេះចូលប្រើ MovAi លែងបានទៀត។");
-            })
-            .catch(function (err) {
-              blockModelCancelBtn.disabled = false;
-              blockModelConfirmBtn.disabled = false;
-              if (err.code === "AUTH") {
-                closeBlockModelDialog();
-                clearKey();
-                showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
-                return;
-              }
-              blockModelConfirmStatus.textContent = "ប្លុកមិនបាន៖ " + err.message;
-            });
-        });
-
-        unblockModelBtn.addEventListener("click", function () {
-          if (!selectedUser || !selectedUser.model) return;
-          var model = String(selectedUser.model);
-          hideAlert(blockError);
-          hideAlert(blockOk);
-          unblockModelBtn.disabled = true;
+          blockPending[kind] = true;
+          updateBlockUI();
           var stop = makeTicker(blockStatus, function (s) {
-            return "កំពុងដកប្លុក… " + s + " វិនាទី";
+            return (blocked ? "កំពុងប្លុក… " : "កំពុងដកប្លុក… ") + s + " វិនាទី";
           });
-          api("/api/admin/unblock-model", { method: "POST", body: { model: model } })
+          var body = {};
+          body[kind] = value;
+          api(blocked ? cfg.blockPath : cfg.unblockPath, { method: "POST", body: body })
             .then(function (data) {
               stop();
               blockStatus.textContent = "";
-              unblockModelBtn.disabled = false;
+              blockPending[kind] = false;
               if (data && data.ok === false) {
-                showAlert(blockError, "Server បដិសេធការដកប្លុក៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ"));
+                updateBlockUI();
+                showAlert(blockError, "Server បដិសេធ៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ"));
                 return;
               }
-              setModelBlockedEverywhere(model, false);
-              showAlert(blockOk, "បានដកប្លុកម៉ូឌែល " + model + " រួចរាល់ — ឧបករណ៍ម៉ូឌែលនេះចូលប្រើបានវិញ។");
+              setBlockedEverywhere(kind, value, blocked);
+              showAlert(blockOk, (blocked ? "បានប្លុក " : "បានដកប្លុក ") + cfg.label + " " + value);
             })
             .catch(function (err) {
               stop();
               blockStatus.textContent = "";
-              unblockModelBtn.disabled = false;
+              blockPending[kind] = false;
+              updateBlockUI();
               if (err.code === "AUTH") {
                 clearKey();
                 showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
                 return;
               }
-              showAlert(blockError, "ដកប្លុកមិនបាន៖ " + err.message);
+              showAlert(blockError, (blocked ? "ប្លុកមិនបាន៖ " : "ដកប្លុកមិនបាន៖ ") + err.message);
             });
-        });
-
-        /* ---------- Block / unblock an IP address ----------
-           Same pattern as the model block: an in-page confirm dialog
-           first, then POST /api/admin/block-ip with the Admin key (via
-           api()) and body { ip }. Unblock is POST
-           /api/admin/unblock-ip with the same body. A server answer of
-           { ok:false, error } is a failure and the server's real error
-           is shown. The blocked flag is reflected on every user whose
-           recorded IP matches. */
-        var pendingBlockIp = "";
-
-        function updateBlockIpUI() {
-          blockIpBtn.classList.add("hidden");
-          unblockIpBtn.classList.add("hidden");
-          if (!selectedUser) { blockIpInfo.textContent = ""; return; }
-          var ip = String(selectedUser.lastIp || "");
-          if (!ip) {
-            blockIpInfo.textContent = "អ្នកប្រើនេះមិនទាន់មាន IP ដែលបានកត់ត្រាទេ — មិនអាចប្លុកបាន។";
-            return;
-          }
-          blockIpInfo.innerHTML = "";
-          blockIpInfo.appendChild(document.createTextNode("IP "));
-          var b = document.createElement("b");
-          b.className = "model-code";
-          b.textContent = ip;
-          blockIpInfo.appendChild(b);
-          blockIpInfo.appendChild(document.createTextNode(" "));
-          if (selectedUser.ipBlocked) {
-            var chip = document.createElement("span");
-            chip.className = "lock-chip locked";
-            chip.textContent = "ត្រូវបានប្លុក";
-            blockIpInfo.appendChild(chip);
-            blockIpInfo.appendChild(document.createTextNode(" — ការតភ្ជាប់ពី IP នេះចូលប្រើលែងបាន។"));
-            unblockIpBtn.classList.remove("hidden");
-          } else {
-            blockIpInfo.appendChild(document.createTextNode(" — ប្លុក IP នេះ ការតភ្ជាប់ទាំងអស់ពី IP នេះនឹងចូលប្រើលែងបាន។"));
-            blockIpBtn.classList.remove("hidden");
-          }
         }
 
-        function setIpBlockedEverywhere(ip, blocked) {
-          users.forEach(function (x) {
-            if (String(x.lastIp || "") === ip) x.ipBlocked = blocked;
+        ["model", "ip", "email"].forEach(function (kind) {
+          var cfg = blockCfg[kind];
+          cfg.toggle.addEventListener("click", function () {
+            if (!selectedUser) return;
+            applyBlock(kind, !selectedUser[cfg.flag]);
           });
-          if (selectedUser && String(selectedUser.lastIp || "") === ip) selectedUser.ipBlocked = blocked;
-          updateBlockIpUI();
-        }
-
-        function askBlockIp() {
-          if (!selectedUser || !selectedUser.lastIp) return;
-          pendingBlockIp = String(selectedUser.lastIp);
-          blockIpTitle.textContent = pendingBlockIp;
-          blockIpConfirmStatus.textContent = "";
-          blockIpConfirmBtn.disabled = false;
-          blockIpCancelBtn.disabled = false;
-          blockIpBackdrop.classList.add("open");
-          blockIpCancelBtn.focus();
-        }
-        function closeBlockIpDialog() {
-          blockIpBackdrop.classList.remove("open");
-          pendingBlockIp = "";
-        }
-        blockIpBtn.addEventListener("click", askBlockIp);
-        blockIpCancelBtn.addEventListener("click", closeBlockIpDialog);
-        blockIpBackdrop.addEventListener("click", function (e) {
-          if (e.target === blockIpBackdrop && !blockIpConfirmBtn.disabled) closeBlockIpDialog();
-        });
-
-        blockIpConfirmBtn.addEventListener("click", function () {
-          if (!pendingBlockIp) return;
-          var ip = pendingBlockIp;
-          hideAlert(blockIpError);
-          hideAlert(blockIpOk);
-          blockIpConfirmBtn.disabled = true;
-          blockIpCancelBtn.disabled = true;
-          blockIpConfirmStatus.textContent = "កំពុងប្លុក…";
-          api("/api/admin/block-ip", { method: "POST", body: { ip: ip } })
-            .then(function (data) {
-              blockIpCancelBtn.disabled = false;
-              if (data && data.ok === false) {
-                blockIpConfirmBtn.disabled = false;
-                blockIpConfirmStatus.textContent = "Server បដិសេធការប្លុក៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ");
-                return;
-              }
-              closeBlockIpDialog();
-              setIpBlockedEverywhere(ip, true);
-              showAlert(blockIpOk, "បានប្លុក IP " + ip + " រួចរាល់ — ការតភ្ជាប់ពី IP នេះចូលប្រើ MovAi លែងបានទៀត។");
-            })
-            .catch(function (err) {
-              blockIpCancelBtn.disabled = false;
-              blockIpConfirmBtn.disabled = false;
-              if (err.code === "AUTH") {
-                closeBlockIpDialog();
-                clearKey();
-                showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
-                return;
-              }
-              blockIpConfirmStatus.textContent = "ប្លុកមិនបាន៖ " + err.message;
-            });
-        });
-
-        unblockIpBtn.addEventListener("click", function () {
-          if (!selectedUser || !selectedUser.lastIp) return;
-          var ip = String(selectedUser.lastIp);
-          hideAlert(blockIpError);
-          hideAlert(blockIpOk);
-          unblockIpBtn.disabled = true;
-          var stop = makeTicker(blockIpStatus, function (s) {
-            return "កំពុងដកប្លុក… " + s + " វិនាទី";
-          });
-          api("/api/admin/unblock-ip", { method: "POST", body: { ip: ip } })
-            .then(function (data) {
-              stop();
-              blockIpStatus.textContent = "";
-              unblockIpBtn.disabled = false;
-              if (data && data.ok === false) {
-                showAlert(blockIpError, "Server បដិសេធការដកប្លុក៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ"));
-                return;
-              }
-              setIpBlockedEverywhere(ip, false);
-              showAlert(blockIpOk, "បានដកប្លុក IP " + ip + " រួចរាល់ — ការតភ្ជាប់ពី IP នេះចូលប្រើបានវិញ។");
-            })
-            .catch(function (err) {
-              stop();
-              blockIpStatus.textContent = "";
-              unblockIpBtn.disabled = false;
-              if (err.code === "AUTH") {
-                clearKey();
-                showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
-                return;
-              }
-              showAlert(blockIpError, "ដកប្លុកមិនបាន៖ " + err.message);
-            });
-        });
-
-        /* ---------- Block / unblock a Gmail account ----------
-           Same pattern again: confirm dialog first, then POST
-           /api/admin/block-email { email } with the Admin key;
-           unblock is POST /api/admin/unblock-email. { ok:false }
-           answers surface the server's real error. */
-        var pendingBlockEmail = "";
-
-        function updateBlockEmailUI() {
-          blockEmailBtn.classList.add("hidden");
-          unblockEmailBtn.classList.add("hidden");
-          if (!selectedUser) { blockEmailInfo.textContent = ""; return; }
-          var email = String(selectedUser.email || "");
-          if (!email) {
-            blockEmailInfo.textContent = "អ្នកប្រើនេះមិនទាន់មាន Gmail ដែលបានកត់ត្រាទេ — មិនអាចប្លុកបាន។";
-            return;
-          }
-          blockEmailInfo.innerHTML = "";
-          blockEmailInfo.appendChild(document.createTextNode("Gmail "));
-          var b = document.createElement("b");
-          b.textContent = email;
-          b.style.wordBreak = "break-all";
-          blockEmailInfo.appendChild(b);
-          blockEmailInfo.appendChild(document.createTextNode(" "));
-          if (selectedUser.emailBlocked) {
-            var chip = document.createElement("span");
-            chip.className = "lock-chip locked";
-            chip.textContent = "ត្រូវបានប្លុក";
-            blockEmailInfo.appendChild(chip);
-            blockEmailInfo.appendChild(document.createTextNode(" — គណនីនេះចូលប្រើលែងបាន។"));
-            unblockEmailBtn.classList.remove("hidden");
-          } else {
-            blockEmailInfo.appendChild(document.createTextNode(" — ប្លុក Gmail នេះ គណនីនេះនឹងចូលប្រើលែងបាន។"));
-            blockEmailBtn.classList.remove("hidden");
-          }
-        }
-
-        function setEmailBlockedEverywhere(email, blocked) {
-          users.forEach(function (x) {
-            if (String(x.email || "") === email) x.emailBlocked = blocked;
-          });
-          if (selectedUser && String(selectedUser.email || "") === email) selectedUser.emailBlocked = blocked;
-          updateBlockEmailUI();
-        }
-
-        function askBlockEmail() {
-          if (!selectedUser || !selectedUser.email) return;
-          pendingBlockEmail = String(selectedUser.email);
-          blockEmailTitle.textContent = pendingBlockEmail;
-          blockEmailConfirmStatus.textContent = "";
-          blockEmailConfirmBtn.disabled = false;
-          blockEmailCancelBtn.disabled = false;
-          blockEmailBackdrop.classList.add("open");
-          blockEmailCancelBtn.focus();
-        }
-        function closeBlockEmailDialog() {
-          blockEmailBackdrop.classList.remove("open");
-          pendingBlockEmail = "";
-        }
-        blockEmailBtn.addEventListener("click", askBlockEmail);
-        blockEmailCancelBtn.addEventListener("click", closeBlockEmailDialog);
-        blockEmailBackdrop.addEventListener("click", function (e) {
-          if (e.target === blockEmailBackdrop && !blockEmailConfirmBtn.disabled) closeBlockEmailDialog();
-        });
-
-        blockEmailConfirmBtn.addEventListener("click", function () {
-          if (!pendingBlockEmail) return;
-          var email = pendingBlockEmail;
-          hideAlert(blockEmailError);
-          hideAlert(blockEmailOk);
-          blockEmailConfirmBtn.disabled = true;
-          blockEmailCancelBtn.disabled = true;
-          blockEmailConfirmStatus.textContent = "កំពុងប្លុក…";
-          api("/api/admin/block-email", { method: "POST", body: { email: email } })
-            .then(function (data) {
-              blockEmailCancelBtn.disabled = false;
-              if (data && data.ok === false) {
-                blockEmailConfirmBtn.disabled = false;
-                blockEmailConfirmStatus.textContent = "Server បដិសេធការប្លុក៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ");
-                return;
-              }
-              closeBlockEmailDialog();
-              setEmailBlockedEverywhere(email, true);
-              showAlert(blockEmailOk, "បានប្លុក Gmail " + email + " រួចរាល់ — គណនីនេះចូលប្រើ MovAi លែងបានទៀត។");
-            })
-            .catch(function (err) {
-              blockEmailCancelBtn.disabled = false;
-              blockEmailConfirmBtn.disabled = false;
-              if (err.code === "AUTH") {
-                closeBlockEmailDialog();
-                clearKey();
-                showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
-                return;
-              }
-              blockEmailConfirmStatus.textContent = "ប្លុកមិនបាន៖ " + err.message;
-            });
-        });
-
-        unblockEmailBtn.addEventListener("click", function () {
-          if (!selectedUser || !selectedUser.email) return;
-          var email = String(selectedUser.email);
-          hideAlert(blockEmailError);
-          hideAlert(blockEmailOk);
-          unblockEmailBtn.disabled = true;
-          var stop = makeTicker(blockEmailStatus, function (s) {
-            return "កំពុងដកប្លុក… " + s + " វិនាទី";
-          });
-          api("/api/admin/unblock-email", { method: "POST", body: { email: email } })
-            .then(function (data) {
-              stop();
-              blockEmailStatus.textContent = "";
-              unblockEmailBtn.disabled = false;
-              if (data && data.ok === false) {
-                showAlert(blockEmailError, "Server បដិសេធការដកប្លុក៖ " + (data.error || data.message || "មិនដឹងមូលហេតុ"));
-                return;
-              }
-              setEmailBlockedEverywhere(email, false);
-              showAlert(blockEmailOk, "បានដកប្លុក Gmail " + email + " រួចរាល់ — គណនីនេះចូលប្រើបានវិញ។");
-            })
-            .catch(function (err) {
-              stop();
-              blockEmailStatus.textContent = "";
-              unblockEmailBtn.disabled = false;
-              if (err.code === "AUTH") {
-                clearKey();
-                showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
-                return;
-              }
-              showAlert(blockEmailError, "ដកប្លុកមិនបាន៖ " + err.message);
-            });
+          cfg.unlockBtn.addEventListener("click", function () { applyBlock(kind, false); });
         });
 
         /* ---------- Section navigation (☰ drawer) ---------- */
