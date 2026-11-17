@@ -219,6 +219,26 @@
       }
       .plan-expiry.expired { color: #FFB3B3; background: rgba(220,38,38,.12); border-color: rgba(220,38,38,.45); }
       .u-since { color: var(--text-dim); font-size: 13.5px; white-space: nowrap; }
+      /* ---------- Password status + reset ---------- */
+      .pw-chip {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 12.5px; font-weight: 700; white-space: nowrap;
+        border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px;
+        color: var(--text-faint); background: var(--card-2);
+      }
+      .pw-chip.has { color: var(--lime); background: var(--green-bg); border-color: rgba(173,220,41,.45); }
+      .pw-box h3 { margin: 0 0 8px; font-size: 16px; }
+      .pw-status-line { font-size: 14px; color: var(--text-dim); margin: 0 0 6px; }
+      .pw-status-line b { color: var(--text); }
+      .pw-note { font-size: 12.5px; color: var(--text-faint); margin: 0 0 12px; }
+      .pw-sub { border-top: 1px solid var(--line-soft); margin-top: 14px; padding-top: 12px; }
+      .pw-confirm {
+        background: var(--red-bg); border: 1px solid rgba(255,107,107,.35);
+        border-radius: 12px; padding: 12px; margin-top: 10px;
+      }
+      .pw-confirm p { margin: 0 0 10px; font-size: 13.5px; color: var(--text-dim); }
+      .pw-confirm-actions { display: flex; gap: 8px; }
+      .pw-confirm-actions .btn { flex: 1; }
       .u-ip, .u-device, .u-seen, .u-modellogins { color: var(--text-dim); font-size: 13.5px; white-space: nowrap; }
       .chev { color: var(--text-faint); }
 
@@ -1287,6 +1307,7 @@
               <th>ID</th>
               <th>ឈ្មោះ</th>
               <th>Gmail</th>
+              <th>Password</th>
               <th>Media</th>
               <th>Song</th>
               <th>កញ្ចប់</th>
@@ -2057,6 +2078,44 @@
             <div class="k">Last seen</div>
             <div class="v small" id="sheetSeen">—</div>
           </div>
+          <div class="detail-cell">
+            <div class="k">Password · ពាក្យសម្ងាត់</div>
+            <div class="v small" id="sheetPasswordCell">—</div>
+          </div>
+        </div>
+
+        <div class="grant-box pw-box">
+          <h3>🔑 Password · ពាក្យសម្ងាត់</h3>
+          <p class="pw-status-line">ស្ថានភាព · Status៖ <b id="sheetPwStatus">—</b></p>
+          <p class="pw-note">Admin មើល Password របស់អ្នកប្រើមិនបានទេ — Password ត្រូវរក្សាទុកជាហាស់ (hash) ដែលបកវិញមិនបាន។ មើលបានតែស្ថានភាព និងកំណត់ថ្មីបាន។ · Admin can never view a user's password — status + reset only.</p>
+          <button class="btn btn-block" id="pwResetBtn" type="button">កំណត់ Password ឡើងវិញ · Reset password</button>
+          <div id="pwPanel" class="hidden">
+            <div class="pw-sub">
+              <span class="field-label">ដាក់ Password ថ្មី · Set new password</span>
+              <div class="key-field">
+                <input class="text-input" id="pwNewInput" type="password" placeholder="Password ថ្មី (6–64 តួ)…" autocomplete="new-password" aria-label="Password ថ្មី · New password" />
+                <button class="btn key-tool-btn" id="pwEyeBtn" type="button" aria-label="បង្ហាញ / លាក់ Password" title="បង្ហាញ / លាក់ Password">
+                  <svg id="pwEyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg id="pwEyeOff" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.61 6.61A13.53 13.53 0 0 0 2 12s3.5 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/></svg>
+                </button>
+              </div>
+              <button class="btn btn-primary btn-block" id="pwSetBtn" type="button" style="margin-top:8px;">ដាក់ Password ថ្មី · Set</button>
+            </div>
+            <div class="pw-sub">
+              <span class="field-label">លុប Password · Clear password</span>
+              <button class="btn btn-block btn-reject" id="pwClearBtn" type="button">លុប Password · Clear password</button>
+              <div class="pw-confirm hidden" id="pwClearConfirm">
+                <p>វានឹងលុប Password របស់អ្នកប្រើនេះ។ គេត្រូវដាក់ Password ថ្មីតាម Forgot password ឬ Google។ ការចូលដែលបាន Save ទាំងអស់នឹងត្រូវដកចេញ។<br />This clears the user's password. They must set a new one via Forgot password or Google.</p>
+                <div class="pw-confirm-actions">
+                  <button class="btn" id="pwClearCancelBtn" type="button">បោះបង់ · Cancel</button>
+                  <button class="btn btn-danger" id="pwClearConfirmBtn" type="button">លុប · Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-error" id="pwError" role="alert"></div>
+          <div class="alert alert-ok" id="pwOk" role="status"></div>
+          <p class="grant-status" id="pwStatus"></p>
         </div>
 
         <div class="grant-box credit-box">
@@ -2526,6 +2585,7 @@
             modelBlocked: modelBlocked,
             ipBlocked: ipBlocked,
             emailBlocked: emailBlocked,
+            hasPassword: truthyVal(pick(u, ["hasPassword", "has_password", "passwordSet", "password_set"])),
             lastSeen: pick(u, ["lastSeen", "last_seen", "lastActive", "last_active", "lastLogin", "last_login"])
           };
         }
@@ -2972,6 +3032,7 @@
                   sheetSeen.textContent = fmtDateTime(fresh.lastSeen);
                   updateDeductBalance();
                   updateBlockUI();
+                  updatePasswordUI();
                 }
               }
             })
@@ -3037,7 +3098,7 @@
             if (g.model && g.users.length > 1) {
               var gtr = document.createElement("tr");
               gtr.className = "group-head-row";
-              gtr.innerHTML = "<td colspan='11'><span class='model-code'></span></td>";
+              gtr.innerHTML = "<td colspan='12'><span class='model-code'></span></td>";
               gtr.querySelector(".model-code").textContent = g.model + " · " + g.users.length;
               usersTbody.appendChild(gtr);
               var block = document.createElement("div");
@@ -3063,6 +3124,7 @@
               "<td><span class='u-id'></span></td>" +
               "<td><span class='u-name'></span></td>" +
               "<td><span class='u-email'></span></td>" +
+              "<td><span class='pw-chip'></span></td>" +
               "<td><span class='credit-chip chip-media'><span class='dot'></span></span></td>" +
               "<td><span class='credit-chip chip-song'><span class='dot'></span></span></td>" +
               "<td><span class='plan-badge'></span></td>" +
@@ -3074,14 +3136,17 @@
             tr.children[0].firstChild.textContent = u.id || "—";
             tr.children[1].firstChild.textContent = u.name;
             tr.children[2].firstChild.textContent = u.email;
-            tr.children[3].firstChild.appendChild(document.createTextNode(fmtNum(u.media)));
-            tr.children[4].firstChild.appendChild(document.createTextNode(fmtNum(u.song)));
-            var pb = tr.children[5].firstChild;
+            var pwc = tr.children[3].firstChild;
+            pwc.textContent = u.hasPassword ? "🔑 មាន" : "No password";
+            if (u.hasPassword) pwc.classList.add("has");
+            tr.children[4].firstChild.appendChild(document.createTextNode(fmtNum(u.media)));
+            tr.children[5].firstChild.appendChild(document.createTextNode(fmtNum(u.song)));
+            var pb = tr.children[6].firstChild;
             if (u.isPro) { pb.textContent = "Pro"; pb.classList.add("pro"); }
             else { pb.textContent = "Free"; }
-            tr.children[6].firstChild.textContent = fmtDate(u.since);
-            tr.children[7].firstChild.textContent = ipLabel(u);
-            var devSpan = tr.children[8].firstChild;
+            tr.children[7].firstChild.textContent = fmtDate(u.since);
+            tr.children[8].firstChild.textContent = ipLabel(u);
+            var devSpan = tr.children[9].firstChild;
             devSpan.textContent = deviceLabel(u);
             if (u.model) {
               var devSub = document.createElement("span");
@@ -3090,7 +3155,7 @@
                 (u.modelBlocked ? " · ត្រូវបានប្លុក" : "");
               devSpan.appendChild(devSub);
             }
-            tr.children[9].firstChild.textContent = fmtDateTime(u.lastSeen);
+            tr.children[10].firstChild.textContent = fmtDateTime(u.lastSeen);
             tr.addEventListener("click", function () { openSheet(u); });
             tr.addEventListener("keydown", function (e) {
               if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(u); }
@@ -3107,6 +3172,7 @@
               "<span class='row2'>" +
                 "<span class='credit-chip chip-media'><span class='dot'></span></span>" +
                 "<span class='credit-chip chip-song'><span class='dot'></span></span>" +
+                "<span class='pw-chip'></span>" +
               "</span>";
             card.querySelector(".u-name").textContent = u.name;
             card.querySelector(".u-id").textContent = "ID · " + (u.id || "—");
@@ -3116,6 +3182,9 @@
             card.querySelector(".u-email").textContent = u.email;
             card.querySelector(".chip-media").appendChild(document.createTextNode(fmtNum(u.media)));
             card.querySelector(".chip-song").appendChild(document.createTextNode(fmtNum(u.song)));
+            var cpw = card.querySelector(".pw-chip");
+            cpw.textContent = u.hasPassword ? "🔑 មាន · Password" : "No password";
+            if (u.hasPassword) cpw.classList.add("has");
             var umEl = card.querySelector(".u-model");
             if (u.model) umEl.textContent = String(u.model);
             else umEl.style.display = "none";
@@ -3212,6 +3281,8 @@
           hideAlert(blockOk);
           blockStatus.textContent = "";
           updateBlockUI();
+          resetPasswordPanel();
+          updatePasswordUI();
           amountInput.value = "";
           noteInput.value = "";
           hideAlert(grantError);
@@ -3237,6 +3308,7 @@
         function closeSheet() {
           overlay.classList.remove("open");
           document.body.style.overflow = "";
+          resetPasswordPanel();
           selectedUser = null;
         }
 
@@ -3900,6 +3972,168 @@
             applyBlock(kind, !selectedUser[cfg.flag]);
           });
           cfg.unlockBtn.addEventListener("click", function () { applyBlock(kind, false); });
+        });
+
+        /* ---------- Password status + reset (detail sheet) ----------
+           The server reports only `hasPassword` (true/false) — a plain
+           password is NEVER returned and can never be shown here: it is
+           stored only as a scrypt hash, which cannot be reversed. The
+           admin sees the STATUS and can RESET via
+           POST /api/admin/reset-password with the same Admin Key
+           Bearer auth as /api/admin/grant: { email } CLEARS the
+           password (the user then sets a new one via Forgot password
+           or Google); { email, newPassword } (6–64 chars) SETS a new
+           one. Every reset revokes the user's saved (remember-me)
+           logins. The new password the admin types is sent once and
+           never stored, logged, or shown back anywhere in this app —
+           after a successful set the field is wiped and the admin
+           must tell the user the password they chose. A server answer
+           of { ok:false, error } is a failure and its real error is
+           shown in the sheet, never hidden. */
+        var sheetPasswordCell = document.getElementById("sheetPasswordCell");
+        var sheetPwStatus = document.getElementById("sheetPwStatus");
+        var pwResetBtn = document.getElementById("pwResetBtn");
+        var pwPanel = document.getElementById("pwPanel");
+        var pwNewInput = document.getElementById("pwNewInput");
+        var pwEyeBtn = document.getElementById("pwEyeBtn");
+        var pwEyeOpen = document.getElementById("pwEyeOpen");
+        var pwEyeOff = document.getElementById("pwEyeOff");
+        var pwSetBtn = document.getElementById("pwSetBtn");
+        var pwClearBtn = document.getElementById("pwClearBtn");
+        var pwClearConfirm = document.getElementById("pwClearConfirm");
+        var pwClearConfirmBtn = document.getElementById("pwClearConfirmBtn");
+        var pwClearCancelBtn = document.getElementById("pwClearCancelBtn");
+        var pwError = document.getElementById("pwError");
+        var pwOk = document.getElementById("pwOk");
+        var pwStatus = document.getElementById("pwStatus");
+        var pwPending = false;
+
+        function pwStatusLabel(has) {
+          return has ? "🔑 មាន · Set" : "មិនទាន់មាន · Not set";
+        }
+        function updatePasswordUI() {
+          var has = !!(selectedUser && selectedUser.hasPassword);
+          if (sheetPasswordCell) sheetPasswordCell.textContent = pwStatusLabel(has);
+          if (sheetPwStatus) sheetPwStatus.textContent = pwStatusLabel(has);
+        }
+        function resetPasswordPanel() {
+          if (pwPanel) pwPanel.classList.add("hidden");
+          if (pwClearConfirm) pwClearConfirm.classList.add("hidden");
+          if (pwNewInput) { pwNewInput.value = ""; pwNewInput.type = "password"; }
+          if (pwEyeOpen) pwEyeOpen.classList.remove("hidden");
+          if (pwEyeOff) pwEyeOff.classList.add("hidden");
+          if (pwError) hideAlert(pwError);
+          if (pwOk) hideAlert(pwOk);
+          if (pwStatus) pwStatus.textContent = "";
+        }
+        function setHasPasswordEverywhere(email, has) {
+          users.forEach(function (x) { if (x.email === email) x.hasPassword = has; });
+          if (selectedUser && selectedUser.email === email) selectedUser.hasPassword = has;
+          renderUsers();
+          updatePasswordUI();
+        }
+        function setPwBusy(busy) {
+          pwPending = busy;
+          pwSetBtn.disabled = busy;
+          pwClearBtn.disabled = busy;
+          pwClearConfirmBtn.disabled = busy;
+          pwResetBtn.disabled = busy;
+        }
+        function doPasswordReset(newPassword) {
+          if (!selectedUser || pwPending) return;
+          var email = selectedUser.email;
+          hideAlert(pwError);
+          hideAlert(pwOk);
+          setPwBusy(true);
+          var stop = makeTicker(pwStatus, function (s) {
+            return "កំពុងកំណត់ Password ឡើងវិញ… " + s + " វិនាទី";
+          });
+          var body = { email: email };
+          if (newPassword) body.newPassword = newPassword;
+          api("/api/admin/reset-password", { method: "POST", body: body })
+            .then(function (data) {
+              if (data && data.ok === false) {
+                var err = new Error(data.error || data.message || "server ឆ្លើយ ok:false");
+                err.code = "SERVER";
+                throw err;
+              }
+              var inferred = !!newPassword;
+              if (data && data.user && typeof data.user === "object") {
+                inferred = normalizeUser(data.user).hasPassword;
+              }
+              /* Read the status back from the server so the sheet and
+                 the list show what the server actually holds now. */
+              return fetchServerUser(email).then(function (fresh) {
+                if (fresh) {
+                  if (selectedUser && selectedUser.email === email) selectedUser = fresh;
+                  updatePasswordUI();
+                } else {
+                  setHasPasswordEverywhere(email, inferred);
+                }
+              }, function () {
+                setHasPasswordEverywhere(email, inferred);
+              });
+            })
+            .then(function () {
+              stop();
+              pwStatus.textContent = "";
+              setPwBusy(false);
+              pwClearConfirm.classList.add("hidden");
+              pwNewInput.value = "";
+              pwNewInput.type = "password";
+              pwEyeOpen.classList.remove("hidden");
+              pwEyeOff.classList.add("hidden");
+              if (newPassword) {
+                showAlert(pwOk, "បានដាក់ Password ថ្មីសម្រាប់ " + email + " — សូមប្រាប់អ្នកប្រើ · New password set for " + email + " — tell the user the new password.");
+              } else {
+                showAlert(pwOk, "បានលុប Password សម្រាប់ " + email + " · Password cleared for " + email);
+              }
+            })
+            .catch(function (err) {
+              stop();
+              pwStatus.textContent = "";
+              setPwBusy(false);
+              if (err.code === "AUTH") {
+                clearKey();
+                showLogin("សោ Admin មិនត្រឹមត្រូវ — សូមចូលម្ដងទៀត។");
+                return;
+              }
+              showAlert(pwError, err.message);
+            });
+        }
+        pwResetBtn.addEventListener("click", function () {
+          pwPanel.classList.toggle("hidden");
+          if (!pwPanel.classList.contains("hidden")) pwClearConfirm.classList.add("hidden");
+        });
+        pwEyeBtn.addEventListener("click", function () {
+          var show = pwNewInput.type === "password";
+          pwNewInput.type = show ? "text" : "password";
+          pwEyeOpen.classList.toggle("hidden", show);
+          pwEyeOff.classList.toggle("hidden", !show);
+          pwNewInput.focus();
+        });
+        pwSetBtn.addEventListener("click", function () {
+          if (!selectedUser || pwPending) return;
+          hideAlert(pwError);
+          hideAlert(pwOk);
+          var np = pwNewInput.value;
+          if (!np || np.length < 6 || np.length > 64) {
+            showAlert(pwError, "Password ថ្មីត្រូវមាន 6–64 តួអក្សរ · New password must be 6–64 characters.");
+            pwNewInput.focus();
+            return;
+          }
+          doPasswordReset(np);
+        });
+        pwClearBtn.addEventListener("click", function () {
+          hideAlert(pwError);
+          hideAlert(pwOk);
+          pwClearConfirm.classList.remove("hidden");
+        });
+        pwClearCancelBtn.addEventListener("click", function () {
+          pwClearConfirm.classList.add("hidden");
+        });
+        pwClearConfirmBtn.addEventListener("click", function () {
+          doPasswordReset(null);
         });
 
         /* ---------- Section navigation (☰ drawer) ---------- */
