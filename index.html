@@ -1971,6 +1971,22 @@
             <p class="save-status hidden" id="emailPassHint" style="text-align:left; color:var(--lime);">✓ Password បានរក្សាទុករួច · ទុកទទេក៏មិនបាត់</p>
           </div>
 
+          <div class="ctl">
+            <label class="field-label" for="emailBrevoApiKeyInput">Brevo API Key</label>
+            <div class="key-field">
+              <input class="text-input" id="emailBrevoApiKeyInput" type="password" autocomplete="off" placeholder="xkeysib-… (Brevo API Key)" />
+              <button class="btn key-tool-btn" id="emailBrevoEyeBtn" type="button" aria-label="បង្ហាញ / លាក់ Brevo API Key" title="បង្ហាញ / លាក់ Brevo API Key">
+                <svg id="emailBrevoEyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg id="emailBrevoEyeOff" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.61 6.61A13.53 13.53 0 0 0 2 12s3.5 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/></svg>
+              </button>
+            </div>
+            <p class="save-status" style="text-align:left;">Brevo (HTTPS) ផ្ញើលេខកូដ 6 ខ្ទង់ — Gmail SMTP ត្រូវប្លុកពី Server។ ទុកចោលដើម្បីប្រើ Gmail SMTP វិញ។ · Brevo (HTTPS) sends the 6-digit codes — Gmail SMTP is blocked from the server. Leave empty to use Gmail SMTP instead.</p>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <p class="save-status" id="emailBrevoUsageText" style="text-align:left; margin-top:0; flex:1; min-width:0;">Brevo៖ កំពុងពិនិត្យការប្រើប្រាស់… · Checking Brevo usage…</p>
+              <button class="btn" id="emailBrevoUsageRefreshBtn" type="button" style="flex:none; padding:4px 12px; min-height:0; font-size:13px;" aria-label="ផ្ទុកការប្រើប្រាស់ Brevo ឡើងវិញ · Refresh Brevo usage" title="ផ្ទុកឡើងវិញ · Refresh">↻</button>
+            </div>
+          </div>
+
           <div class="note-box">
             App Password៖ <b>Google Account</b> → <b>Security</b> → <b>2-Step</b> → <b>App passwords</b> (16 តួ)
           </div>
@@ -4749,6 +4765,13 @@
         var emailUser = EMAIL_DEFAULT_USER;
         var emailAppPassword = "";
         var emailPasswordSaved = false;
+        /* Brevo API Key (settings.email.brevoApiKey) — verification emails
+           send via Brevo's HTTPS API because Gmail SMTP is blocked from
+           the server. Same keep-saved-secret rule as the App Password,
+           but with NO clear action: an empty field never deletes the
+           stored key (empty simply means "use Gmail SMTP"). */
+        var emailBrevoApiKey = "";
+        var emailBrevoApiKeySaved = false;
         /* One-shot: set only by the explicit «លុប App Password» action. */
         var emailClearPasswordOnce = false;
         /* Whether email verification actually works, from
@@ -4949,6 +4972,24 @@
               if (emailAppPassword) emailPasswordSaved = true;
             }
           }
+          /* Brevo API Key — same saved-secret detection as the App
+             Password: hasBrevoApiKey flag, or a masked value (proof a key
+             is saved; the mask itself is never stored or re-sent). */
+          var emBrevoSavedFlag = pick(emObj, ["hasBrevoApiKey", "brevoApiKeySet"]);
+          if (emBrevoSavedFlag !== undefined && emBrevoSavedFlag !== null) {
+            emailBrevoApiKeySaved = (emBrevoSavedFlag === true || emBrevoSavedFlag === 1 || emBrevoSavedFlag === "true");
+          }
+          var emBrevo = pick(emObj, ["brevoApiKey", "brevo_api_key", "brevoKey"]);
+          if (emBrevo !== undefined && emBrevo !== null) {
+            var emBrevoStr = String(emBrevo).trim();
+            if (emBrevoStr.indexOf("•") !== -1 || /^\*+$/.test(emBrevoStr)) {
+              emailBrevoApiKeySaved = true;
+              emailBrevoApiKey = "";
+            } else if (emBrevoStr) {
+              emailBrevoApiKey = emBrevoStr;
+              emailBrevoApiKeySaved = true;
+            }
+          }
           applyEmailToControls();
           applyTelegramToControls();
           applyPaymentToControls();
@@ -5008,6 +5049,13 @@
              entirely so the stored password survives the save. */
           if (emailClearPasswordOnce || emailAppPassword || !emailPasswordSaved) {
             payload.email.appPassword = emailAppPassword;
+          }
+          /* Brevo API Key: same guard as the App Password — sent only
+             when a new key was typed or none is saved yet. An empty field
+             with a saved key OMITS brevoApiKey entirely, so the stored
+             key is never wiped by a save. */
+          if (emailBrevoApiKey || !emailBrevoApiKeySaved) {
+            payload.email.brevoApiKey = emailBrevoApiKey;
           }
           return payload;
         }
@@ -8175,6 +8223,12 @@
            GET /api/auth/email-status → { configured }. */
         var emailUserInput = document.getElementById("emailUserInput");
         var emailPassInput = document.getElementById("emailPassInput");
+        var emailBrevoApiKeyInput = document.getElementById("emailBrevoApiKeyInput");
+        var emailBrevoEyeBtn = document.getElementById("emailBrevoEyeBtn");
+        var emailBrevoEyeOpen = document.getElementById("emailBrevoEyeOpen");
+        var emailBrevoEyeOff = document.getElementById("emailBrevoEyeOff");
+        var emailBrevoUsageText = document.getElementById("emailBrevoUsageText");
+        var emailBrevoUsageRefreshBtn = document.getElementById("emailBrevoUsageRefreshBtn");
         var emailError = document.getElementById("emailError");
         var emailOk = document.getElementById("emailOk");
         var emailStatus = document.getElementById("emailStatus");
@@ -8209,6 +8263,15 @@
               ? "•••••••• បានរក្សាទុករួចហើយ"
               : "xxxx xxxx xxxx xxxx (16 តួ ពី Google Account)";
           }
+          var brevoSavedOnly = !emailBrevoApiKey && emailBrevoApiKeySaved;
+          if (emailBrevoApiKeyInput) {
+            emailBrevoApiKeyInput.value = emailBrevoApiKey || "";
+            /* Same saved-state placeholder as the App Password field:
+               the server never sends the raw key back. */
+            emailBrevoApiKeyInput.placeholder = brevoSavedOnly
+              ? "•••••••• បានរក្សាទុករួចហើយ"
+              : "xkeysib-… (Brevo API Key)";
+          }
           var emailPassHint = document.getElementById("emailPassHint");
           if (emailPassHint) emailPassHint.classList.toggle("hidden", !passSavedOnly);
           var emailClearBtn = document.getElementById("emailClearPassBtn");
@@ -8232,6 +8295,33 @@
             });
         }
 
+        /* Live Brevo usage for today — GET /api/admin/email-usage (same
+           admin-key auth as every Admin endpoint, via api()). The plan,
+           daily limit and used/remaining numbers all come from that
+           response — nothing is hardcoded. When no Brevo key is set or
+           Brevo fails, the endpoint answers ok:false and we show a short
+           neutral note in place of the numbers, never an error alarm. */
+        function loadBrevoUsage() {
+          if (!emailBrevoUsageText) return Promise.resolve();
+          emailBrevoUsageText.textContent = "Brevo៖ កំពុងពិនិត្យការប្រើប្រាស់… · Checking Brevo usage…";
+          return api("/api/admin/email-usage")
+            .then(function (data) {
+              var d = (data && typeof data === "object") ? data : {};
+              if (d.ok === true) {
+                var plan = d.plan || "Free";
+                var limit = (d.dailyLimit !== undefined && d.dailyLimit !== null) ? d.dailyLimit : 300;
+                var used = (d.usedToday !== undefined && d.usedToday !== null) ? d.usedToday : 0;
+                var rem = (d.remainingToday !== undefined && d.remainingToday !== null) ? d.remainingToday : Math.max(0, limit - used);
+                emailBrevoUsageText.textContent = "Brevo (" + plan + ")៖ ប្រើហើយ " + used + "/" + limit + " · នៅសល់ " + rem + " · Used " + used + " · Remaining " + rem;
+              } else {
+                emailBrevoUsageText.textContent = "ការប្រើប្រាស់ Brevo៖ មិនទាន់មាន — សូមដាក់ API key ជាមុនសិន · Brevo usage: not available — set the API key first";
+              }
+            })
+            .catch(function () {
+              emailBrevoUsageText.textContent = "ការប្រើប្រាស់ Brevo៖ មិនទាន់មាន — សូមដាក់ API key ជាមុនសិន · Brevo usage: not available — set the API key first";
+            });
+        }
+
         function loadEmailSettings() {
           if (emailLoading) return Promise.resolve();
           emailLoading = true;
@@ -8248,6 +8338,7 @@
                 ignoreSmooth: smoothVersion !== versionAtStart
               });
               applyEmailToControls();
+              loadBrevoUsage();
               return loadEmailStatus();
             })
             .then(function () {
@@ -8272,12 +8363,30 @@
           emailReloadBtn.addEventListener("click", function () { loadEmailSettings(); });
         }
 
+        /* Brevo API Key show/hide — same eye toggle as the Admin Key and
+           App Password-style password fields: swaps the input type and
+           the eye / eye-off icons. The key stays masked by default. */
+        if (emailBrevoEyeBtn && emailBrevoApiKeyInput) {
+          emailBrevoEyeBtn.addEventListener("click", function () {
+            var show = emailBrevoApiKeyInput.type === "password";
+            emailBrevoApiKeyInput.type = show ? "text" : "password";
+            if (emailBrevoEyeOpen) emailBrevoEyeOpen.classList.toggle("hidden", show);
+            if (emailBrevoEyeOff) emailBrevoEyeOff.classList.toggle("hidden", !show);
+            emailBrevoApiKeyInput.focus();
+          });
+        }
+
+        if (emailBrevoUsageRefreshBtn) {
+          emailBrevoUsageRefreshBtn.addEventListener("click", function () { loadBrevoUsage(); });
+        }
+
         if (emailSaveBtn) {
           emailSaveBtn.addEventListener("click", function () {
             hideAlert(emailError);
             hideAlert(emailOk);
             var user = emailUserInput ? emailUserInput.value.trim() : "";
             var pass = emailPassInput ? emailPassInput.value.trim() : "";
+            var brevoKey = emailBrevoApiKeyInput ? emailBrevoApiKeyInput.value.trim() : "";
             /* Empty password field + a password already saved on the
                server = "keep the saved password" — NEVER a delete. The
                payload builder omits appPassword in that case. */
@@ -8305,8 +8414,15 @@
             var prevUser = emailUser;
             var prevPass = emailAppPassword;
             var prevSaved = emailPasswordSaved;
+            var prevBrevo = emailBrevoApiKey;
+            var prevBrevoSaved = emailBrevoApiKeySaved;
             emailUser = user;
             if (pass) emailAppPassword = pass;
+            /* Brevo: only a non-empty field replaces the key. An empty
+               field is valid (it means Gmail SMTP) and must NEVER clear
+               a saved key — the payload builder omits brevoApiKey then.
+               No Brevo validation blocks this save. */
+            if (brevoKey) emailBrevoApiKey = brevoKey;
             emailSaveBtn.disabled = true;
             if (emailReloadBtn) emailReloadBtn.disabled = true;
             var stop = makeTicker(emailStatus, function (s) {
@@ -8319,11 +8435,13 @@
                 emailSaveBtn.disabled = false;
                 if (emailReloadBtn) emailReloadBtn.disabled = false;
                 if (emailAppPassword) emailPasswordSaved = true;
+                if (emailBrevoApiKey) emailBrevoApiKeySaved = true;
                 var saved = data && (data.settings || data);
                 if (saved && typeof saved === "object") {
                   applySettingsData(saved, {});
                 }
                 applyEmailToControls();
+                loadBrevoUsage();
                 return loadEmailStatus().then(function () {
                   showAlert(emailOk, emailConfigured === true
                     ? "បានរក្សាទុក Email រួចរាល់ — Email verify ដំណើរការហើយ៖ server នឹងផ្ញើ Link + លេខកូដ 6 ខ្ទង់ ទៅ Gmail របស់អ្នកប្រើពេល Log in។"
@@ -8340,6 +8458,8 @@
                 emailUser = prevUser;
                 emailAppPassword = prevPass;
                 emailPasswordSaved = prevSaved;
+                emailBrevoApiKey = prevBrevo;
+                emailBrevoApiKeySaved = prevBrevoSaved;
                 applyEmailToControls();
                 if (err.code === "AUTH") { handleSectionError(err, null); return; }
                 showAlert(emailError, "រក្សាទុក Email មិនបាន៖ " + err.message);
