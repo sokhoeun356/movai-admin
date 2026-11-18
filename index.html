@@ -918,6 +918,68 @@
       .wallet-reject-actions { display: flex; gap: 8px; margin-top: 10px; }
       .wallet-reject-actions .btn { flex: 1; }
 
+      /* ---------- Monetization ---------- */
+      .monet-state-pill {
+        display: inline-flex; align-items: center; gap: 7px;
+        font-size: 12.5px; font-weight: 800; border-radius: 999px; padding: 4px 12px; white-space: nowrap;
+        border: 1px solid var(--line); background: var(--card-2); color: var(--text-dim);
+      }
+      .monet-state-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+      .monet-state-pill.on { color: var(--lime); background: var(--green-bg); border-color: rgba(173,220,41,.45); }
+      .monet-state-pill.off { color: var(--text-faint); }
+      .monet-toggle-card {
+        background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
+        padding: 14px; margin-bottom: 14px;
+      }
+      .monet-toggle-card .switch-row { align-items: flex-start; }
+      .monet-announce { font-size: 13.5px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+      .monet-announce.on { color: var(--lime); }
+      .monet-announce.off { color: var(--text-dim); }
+      .monet-ref {
+        background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
+        padding: 13px 14px; margin-bottom: 16px;
+      }
+      .monet-ref h3 { margin: 0 0 10px; font-size: 14.5px; }
+      .monet-ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+      @media (max-width: 560px) { .monet-ref-grid { grid-template-columns: 1fr; } }
+      .monet-ref-block .monet-ref-title { font-size: 12px; font-weight: 700; color: var(--text-faint); margin-bottom: 5px; }
+      .monet-cash-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; padding: 3px 0; border-bottom: 1px solid var(--line-soft); }
+      .monet-cash-row:last-child { border-bottom: none; }
+      .monet-cash-row .pkg { color: var(--text-dim); font-weight: 600; }
+      .monet-cash-row .cb { font-weight: 800; color: var(--lime); }
+      .monet-ref-line { font-size: 13.5px; color: var(--text-dim); line-height: 1.6; }
+      .monet-ref-line b { color: var(--text); }
+      .monet-apps-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 18px 0 4px; border-top: 1px solid var(--line-soft); padding-top: 16px; }
+      .monet-apps-head h3 { margin: 0; font-size: 15.5px; flex: 1; min-width: 160px; }
+      .monet-pending-line { color: var(--text-dim); font-size: 13.5px; margin: 6px 0 2px; }
+      .monet-pending-line b { color: var(--yellow); font-size: 15px; }
+      .monet-app-card {
+        background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 12px;
+        padding: 13px; margin-bottom: 10px;
+      }
+      .monet-app-head { display: flex; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+      .monet-app-who { flex: 1; min-width: 180px; }
+      .monet-app-name { font-weight: 800; font-size: 15.5px; word-break: break-word; }
+      .monet-app-email { color: var(--text-dim); font-size: 13.5px; word-break: break-all; margin-top: 1px; }
+      .monet-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 11px; }
+      @media (max-width: 480px) { .monet-metrics { grid-template-columns: 1fr; } }
+      .monet-metric { background: var(--card); border: 1px solid var(--line-soft); border-radius: 10px; padding: 9px 11px; }
+      .monet-metric .mk { font-size: 12px; color: var(--text-faint); font-weight: 600; }
+      .monet-metric .mv { font-size: 16px; font-weight: 800; margin-top: 1px; }
+      .monet-metric .mv small { font-size: 12.5px; color: var(--text-dim); font-weight: 600; }
+      .monet-metric .bar { height: 6px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line-soft); margin-top: 7px; overflow: hidden; }
+      .monet-metric .bar i { display: block; height: 100%; background: var(--lime); border-radius: 999px; }
+      .monet-metric.not-met .mv { color: var(--yellow); }
+      .monet-app-meta { color: var(--text-dim); font-size: 13px; margin-top: 9px; }
+      .monet-app-meta b { color: var(--text); }
+      .monet-reject-box {
+        background: var(--red-bg); border: 1px solid rgba(255,107,107,.35);
+        border-radius: 12px; padding: 12px; margin-top: 10px;
+      }
+      .monet-reject-box p { margin: 0 0 10px; font-size: 13.5px; color: var(--text-dim); }
+      .monet-reject-actions { display: flex; gap: 8px; margin-top: 10px; }
+      .monet-reject-actions .btn { flex: 1; }
+
       /* ---------- Post to Public ---------- */
       .post-type-seg { flex-wrap: wrap; }
       .post-type-seg button { flex: 1 1 40%; }
@@ -1385,6 +1447,7 @@
         <button type="button" class="drawer-item" data-section="devices">Devices · ឧបករណ៍</button>
         <button type="button" class="drawer-item" data-section="purchases">សំណើទិញ<span class="tab-badge hidden" id="purchasesBadge">0</span></button>
         <button type="button" class="drawer-item" data-section="wallet">Wallet Requests · សំណើរប្រាក់<span class="tab-badge hidden" id="walletBadge">0</span></button>
+        <button type="button" class="drawer-item" data-section="monetization">Monetization · រកលុយ<span class="tab-badge hidden" id="monetizationBadge">0</span></button>
         <button type="button" class="drawer-item" data-section="notifications">ដំណឹង<span class="tab-badge hidden" id="notificationsBadge">0</span></button>
         <button type="button" class="drawer-item" data-section="security">សុវត្ថិភាព</button>
         <button type="button" class="drawer-item" data-section="updates">Auto Update</button>
@@ -1562,6 +1625,72 @@
           <div id="walletList"></div>
           <div class="state-box hidden" id="walletEmpty">
             <div class="big">មិនមានសំណើរប្រាក់ទេ · No wallet requests</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= MONETIZATION ================= -->
+      <div id="panel-monetization" class="hidden">
+        <div class="section-card">
+          <h2>Monetization · រកលុយ</h2>
+          <p class="desc">បើក / បិទ មុខងាររកលុយលើ Website — ON = ប្រកាសលើ Website, OFF = មិនទាន់ប្រកាស</p>
+
+          <div class="monet-toggle-card">
+            <div class="switch-row">
+              <label class="switch">
+                <input type="checkbox" id="monetizationToggle" aria-label="Monetization · រកលុយ បើក ឬ បិទ" />
+                <span class="track" aria-hidden="true"></span>
+              </label>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <div class="switch-label">Monetization</div>
+                  <span class="monet-state-pill off" id="monetizationPill"><span class="dot" aria-hidden="true"></span><span id="monetizationPillText">OFF · បិទ</span></span>
+                </div>
+                <div class="switch-state" id="monetizationState">បិទ (OFF) · មិនទាន់ប្រកាស</div>
+              </div>
+              <button class="btn" id="monetizationRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
+            </div>
+            <div class="monet-announce off" id="monetizationAnnounce">OFF — មិនទាន់ប្រកាសលើ Website ទេ · Not announced on the website</div>
+            <div class="note-box hidden" id="monetizationUnavailable" role="status">Server setting not available yet · ការកំណត់ Monetization នៅលើ Server មិនទាន់មាននៅឡើយ</div>
+          </div>
+
+          <div class="alert alert-error" id="monetizationError" role="alert"></div>
+          <div class="alert alert-ok" id="monetizationOk" role="status"></div>
+          <p class="save-status" id="monetizationStatus" style="text-align:left;"></p>
+
+          <div class="monet-ref" aria-label="អត្រា Monetization · Monetization rates">
+            <h3>អត្រា · Rates &amp; Rules</h3>
+            <div class="monet-ref-grid">
+              <div class="monet-ref-block">
+                <div class="monet-ref-title">PACKAGE CASHBACK · លុយត្រឡប់ពីកញ្ចប់</div>
+                <div class="monet-cash-row"><span class="pkg">ទិញកញ្ចប់ $5</span><span class="cb">+$0.01</span></div>
+                <div class="monet-cash-row"><span class="pkg">ទិញកញ្ចប់ $10</span><span class="cb">+$0.05</span></div>
+                <div class="monet-cash-row"><span class="pkg">ទិញកញ្ចប់ $15</span><span class="cb">+$0.05</span></div>
+                <div class="monet-cash-row"><span class="pkg">ទិញកញ្ចប់ $22</span><span class="cb">+$0.10</span></div>
+                <div class="monet-cash-row"><span class="pkg">ទិញកញ្ចប់ $25</span><span class="cb">+$0.10</span></div>
+              </div>
+              <div class="monet-ref-block">
+                <div class="monet-ref-title">VIEW EARNINGS · លុយពី Views</div>
+                <p class="monet-ref-line"><b>RPM $0.001</b> per <b>1,000 views</b> (1K views)<br />Views កាន់តែច្រើន លុយកាន់តែកើនតាមនោះ</p>
+                <div class="monet-ref-title" style="margin-top:10px;">ELIGIBILITY · លក្ខខណ្ឌចូលរួម</div>
+                <p class="monet-ref-line"><b>1,000 followers</b> + <b>2,000 watch hours</b><br />គ្រប់លក្ខខណ្ឌ ទើបអាចស្នើទៅ Admin បាន</p>
+                <div class="monet-ref-title" style="margin-top:10px;">WITHDRAW FEE · ថ្លៃដកលុយ</div>
+                <p class="monet-ref-line">ដក <b>$5 – $100+</b> · ក្រោម $50៖ <b>$0.50</b> flat · ចាប់ពី $50 ឡើង៖ <b>5%</b> (ឧ. $100 → កាត់ $5)</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="monet-apps-head">
+            <h3>Monetization Applications · សំណើររកលុយ</h3>
+            <button class="btn" id="monetizationAppsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
+          </div>
+          <p class="monet-pending-line">Pending · រង់ចាំ៖ <b id="monetizationPendingCount">0</b></p>
+          <div class="alert alert-error" id="monetizationAppsError" role="alert"></div>
+          <div class="alert alert-ok" id="monetizationAppsOk" role="status"></div>
+          <p class="save-status" id="monetizationAppsStatus" style="text-align:left;"></p>
+          <div id="monetizationAppsList"></div>
+          <div class="state-box hidden" id="monetizationAppsEmpty">
+            <div class="big">មិនមានសំណើររកលុយទេ · No monetization applications</div>
           </div>
         </div>
       </div>
@@ -4525,6 +4654,7 @@
         var panelUsers = document.getElementById("panel-users");
         var panelPurchases = document.getElementById("panel-purchases");
         var panelWallet = document.getElementById("panel-wallet");
+        var panelMonetization = document.getElementById("panel-monetization");
         var panelPost = document.getElementById("panel-post");
         var panelPackages = document.getElementById("panel-packages");
         var panelPayment = document.getElementById("panel-payment");
@@ -4543,7 +4673,7 @@
         var panelTelegram = document.getElementById("panel-telegram");
         var panelEmail = document.getElementById("panel-email");
         var sectionPanels = {
-          users: panelUsers, purchases: panelPurchases, wallet: panelWallet, post: panelPost, packages: panelPackages,
+          users: panelUsers, purchases: panelPurchases, wallet: panelWallet, monetization: panelMonetization, post: panelPost, packages: panelPackages,
           payment: panelPayment, models: panelModels,
           appearance: panelAppearance, smooth: panelSmooth,
           keys: panelKeys, providers: panelProviders, cloudinary: panelCloudinary, analytics: panelAnalytics,
@@ -4588,6 +4718,7 @@
           if (name === "users") loadGift50({ silent: true });
           if (name === "purchases") loadPurchases();
           if (name === "wallet") loadWalletRequests();
+          if (name === "monetization") { loadMonetization(); loadMonetizationApplications(); }
           if (name === "post") loadLivePosts();
           if (name === "packages") { loadPackagePrices(); loadPackageEvents(); }
           if (name === "payment") loadPaymentSettings();
@@ -7425,6 +7556,370 @@
             loadWalletRequests();
           });
         });
+
+        /* ---------- Monetization (រកលុយ) ----------
+           Master switch for the earn-money feature on the website.
+           Default OFF. State lives on the server:
+             GET  /api/admin/monetization            — load {enabled}
+             POST /api/admin/monetization {enabled}  — save
+           ON  = announced on the website (users see Monetization).
+           OFF = not announced (feature hidden / greyed on website).
+           A failed save reverts the switch to the previous value.
+           Applications:
+             GET  /api/admin/monetization/applications — list, newest first
+             POST /api/admin/monetization/approve {email}
+             POST /api/admin/monetization/reject  {email, reason?}
+           Eligibility reference: 1000 followers + 2000 watch hours.
+           Rates reference (shown in the section, not computed here):
+           package cashback $5→$0.01, $10→$0.05, $15→$0.05, $22→$0.10,
+           $25→$0.10; RPM $0.001 per 1000 views; withdraw fee $0.50
+           under $50, 5% at $50+. */
+        var monetizationToggle = document.getElementById("monetizationToggle");
+        var monetizationState = document.getElementById("monetizationState");
+        var monetizationPill = document.getElementById("monetizationPill");
+        var monetizationPillText = document.getElementById("monetizationPillText");
+        var monetizationAnnounce = document.getElementById("monetizationAnnounce");
+        var monetizationStatus = document.getElementById("monetizationStatus");
+        var monetizationError = document.getElementById("monetizationError");
+        var monetizationOk = document.getElementById("monetizationOk");
+        var monetizationUnavailable = document.getElementById("monetizationUnavailable");
+        var monetizationRefreshBtn = document.getElementById("monetizationRefreshBtn");
+        var monetizationAppsRefreshBtn = document.getElementById("monetizationAppsRefreshBtn");
+        var monetizationAppsList = document.getElementById("monetizationAppsList");
+        var monetizationAppsEmpty = document.getElementById("monetizationAppsEmpty");
+        var monetizationAppsError = document.getElementById("monetizationAppsError");
+        var monetizationAppsOk = document.getElementById("monetizationAppsOk");
+        var monetizationAppsStatus = document.getElementById("monetizationAppsStatus");
+        var monetizationPendingCount = document.getElementById("monetizationPendingCount");
+        var monetizationBadge = document.getElementById("monetizationBadge");
+        var monetizationEnabled = false;
+        var monetizationLoading = false;
+        var monetizationSaving = false;
+        var monetizationApps = [];
+        var monetizationAppsLoading = false;
+
+        function setMonetizationUI() {
+          if (!monetizationToggle) return;
+          monetizationToggle.checked = monetizationEnabled;
+          if (monetizationState) {
+            monetizationState.textContent = monetizationEnabled
+              ? "បើក (ON) · ប្រកាសលើ Website ហើយ"
+              : "បិទ (OFF) · មិនទាន់ប្រកាស";
+          }
+          if (monetizationPill) {
+            monetizationPill.className = "monet-state-pill " + (monetizationEnabled ? "on" : "off");
+          }
+          if (monetizationPillText) {
+            monetizationPillText.textContent = monetizationEnabled ? "ON · បើក" : "OFF · បិទ";
+          }
+          if (monetizationAnnounce) {
+            monetizationAnnounce.className = "monet-announce " + (monetizationEnabled ? "on" : "off");
+            monetizationAnnounce.textContent = monetizationEnabled
+              ? "ON — បានប្រកាសលើ Website ហើយ · Announced on the website — users can see Monetization"
+              : "OFF — មិនទាន់ប្រកាសលើ Website ទេ · Not announced on the website";
+          }
+        }
+        function showMonetizationUnavailable() {
+          if (monetizationUnavailable) monetizationUnavailable.classList.remove("hidden");
+        }
+        function hideMonetizationUnavailable() {
+          if (monetizationUnavailable) monetizationUnavailable.classList.add("hidden");
+        }
+        function monetizationEnabledFrom(data) {
+          if (!data || typeof data !== "object") return undefined;
+          if (typeof data.enabled !== "undefined") return !!data.enabled;
+          if (data.monetization && typeof data.monetization.enabled !== "undefined") return !!data.monetization.enabled;
+          if (data.settings && typeof data.settings.enabled !== "undefined") return !!data.settings.enabled;
+          if (typeof data.on !== "undefined") return !!data.on;
+          return undefined;
+        }
+
+        function loadMonetization(opts) {
+          opts = opts || {};
+          if (!monetizationToggle || monetizationLoading || monetizationSaving) return Promise.resolve();
+          monetizationLoading = true;
+          if (!opts.silent && monetizationStatus) monetizationStatus.textContent = "កំពុងផ្ទុក… · Loading…";
+          return api("/api/admin/monetization")
+            .then(function (data) {
+              var en = monetizationEnabledFrom(data);
+              if (!data || data.ok === false || en === undefined) throw new Error("unavailable");
+              monetizationEnabled = en;
+              hideMonetizationUnavailable();
+              hideAlert(monetizationError);
+              if (monetizationStatus) monetizationStatus.textContent = "";
+              setMonetizationUI();
+            })
+            .catch(function (err) {
+              if (err && err.code === "AUTH") { handleSectionError(err, null); return; }
+              if (monetizationStatus) monetizationStatus.textContent = "";
+              showMonetizationUnavailable();
+              setMonetizationUI();
+            })
+            .then(function () { monetizationLoading = false; });
+        }
+
+        if (monetizationToggle) {
+          monetizationToggle.addEventListener("change", function () {
+            if (monetizationSaving) { setMonetizationUI(); return; }
+            var val = monetizationToggle.checked;
+            var prev = monetizationEnabled;
+            monetizationEnabled = val;
+            setMonetizationUI();
+            hideAlert(monetizationError);
+            hideAlert(monetizationOk);
+            monetizationSaving = true;
+            monetizationToggle.disabled = true;
+            var stop = makeTicker(monetizationStatus, function (s) {
+              return "កំពុងរក្សាទុក… · Saving… " + s + " វិនាទី";
+            });
+            api("/api/admin/monetization", { method: "POST", body: { enabled: val } })
+              .then(function (data) {
+                if (data && data.ok === false) throw new Error((data && (data.error || data.message)) || "unavailable");
+                var en = monetizationEnabledFrom(data);
+                if (en !== undefined) monetizationEnabled = en;
+                stop();
+                monetizationSaving = false;
+                monetizationToggle.disabled = false;
+                hideMonetizationUnavailable();
+                setMonetizationUI();
+                if (monetizationStatus) {
+                  monetizationStatus.textContent = monetizationEnabled
+                    ? "បានរក្សាទុកហើយ ✓ · Saved — Monetization ON (announced on the website)"
+                    : "បានរក្សាទុកហើយ ✓ · Saved — Monetization OFF (not announced)";
+                }
+                showAlert(monetizationOk, monetizationEnabled
+                  ? "Monetization បើក (ON) — បានប្រកាសលើ Website ហើយ។"
+                  : "Monetization បិទ (OFF) — មិនទាន់ប្រកាសលើ Website ទេ។");
+              })
+              .catch(function (err) {
+                stop();
+                monetizationSaving = false;
+                monetizationToggle.disabled = false;
+                monetizationEnabled = prev;
+                setMonetizationUI();
+                if (err && err.code === "AUTH") { handleSectionError(err, null); return; }
+                showMonetizationUnavailable();
+                if (monetizationStatus) monetizationStatus.textContent = "រក្សាទុកមិនបាន — បានត្រឡប់ទៅសភាពមុន · Save failed — reverted";
+                showAlert(monetizationError, "រក្សាទុក Monetization មិនបាន៖ " + (err && err.message ? err.message : "server error"));
+              });
+          });
+        }
+        if (monetizationRefreshBtn) {
+          monetizationRefreshBtn.addEventListener("click", function () { loadMonetization(); });
+        }
+        setMonetizationUI();
+
+        function normalizeMonetizationApplication(r) {
+          var src = r || {};
+          var inner = (src.user && typeof src.user === "object") ? src.user
+            : (src.account && typeof src.account === "object") ? src.account
+            : (src.applicant && typeof src.applicant === "object") ? src.applicant : null;
+          function pickAny(names) {
+            var v = pick(src, names);
+            if (v !== undefined) return v;
+            if (inner) return pick(inner, names);
+            return undefined;
+          }
+          var status = String(pickAny(["status", "state", "decision"]) || "pending").toLowerCase();
+          if (status !== "approved" && status !== "rejected") status = "pending";
+          var followers = numVal(pickAny(["followers", "followerCount", "follower_count", "followersCount", "followers_count", "subscriberCount", "subscribers"]));
+          var watchHours = numVal(pickAny(["watchHours", "watch_hours", "watchTimeHours", "watch_time_hours", "watchHoursTotal", "hours", "watchTime", "watch_time"]));
+          return {
+            email: pickAny(["email", "gmail", "userEmail", "user_email"]) || "",
+            name: pickAny(["name", "displayName", "display_name", "channelName", "channel_name", "username", "fullName"]) || "",
+            followers: followers,
+            watchHours: watchHours,
+            status: status,
+            reason: pickAny(["reason", "rejectReason", "reject_reason", "note"]) || "",
+            createdAt: pickAny(["appliedAt", "applied_at", "createdAt", "created_at", "date", "time", "appliedDate"])
+          };
+        }
+
+        function updateMonetizationPending() {
+          var n = monetizationApps.filter(function (a) { return a.status === "pending"; }).length;
+          if (monetizationPendingCount) monetizationPendingCount.textContent = n;
+          if (monetizationBadge) {
+            monetizationBadge.textContent = n;
+            monetizationBadge.classList.toggle("hidden", n === 0);
+          }
+        }
+
+        function renderMonetizationApplications() {
+          if (!monetizationAppsList) return;
+          monetizationAppsList.innerHTML = "";
+          var sorted = monetizationApps.slice().sort(function (a, b) {
+            return String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
+          });
+          sorted.forEach(function (a) {
+            var card = document.createElement("div");
+            card.className = "monet-app-card";
+            var badgeText = a.status === "pending" ? "រង់ចាំ · Pending" : a.status === "approved" ? "អនុម័ត · Approved" : "បដិសេធ · Rejected";
+            var followers = a.followers !== undefined ? a.followers : 0;
+            var watchHours = a.watchHours !== undefined ? a.watchHours : 0;
+            var fPct = Math.max(0, Math.min(100, (followers / 1000) * 100));
+            var wPct = Math.max(0, Math.min(100, (watchHours / 2000) * 100));
+            var fMet = followers >= 1000;
+            var wMet = watchHours >= 2000;
+            card.innerHTML =
+              "<div class='monet-app-head'>" +
+                "<div class='monet-app-who'>" +
+                  "<div class='monet-app-name'></div>" +
+                  "<div class='monet-app-email'></div>" +
+                "</div>" +
+                "<span class='status-badge " + a.status + "'>" + badgeText + "</span>" +
+              "</div>" +
+              "<div class='monet-metrics'>" +
+                "<div class='monet-metric" + (fMet ? "" : " not-met") + "'>" +
+                  "<div class='mk'>Followers · អ្នកតាមដាន</div>" +
+                  "<div class='mv'><span class='monet-followers'></span> <small>/ 1,000</small></div>" +
+                  "<div class='bar'><i style='width:" + fPct + "%'></i></div>" +
+                "</div>" +
+                "<div class='monet-metric" + (wMet ? "" : " not-met") + "'>" +
+                  "<div class='mk'>Watch hours · ម៉ោងមើល</div>" +
+                  "<div class='mv'><span class='monet-watch'></span> <small>/ 2,000</small></div>" +
+                  "<div class='bar'><i style='width:" + wPct + "%'></i></div>" +
+                "</div>" +
+              "</div>" +
+              "<div class='monet-app-meta'></div>" +
+              (a.status === "pending"
+                ? "<div class='req-actions'>" +
+                    "<button class='btn btn-primary monet-approve' type='button'>✓ អនុម័ត · Approve</button>" +
+                    "<button class='btn btn-reject monet-reject' type='button'>✕ បដិសេធ · Reject</button>" +
+                  "</div>" +
+                  "<div class='monet-reject-box hidden'>" +
+                    "<p>បដិសេធសំណើនេះ? · Reject this application?</p>" +
+                    "<input class='text-input monet-reason' type='text' placeholder='មូលហេតុ (មិនចាំបាច់) · Reason (optional)' />" +
+                    "<div class='monet-reject-actions'>" +
+                      "<button class='btn btn-danger monet-reject-confirm' type='button'>✕ បដិសេធឥឡូវ · Reject now</button>" +
+                      "<button class='btn monet-reject-cancel' type='button'>បោះបង់ · Cancel</button>" +
+                    "</div>" +
+                  "</div>"
+                : "") +
+              "<div class='req-status-line'></div>";
+            card.querySelector(".monet-app-name").textContent = a.name || "—";
+            card.querySelector(".monet-app-email").textContent = a.email || "—";
+            card.querySelector(".monet-followers").textContent = fmtNum(followers);
+            card.querySelector(".monet-watch").textContent = (function () {
+              var v = Number(watchHours);
+              if (!isFinite(v)) return "0";
+              return v % 1 === 0 ? fmtNum(v) : v.toLocaleString("en-US", { maximumFractionDigits: 1 });
+            })();
+            var meta = card.querySelector(".monet-app-meta");
+            var fullTime = fmtFullDateTime(a.createdAt);
+            var dateText = fullTime || (a.createdAt ? fmtDate(a.createdAt) : "—");
+            meta.innerHTML = "";
+            var dateSpan = document.createElement("span");
+            dateSpan.innerHTML = "ថ្ងៃស្នើ · Applied: <b></b>";
+            dateSpan.querySelector("b").textContent = dateText;
+            meta.appendChild(dateSpan);
+            if (fMet && wMet) {
+              var okSpan = document.createElement("span");
+              okSpan.textContent = " · ✓ គ្រប់លក្ខខណ្ឌ (1,000 followers + 2,000h)";
+              okSpan.style.color = "var(--lime)";
+              okSpan.style.fontWeight = "700";
+              meta.appendChild(okSpan);
+            }
+            if (a.status === "rejected" && a.reason) {
+              var reasonDiv = document.createElement("div");
+              reasonDiv.style.marginTop = "3px";
+              reasonDiv.textContent = "មូលហេតុ · Reason: " + a.reason;
+              meta.appendChild(reasonDiv);
+            }
+            monetizationAppsList.appendChild(card);
+            if (a.status === "pending") {
+              var line = card.querySelector(".req-status-line");
+              var approveBtn = card.querySelector(".monet-approve");
+              if (approveBtn) approveBtn.addEventListener("click", function () { monetizationAction(a, "approve", card, line); });
+              var rejectBox = card.querySelector(".monet-reject-box");
+              var rejectBtn = card.querySelector(".monet-reject");
+              if (rejectBtn && rejectBox) {
+                rejectBtn.addEventListener("click", function () {
+                  rejectBox.classList.toggle("hidden");
+                  if (!rejectBox.classList.contains("hidden")) {
+                    var reasonInput = rejectBox.querySelector(".monet-reason");
+                    if (reasonInput) reasonInput.focus();
+                  }
+                });
+                rejectBox.querySelector(".monet-reject-cancel").addEventListener("click", function () {
+                  rejectBox.classList.add("hidden");
+                });
+                rejectBox.querySelector(".monet-reject-confirm").addEventListener("click", function () {
+                  var reason = rejectBox.querySelector(".monet-reason").value.trim();
+                  monetizationAction(a, "reject", card, line, reason);
+                });
+              }
+            }
+          });
+          if (monetizationAppsEmpty) monetizationAppsEmpty.classList.toggle("hidden", monetizationApps.length > 0);
+          updateMonetizationPending();
+        }
+
+        function loadMonetizationApplications() {
+          if (monetizationAppsLoading) return Promise.resolve();
+          monetizationAppsLoading = true;
+          hideAlert(monetizationAppsError);
+          if (monetizationAppsRefreshBtn) monetizationAppsRefreshBtn.disabled = true;
+          var stop = makeTicker(monetizationAppsStatus, function (s) {
+            return "កំពុងផ្ទុកសំណើររកលុយ… " + s + " វិនាទី";
+          });
+          function done() {
+            stop();
+            if (monetizationAppsStatus) monetizationAppsStatus.textContent = "";
+            monetizationAppsLoading = false;
+            if (monetizationAppsRefreshBtn) monetizationAppsRefreshBtn.disabled = false;
+          }
+          return api("/api/admin/monetization/applications")
+            .then(function (data) {
+              var list = Array.isArray(data) ? data : (data && (data.applications || data.list || data.data || data.requests)) || [];
+              monetizationApps = list.map(normalizeMonetizationApplication);
+              renderMonetizationApplications();
+              done();
+            })
+            .catch(function (err) {
+              done();
+              if (err && err.code === "AUTH") { handleSectionError(err, null); return; }
+              showAlert(monetizationAppsError, "ផ្ទុកសំណើររកលុយមិនបាន៖ " + err.message);
+            });
+        }
+
+        function monetizationAction(app, action, card, line, reason) {
+          if (!app || !app.email) {
+            if (line) line.textContent = "សំណើនេះគ្មាន Gmail — មិនអាចដំណើរការបានទេ។";
+            return;
+          }
+          hideAlert(monetizationAppsError);
+          hideAlert(monetizationAppsOk);
+          var btns = card.querySelectorAll(".req-actions .btn, .monet-reject-actions .btn");
+          btns.forEach(function (b) { b.disabled = true; });
+          var stop = makeTicker(line, function (s) {
+            return (action === "approve" ? "កំពុងអនុម័ត… " : "កំពុងបដិសេធ… ") + s + " វិនាទី";
+          });
+          var path = action === "approve" ? "/api/admin/monetization/approve" : "/api/admin/monetization/reject";
+          var body = { email: app.email };
+          if (action === "reject" && reason) body.reason = reason;
+          api(path, { method: "POST", body: body })
+            .then(function () {
+              stop();
+              app.status = action === "approve" ? "approved" : "rejected";
+              if (action === "reject" && reason) app.reason = reason;
+              renderMonetizationApplications();
+              showAlert(monetizationAppsOk, action === "approve"
+                ? "បានអនុម័តសំណើររកលុយរបស់ " + app.email + " រួចរាល់។"
+                : "បានបដិសេធសំណើររកលុយរបស់ " + app.email + " រួចរាល់។");
+              loadMonetizationApplications();
+            })
+            .catch(function (err) {
+              stop();
+              if (line) line.textContent = "";
+              btns.forEach(function (b) { b.disabled = false; });
+              if (err && err.code === "AUTH") { handleSectionError(err, null); return; }
+              showAlert(monetizationAppsError, (action === "approve" ? "អនុម័តមិនបាន៖ " : "បដិសេធមិនបាន៖ ") + err.message);
+            });
+        }
+
+        if (monetizationAppsRefreshBtn) {
+          monetizationAppsRefreshBtn.addEventListener("click", function () { loadMonetizationApplications(); });
+        }
 
         /* ---------- Post to Public ---------- */
         var postTypeSeg = document.getElementById("postTypeSeg");
