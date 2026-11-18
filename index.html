@@ -227,6 +227,7 @@
         color: var(--text-faint); background: var(--card-2);
       }
       .pw-chip.has { color: var(--lime); background: var(--green-bg); border-color: rgba(173,220,41,.45); }
+      .pw-chip.reset { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(245,197,24,.45); }
       .pw-box h3 { margin: 0 0 8px; font-size: 16px; }
       .pw-status-line { font-size: 14px; color: var(--text-dim); margin: 0 0 6px; }
       .pw-status-line b { color: var(--text); }
@@ -239,6 +240,20 @@
       .pw-confirm p { margin: 0 0 10px; font-size: 13.5px; color: var(--text-dim); }
       .pw-confirm-actions { display: flex; gap: 8px; }
       .pw-confirm-actions .btn { flex: 1; }
+      /* Reset & Show: the NEW password, visible only right after the reset */
+      .pw-shown {
+        border: 1px solid rgba(173,220,41,.45); background: var(--green-bg);
+        border-radius: 12px; padding: 12px; margin-top: 12px;
+      }
+      .pw-shown-row { display: flex; gap: 8px; align-items: stretch; margin-top: 6px; }
+      .pw-shown-value {
+        flex: 1; min-width: 0; display: flex; align-items: center;
+        font-size: 20px; font-weight: 700; letter-spacing: .04em;
+        background: var(--card-2); border: 1px solid var(--line);
+        border-radius: 10px; padding: 8px 12px;
+        user-select: all; -webkit-user-select: all; word-break: break-all;
+      }
+      .pw-shown-note { font-size: 12.5px; color: var(--text-dim); margin: 8px 0 0; }
       .u-ip, .u-device, .u-seen, .u-modellogins { color: var(--text-dim); font-size: 13.5px; white-space: nowrap; }
       .chev { color: var(--text-faint); }
 
@@ -479,6 +494,18 @@
       .stat-card.accent-media .sv { color: var(--purple); }
       .stat-card.accent-lime .sv { color: var(--lime); }
       .stat-card.accent-red .sv { color: var(--red); }
+      /* Tappable stat boxes: tap → record detail sheet (see statOverlay) */
+      .stat-card[data-stat] { cursor: pointer; }
+      .stat-card[data-stat]:active { filter: brightness(1.3); }
+      .stat-card[data-stat]:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+      .sd-row { display: flex; gap: 10px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--line-soft); }
+      .sd-row:last-child { border-bottom: none; }
+      .sd-time { color: var(--text-faint); font-size: 12.5px; white-space: nowrap; padding-top: 2px; }
+      .sd-main { flex: 1; min-width: 0; }
+      .sd-title { font-size: 14.5px; font-weight: 700; word-break: break-word; }
+      .sd-meta { color: var(--text-dim); font-size: 13px; margin-top: 2px; word-break: break-word; }
+      .sd-num { font-size: 16px; font-weight: 800; white-space: nowrap; padding-top: 1px; }
+      .sd-note { color: var(--text-faint); font-size: 12.5px; margin-top: 10px; }
       .fail-row { display: flex; gap: 10px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--line-soft); }
       .fail-row:last-child { border-bottom: none; }
       .fail-time { color: var(--text-faint); font-size: 12.5px; white-space: nowrap; padding-top: 2px; }
@@ -490,6 +517,76 @@
       }
       .fail-chip.type { color: #FFB3B3; background: var(--red-bg); border-color: rgba(255,107,107,.4); }
       .fail-err { color: var(--text-dim); font-size: 13.5px; margin-top: 3px; word-break: break-word; }
+
+      /* ---------- Feature Usage ---------- */
+      .fu-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+      .fu-row {
+        display: flex; align-items: center; gap: 12px;
+        padding: 11px 0; border-bottom: 1px solid var(--line-soft);
+      }
+      .fu-row:last-child { border-bottom: none; }
+      .fu-rank { font-weight: 800; color: var(--text-faint); font-size: 13px; width: 26px; flex: none; text-align: right; }
+      .fu-main { flex: 1; min-width: 0; }
+      .fu-name { font-weight: 700; font-size: 14.5px; word-break: break-word; }
+      .fu-key {
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 11.5px; color: var(--text-faint); word-break: break-all;
+      }
+      .fu-counts { display: flex; gap: 8px; flex: none; align-items: center; }
+      .fu-total { text-align: right; min-width: 64px; }
+      .fu-total .fu-num { font-size: 19px; font-weight: 800; line-height: 1.15; }
+      .fu-total .fu-lab { font-size: 11.5px; color: var(--text-faint); font-weight: 600; }
+      .fu-today {
+        font-size: 12.5px; font-weight: 800; white-space: nowrap;
+        color: var(--lime); background: var(--green-bg);
+        border: 1px solid rgba(173,220,41,.4); border-radius: 999px; padding: 3px 10px;
+      }
+      .fu-today.zero { color: var(--text-faint); background: var(--card-2); border-color: var(--line); }
+      @media (max-width: 480px) {
+        .fu-row { gap: 8px; }
+        .fu-total { min-width: 52px; }
+        .fu-total .fu-num { font-size: 17px; }
+      }
+
+      /* ---------- Device Records ---------- */
+      .dev-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+      .dev-row { padding: 12px 0; border-bottom: 1px solid var(--line-soft); }
+      .dev-row:last-child { border-bottom: none; }
+      .dev-row.blocked {
+        background: var(--red-bg); border: 1px solid rgba(255,107,107,.35);
+        border-radius: 12px; padding: 12px; margin: 10px 0;
+      }
+      .dev-head { display: flex; align-items: flex-start; gap: 10px; }
+      .dev-main { flex: 1; min-width: 0; }
+      .dev-model { font-weight: 800; font-size: 15.5px; word-break: break-word; }
+      .dev-fp {
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 11.5px; color: var(--text-faint); word-break: break-all; margin-top: 1px;
+      }
+      .dev-meta { color: var(--text-dim); font-size: 13px; margin-top: 3px; word-break: break-word; }
+      .dev-meta b { color: var(--text); font-weight: 700; }
+      .dev-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+      .dev-chip {
+        font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 2px 10px;
+        border: 1px solid var(--line); background: var(--card-2); color: var(--text-dim);
+        white-space: nowrap; flex: none;
+      }
+      .dev-chip.strike-ok, .dev-chip.strike-1 { color: var(--lime); background: var(--green-bg); border-color: rgba(173,220,41,.45); }
+      .dev-chip.strike-2 { color: var(--yellow); background: var(--yellow-bg); border-color: rgba(245,197,24,.45); }
+      .dev-chip.strike-3 { color: #FFA94D; background: rgba(255,169,77,.12); border-color: rgba(255,169,77,.45); }
+      .dev-chip.blocked { color: #FFB3B3; background: var(--red-bg); border-color: rgba(255,107,107,.5); }
+      .dev-chip.vpn { color: var(--purple); background: var(--purple-bg); border-color: rgba(167,139,250,.45); }
+      .dev-gmails { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+      .dev-gmail {
+        font-size: 12px; font-weight: 600; border-radius: 8px; padding: 3px 9px;
+        background: var(--bg-2); border: 1px solid var(--line-soft); color: var(--text-dim);
+        word-break: break-all;
+      }
+      .dev-actions { margin-top: 10px; }
+      @media (max-width: 480px) {
+        .dev-summary { gap: 8px; }
+        .dev-summary .stat-card .sv { font-size: 19px; }
+      }
 
       /* ---------- Tracking overview (home strip) ---------- */
       .overview-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 14px 0 2px; }
@@ -646,6 +743,15 @@
       .groq-usage-hint { margin: 0 0 6px; }
       .groq-usage-note { margin: 0 0 8px; }
       .groq-usage-refresh { min-height: 2.2rem; padding: 6px 12px; font-size: 13px; margin-bottom: 8px; }
+      /* ---------- Usage for every provider (per key row) ---------- */
+      .usage-green { color: #22C55E; }
+      .usage-yellow { color: var(--yellow); }
+      .usage-red { color: var(--red); }
+      .usage-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; background: #565D64; }
+      .usage-green .usage-dot { background: #22C55E; box-shadow: 0 0 6px rgba(34,197,94,.55); }
+      .usage-yellow .usage-dot { background: var(--yellow); box-shadow: 0 0 6px rgba(245,197,24,.5); }
+      .usage-red .usage-dot { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,.5); }
+      .kc-usage-state { white-space: normal; color: var(--text-dim); }
       /* ---------- MVSEP live usage (per key row) ---------- */
       .mvsep-green { color: #22C55E; }
       .mvsep-red { color: var(--red); }
@@ -1242,6 +1348,8 @@
       <aside class="drawer" id="drawer" aria-label="ម៉ឺនុយផ្នែកគ្រប់គ្រង" aria-hidden="true">
         <button type="button" class="drawer-item on" data-section="users">អ្នកប្រើប្រាស់</button>
         <button type="button" class="drawer-item" data-section="analytics">ស្ថិតិ</button>
+        <button type="button" class="drawer-item" data-section="feature-usage">Feature Usage · ការប្រើមុខងារ</button>
+        <button type="button" class="drawer-item" data-section="devices">Devices · ឧបករណ៍</button>
         <button type="button" class="drawer-item" data-section="purchases">សំណើទិញ<span class="tab-badge hidden" id="purchasesBadge">0</span></button>
         <button type="button" class="drawer-item" data-section="notifications">ដំណឹង<span class="tab-badge hidden" id="notificationsBadge">0</span></button>
         <button type="button" class="drawer-item" data-section="security">សុវត្ថិភាព</button>
@@ -1303,13 +1411,33 @@
 
       <div id="panel-users">
       <div class="overview-strip" aria-label="សង្ខេបការតាមដាន">
-        <div class="stat-card accent-lime"><div class="sv" id="ovUsersToday">–</div><div class="sk">អ្នកប្រើថ្ងៃនេះ</div></div>
-        <div class="stat-card accent-media"><div class="sv" id="ovCreatedToday">–</div><div class="sk">បង្កើតថ្ងៃនេះ</div></div>
-        <div class="stat-card accent-lime"><div class="sv" id="ovPublicViews">–</div><div class="sk">Views</div></div>
-        <div class="stat-card accent-media"><div class="sv" id="ovPublicDownloads">–</div><div class="sk">Downloads</div></div>
-        <div class="stat-card accent-red"><div class="sv" id="ovFailuresToday">–</div><div class="sk">បញ្ហាថ្ងៃនេះ</div></div>
+        <div class="stat-card accent-lime" data-stat="usersToday"><div class="sv" id="ovUsersToday">–</div><div class="sk">អ្នកប្រើថ្ងៃនេះ</div></div>
+        <div class="stat-card accent-media" data-stat="createdToday"><div class="sv" id="ovCreatedToday">–</div><div class="sk">បង្កើតថ្ងៃនេះ</div></div>
+        <div class="stat-card accent-lime" data-stat="publicViews"><div class="sv" id="ovPublicViews">–</div><div class="sk">Views</div></div>
+        <div class="stat-card accent-media" data-stat="publicDownloads"><div class="sv" id="ovPublicDownloads">–</div><div class="sk">Downloads</div></div>
+        <div class="stat-card accent-red" data-stat="failuresToday"><div class="sv" id="ovFailuresToday">–</div><div class="sk">បញ្ហាថ្ងៃនេះ</div></div>
       </div>
       <button type="button" class="overview-link" id="overviewLink">ស្ថិតិទាំងអស់ ›</button>
+      <div class="section-card" id="gift50Card" style="margin:14px 0 4px;">
+        <h2>New-user gift · អំណោយអ្នកថ្មី</h2>
+        <p class="desc">អ្នកចុះឈ្មោះថ្មី · Brand-new registrants only</p>
+        <div class="switch-row">
+          <label class="switch">
+            <input type="checkbox" id="gift50Toggle" aria-label="New-user gift · អំណោយអ្នកថ្មី បើក ឬ បិទ" />
+            <span class="track" aria-hidden="true"></span>
+          </label>
+          <div>
+            <div class="switch-label" id="gift50State">បិទ (OFF) · 24 song credits</div>
+            <div class="switch-state">ON = 50 song credits · OFF = 24 song credits</div>
+          </div>
+        </div>
+        <div class="note-box">
+          <div>មានតែ Account ដែលមិនដែលធ្លាប់ Log in ទេ ទើបទទួលបាន 50. អ្នកប្រើដែលមានស្រាប់មិនអាចទទួលបានទេ។</div>
+          <div style="margin-top:6px;">Only accounts that have never logged in can get the 50. Existing users cannot claim it.</div>
+        </div>
+        <div class="note-box hidden" id="gift50Unavailable" role="status">Server setting not available yet · ការកំណត់នៅលើ Server មិនទាន់មាននៅឡើយ</div>
+        <p class="save-status" id="gift50Status" style="text-align:left;"></p>
+      </div>
       <div class="toolbar">
         <div class="search-box">
           <span class="mag" aria-hidden="true">
@@ -1768,39 +1896,39 @@
           <div class="stats-group">
             <h3>អ្នកប្រើប្រាស់</h3>
             <div class="stat-grid">
-              <div class="stat-card accent-lime"><div class="sv" id="statUsersToday">–</div><div class="sk">ថ្ងៃនេះ</div></div>
-              <div class="stat-card accent-lime"><div class="sv" id="statUsers7">–</div><div class="sk">7 ថ្ងៃ</div></div>
-              <div class="stat-card accent-lime"><div class="sv" id="statUsers30">–</div><div class="sk">30 ថ្ងៃ</div></div>
+              <div class="stat-card accent-lime" data-stat="usersToday"><div class="sv" id="statUsersToday">–</div><div class="sk">ថ្ងៃនេះ</div></div>
+              <div class="stat-card accent-lime" data-stat="users7"><div class="sv" id="statUsers7">–</div><div class="sk">7 ថ្ងៃ</div></div>
+              <div class="stat-card accent-lime" data-stat="users30"><div class="sv" id="statUsers30">–</div><div class="sk">30 ថ្ងៃ</div></div>
             </div>
           </div>
 
           <div class="stats-group">
             <h3>បង្កើតថ្ងៃនេះ</h3>
             <div class="stat-grid">
-              <div class="stat-card accent-song"><div class="sv" id="statSongsToday">–</div><div class="sk">បទចម្រៀង</div></div>
-              <div class="stat-card accent-media"><div class="sv" id="statVideosToday">–</div><div class="sk">វីដេអូ</div></div>
-              <div class="stat-card accent-media"><div class="sv" id="statImagesToday">–</div><div class="sk">រូបភាព</div></div>
+              <div class="stat-card accent-song" data-stat="songsToday"><div class="sv" id="statSongsToday">–</div><div class="sk">បទចម្រៀង</div></div>
+              <div class="stat-card accent-media" data-stat="videosToday"><div class="sv" id="statVideosToday">–</div><div class="sk">វីដេអូ</div></div>
+              <div class="stat-card accent-media" data-stat="imagesToday"><div class="sv" id="statImagesToday">–</div><div class="sk">រូបភាព</div></div>
             </div>
           </div>
 
           <div class="stats-group">
             <h3>Public</h3>
             <div class="stat-grid">
-              <div class="stat-card accent-lime"><div class="sv" id="statPublicPosts">–</div><div class="sk">ផុស</div></div>
-              <div class="stat-card accent-lime"><div class="sv" id="statPublicViews">–</div><div class="sk">View</div></div>
-              <div class="stat-card accent-song"><div class="sv" id="statPublicLikes">–</div><div class="sk">Like</div></div>
+              <div class="stat-card accent-lime" data-stat="publicPosts"><div class="sv" id="statPublicPosts">–</div><div class="sk">ផុស</div></div>
+              <div class="stat-card accent-lime" data-stat="publicViews"><div class="sv" id="statPublicViews">–</div><div class="sk">View</div></div>
+              <div class="stat-card accent-song" data-stat="publicLikes"><div class="sv" id="statPublicLikes">–</div><div class="sk">Like</div></div>
             </div>
             <div class="stat-grid" style="margin-top:10px;">
-              <div class="stat-card accent-media"><div class="sv" id="statPublicDownloads">–</div><div class="sk">Download</div></div>
-              <div class="stat-card accent-song"><div class="sv" id="statSongsTotal">–</div><div class="sk">បទសរុប</div></div>
-              <div class="stat-card accent-media"><div class="sv" id="statMediaTotal">–</div><div class="sk">Media សរុប</div></div>
+              <div class="stat-card accent-media" data-stat="publicDownloads"><div class="sv" id="statPublicDownloads">–</div><div class="sk">Download</div></div>
+              <div class="stat-card accent-song" data-stat="songsTotal"><div class="sv" id="statSongsTotal">–</div><div class="sk">បទសរុប</div></div>
+              <div class="stat-card accent-media" data-stat="mediaTotal"><div class="sv" id="statMediaTotal">–</div><div class="sk">Media សរុប</div></div>
             </div>
           </div>
 
           <div class="stats-group">
             <h3>បញ្ហា</h3>
             <div class="stat-grid" style="grid-template-columns:1fr;">
-              <div class="stat-card accent-red"><div class="sv" id="statFailuresToday">–</div><div class="sk">ថ្ងៃនេះ</div></div>
+              <div class="stat-card accent-red" data-stat="failuresToday"><div class="sv" id="statFailuresToday">–</div><div class="sk">ថ្ងៃនេះ</div></div>
             </div>
             <div id="failuresList" style="margin-top:6px;"></div>
             <div class="state-box hidden" id="failuresEmpty">
@@ -1814,6 +1942,52 @@
             <div class="state-box hidden" id="activityEmpty">
               <div class="big">មិនទាន់មានសកម្មភាព</div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= FEATURE USAGE ================= -->
+      <div id="panel-feature-usage" class="hidden">
+        <div class="section-card">
+          <h2>Feature Usage · ការប្រើមុខងារ</h2>
+          <p class="desc">ចំនួនដងដែលអ្នកប្រើបានប្រើមុខងារនីមួយៗ — តម្រៀបតាមចំនួនសរុបច្រើនជាងគេ។</p>
+          <div class="toolbar" style="margin-top:0;">
+            <button class="btn" id="fuRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
+          </div>
+          <div class="alert alert-error" id="fuError" role="alert"></div>
+          <p class="save-status" id="fuStatus" style="text-align:left;"></p>
+          <div class="fu-summary">
+            <div class="stat-card accent-lime"><div class="sv" id="fuTotalAll">–</div><div class="sk">សរុបទាំងអស់ · Total</div></div>
+            <div class="stat-card accent-lime"><div class="sv" id="fuTodayAll">–</div><div class="sk">ថ្ងៃនេះ · Today</div></div>
+          </div>
+          <p class="save-status" id="fuDate" style="text-align:left; margin-top:0;"></p>
+          <div id="fuList"></div>
+          <div class="state-box hidden" id="fuEmpty">
+            <div class="big">មិនទាន់មានទិន្នន័យប្រើប្រាស់</div>
+            <div>នៅពេលអ្នកប្រើចុចមុខងារនានា ចំនួននឹងបង្ហាញនៅទីនេះ។</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= DEVICE RECORDS ================= -->
+      <div id="panel-devices" class="hidden">
+        <div class="section-card">
+          <h2>Devices · ឧបករណ៍</h2>
+          <p class="desc">ឧបករណ៍ទាំងអស់ដែលបានចុះឈ្មោះ — Fingerprint, ម៉ូឌែល, IP, ប្រទេស, Slots, Strikes, VPN និង Gmail ដែលបានឃើញ។ ឧបករណ៍ថ្មីជាងគេនៅខាងលើ។</p>
+          <div class="toolbar" style="margin-top:0;">
+            <button class="btn" id="devRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
+          </div>
+          <div class="alert alert-error" id="devError" role="alert"></div>
+          <p class="save-status" id="devStatus" style="text-align:left;"></p>
+          <div class="dev-summary">
+            <div class="stat-card accent-lime"><div class="sv" id="devTotal">–</div><div class="sk">ឧបករណ៍សរុប · Devices</div></div>
+            <div class="stat-card accent-red"><div class="sv" id="devBlocked">–</div><div class="sk">ត្រូវបានបិទ · Blocked</div></div>
+            <div class="stat-card accent-song"><div class="sv" id="devVpn">–</div><div class="sk">VPN · បានបើក VPN</div></div>
+          </div>
+          <div id="devList"></div>
+          <div class="state-box hidden" id="devEmpty">
+            <div class="big">មិនទាន់មានឧបករណ៍</div>
+            <div>នៅពេលមានឧបករណ៍ចុះឈ្មោះ វានឹងបង្ហាញនៅទីនេះ។</div>
           </div>
         </div>
       </div>
@@ -2131,6 +2305,15 @@
           <p class="pw-status-line">ស្ថានភាព · Status៖ <b id="sheetPwStatus">—</b></p>
           <p class="pw-note">Admin មើល Password របស់អ្នកប្រើមិនបានទេ — Password ត្រូវរក្សាទុកជាហាស់ (hash) ដែលបកវិញមិនបាន។ មើលបានតែស្ថានភាព និងកំណត់ថ្មីបាន។ · Admin can never view a user's password — status + reset only.</p>
           <button class="btn btn-block" id="pwResetBtn" type="button">កំណត់ Password ឡើងវិញ · Reset password</button>
+          <button class="btn btn-primary btn-block" id="pwResetShowBtn" type="button" style="margin-top:8px;">🔑 Reset &amp; Show · កំណត់ថ្មី ហើយបង្ហាញ</button>
+          <div id="pwShownBox" class="pw-shown hidden">
+            <span class="field-label">Password ថ្មី · New password — បង្ហាញតែពេលនេះ · shown only now</span>
+            <div class="pw-shown-row">
+              <code class="pw-shown-value" id="pwShownValue">—</code>
+              <button class="btn" id="pwCopyBtn" type="button">Copy · ចម្លង</button>
+            </div>
+            <p class="pw-shown-note">ចម្លង Password នេះផ្ញើឲ្យអ្នកប្រើតាម Telegram / ទូរស័ព្ទ / សារ។ វានឹងមិនបង្ហាញម្ដងទៀតទេ។ · Copy this password and send it to the user — it will not be shown again.</p>
+          </div>
           <div id="pwPanel" class="hidden">
             <div class="pw-sub">
               <span class="field-label">ដាក់ Password ថ្មី · Set new password</span>
@@ -2254,6 +2437,25 @@
           <div class="alert alert-ok" id="blockOk" role="status"></div>
           <p class="grant-status" id="blockStatus"></p>
         </div>
+      </div>
+    </div>
+
+    <!-- ================= STAT DETAIL SHEET ================= -->
+    <div class="overlay" id="statOverlay">
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="statSheetTitle">
+        <div class="sheet-head">
+          <div class="who">
+            <div class="u-name" id="statSheetTitle">—</div>
+            <div class="u-email" id="statSheetSub"></div>
+          </div>
+          <button class="close-btn" id="statSheetClose" type="button" aria-label="បិទ">✕</button>
+        </div>
+        <div id="statDetailList"></div>
+        <div class="state-box hidden" id="statDetailEmpty">
+          <div class="big">មិនមានទិន្នន័យលម្អិត</div>
+          <div>Server មិនបានផ្ដល់បញ្ជីលម្អិតសម្រាប់ចំនួននេះទេ។</div>
+        </div>
+        <p class="sd-note hidden" id="statDetailNote"></p>
       </div>
     </div>
 
@@ -3179,8 +3381,9 @@
             tr.children[1].firstChild.textContent = u.name;
             tr.children[2].firstChild.textContent = u.email;
             var pwc = tr.children[3].firstChild;
-            pwc.textContent = u.hasPassword ? "🔑 មាន" : "No password";
+            pwc.textContent = u.hasPassword ? "🔑 មាន" : "Reset · Auto";
             if (u.hasPassword) pwc.classList.add("has");
+            else pwc.classList.add("reset");
             tr.children[4].firstChild.appendChild(document.createTextNode(fmtNum(u.media)));
             tr.children[5].firstChild.appendChild(document.createTextNode(fmtNum(u.song)));
             var pb = tr.children[6].firstChild;
@@ -3225,8 +3428,9 @@
             card.querySelector(".chip-media").appendChild(document.createTextNode(fmtNum(u.media)));
             card.querySelector(".chip-song").appendChild(document.createTextNode(fmtNum(u.song)));
             var cpw = card.querySelector(".pw-chip");
-            cpw.textContent = u.hasPassword ? "🔑 មាន · Password" : "No password";
+            cpw.textContent = u.hasPassword ? "🔑 មាន · Password" : "Reset · Auto";
             if (u.hasPassword) cpw.classList.add("has");
+            else cpw.classList.add("reset");
             var umEl = card.querySelector(".u-model");
             if (u.model) umEl.textContent = String(u.model);
             else umEl.style.display = "none";
@@ -4031,7 +4235,16 @@
            after a successful set the field is wiped and the admin
            must tell the user the password they chose. A server answer
            of { ok:false, error } is a failure and its real error is
-           shown in the sheet, never hidden. */
+           shown in the sheet, never hidden.
+           "Reset & Show" is the one exception to "never shown back":
+           it generates a NEW temporary password in this app, sends it
+           through the exact same reset call, and — only after the
+           server confirms — displays that NEW password once in the
+           sheet (with a Copy button) so the admin can send it to the
+           user. It is the password the admin just created, never the
+           user's old one (a hash, unrecoverable by design). The shown
+           value lives only in this sheet's DOM until the sheet is
+           reset for another user; it is never persisted. */
         var sheetPasswordCell = document.getElementById("sheetPasswordCell");
         var sheetPwStatus = document.getElementById("sheetPwStatus");
         var pwResetBtn = document.getElementById("pwResetBtn");
@@ -4048,6 +4261,10 @@
         var pwError = document.getElementById("pwError");
         var pwOk = document.getElementById("pwOk");
         var pwStatus = document.getElementById("pwStatus");
+        var pwResetShowBtn = document.getElementById("pwResetShowBtn");
+        var pwShownBox = document.getElementById("pwShownBox");
+        var pwShownValue = document.getElementById("pwShownValue");
+        var pwCopyBtn = document.getElementById("pwCopyBtn");
         var pwPending = false;
 
         function pwStatusLabel(has) {
@@ -4060,6 +4277,8 @@
         }
         function resetPasswordPanel() {
           if (pwPanel) pwPanel.classList.add("hidden");
+          if (pwShownBox) pwShownBox.classList.add("hidden");
+          if (pwShownValue) pwShownValue.textContent = "—";
           if (pwClearConfirm) pwClearConfirm.classList.add("hidden");
           if (pwNewInput) { pwNewInput.value = ""; pwNewInput.type = "password"; }
           if (pwEyeOpen) pwEyeOpen.classList.remove("hidden");
@@ -4080,12 +4299,30 @@
           pwClearBtn.disabled = busy;
           pwClearConfirmBtn.disabled = busy;
           pwResetBtn.disabled = busy;
+          pwResetShowBtn.disabled = busy;
         }
-        function doPasswordReset(newPassword) {
+        /* A fresh temporary password for Reset & Show: 10 characters
+           from an unambiguous alphabet (no 0/O, 1/l/I), drawn with
+           crypto randomness when available. */
+        function generateTempPassword() {
+          var alphabet = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+          var out = "";
+          var bytes = new Uint8Array(10);
+          if (window.crypto && window.crypto.getRandomValues) {
+            window.crypto.getRandomValues(bytes);
+          } else {
+            for (var j = 0; j < bytes.length; j++) bytes[j] = Math.floor(Math.random() * 256);
+          }
+          for (var i = 0; i < bytes.length; i++) out += alphabet.charAt(bytes[i] % alphabet.length);
+          return out;
+        }
+        function doPasswordReset(newPassword, reveal) {
           if (!selectedUser || pwPending) return;
           var email = selectedUser.email;
           hideAlert(pwError);
           hideAlert(pwOk);
+          if (pwShownBox) pwShownBox.classList.add("hidden");
+          if (pwShownValue) pwShownValue.textContent = "—";
           setPwBusy(true);
           var stop = makeTicker(pwStatus, function (s) {
             return "កំពុងកំណត់ Password ឡើងវិញ… " + s + " វិនាទី";
@@ -4126,7 +4363,16 @@
               pwEyeOpen.classList.remove("hidden");
               pwEyeOff.classList.add("hidden");
               if (newPassword) {
-                showAlert(pwOk, "បានដាក់ Password ថ្មីសម្រាប់ " + email + " — សូមប្រាប់អ្នកប្រើ · New password set for " + email + " — tell the user the new password.");
+                if (reveal) {
+                  /* Reset & Show: display the NEW password just set —
+                     this one moment only — so the admin can copy and
+                     send it to the user. */
+                  pwShownValue.textContent = newPassword;
+                  pwShownBox.classList.remove("hidden");
+                  showAlert(pwOk, "បានដាក់ Password ថ្មីសម្រាប់ " + email + " — Password ថ្មីបង្ហាញខាងក្រោម សូមចម្លងផ្ញើឲ្យអ្នកប្រើ · New password set for " + email + " — shown below, copy it and send it to the user.");
+                } else {
+                  showAlert(pwOk, "បានដាក់ Password ថ្មីសម្រាប់ " + email + " — សូមប្រាប់អ្នកប្រើ · New password set for " + email + " — tell the user the new password.");
+                }
               } else {
                 showAlert(pwOk, "បានលុប Password សម្រាប់ " + email + " · Password cleared for " + email);
               }
@@ -4146,6 +4392,19 @@
         pwResetBtn.addEventListener("click", function () {
           pwPanel.classList.toggle("hidden");
           if (!pwPanel.classList.contains("hidden")) pwClearConfirm.classList.add("hidden");
+        });
+        pwResetShowBtn.addEventListener("click", function () {
+          if (!selectedUser || pwPending) return;
+          doPasswordReset(generateTempPassword(), true);
+        });
+        pwCopyBtn.addEventListener("click", function () {
+          var val = pwShownValue.textContent;
+          if (!val || val === "—") return;
+          copyText(val).then(function () {
+            var old = pwCopyBtn.textContent;
+            pwCopyBtn.textContent = "Copied ✓ · បានចម្លង";
+            setTimeout(function () { pwCopyBtn.textContent = old; }, 1600);
+          });
         });
         pwEyeBtn.addEventListener("click", function () {
           var show = pwNewInput.type === "password";
@@ -4191,6 +4450,8 @@
         var panelProviders = document.getElementById("panel-providers");
         var panelCloudinary = document.getElementById("panel-cloudinary");
         var panelAnalytics = document.getElementById("panel-analytics");
+        var panelFeatureUsage = document.getElementById("panel-feature-usage");
+        var panelDevices = document.getElementById("panel-devices");
         var panelNotifications = document.getElementById("panel-notifications");
         var panelSecurity = document.getElementById("panel-security");
         var panelUpdates = document.getElementById("panel-updates");
@@ -4201,6 +4462,7 @@
           payment: panelPayment, models: panelModels,
           appearance: panelAppearance, smooth: panelSmooth,
           keys: panelKeys, providers: panelProviders, cloudinary: panelCloudinary, analytics: panelAnalytics,
+          "feature-usage": panelFeatureUsage, "devices": panelDevices,
           notifications: panelNotifications, security: panelSecurity, updates: panelUpdates, telegram: panelTelegram,
           email: panelEmail
         };
@@ -4238,12 +4500,15 @@
           Object.keys(sectionPanels).forEach(function (k) {
             sectionPanels[k].classList.toggle("hidden", k !== name);
           });
+          if (name === "users") loadGift50({ silent: true });
           if (name === "purchases") loadPurchases();
           if (name === "post") loadLivePosts();
           if (name === "packages") { loadPackagePrices(); loadPackageEvents(); }
           if (name === "payment") loadPaymentSettings();
           if (name === "smooth") loadSettings();
           if (name === "analytics") loadStats();
+          if (name === "feature-usage") loadFeatureUsage();
+          if (name === "devices") loadDeviceRecords();
           if (name === "notifications") loadNotifications();
           if (name === "security") loadSecurity();
           if (name === "updates") loadUpdates();
@@ -5206,6 +5471,99 @@
             });
         });
 
+        /* ---------- New-user gift (50 song credits) ----------
+           Toggle at the top of the Users section.
+           ON  → brand-new registrants get 50 song credits (only 50).
+           OFF → brand-new registrants get 24 song credits (normal).
+           State lives on the server: GET / POST /api/admin/gift-50.
+           The endpoint may not be deployed yet — any failure (network,
+           HTTP error, or ok:false) only shows the neutral
+           "Server setting not available yet" note, reverts the switch
+           on a failed save, and never breaks the rest of Admin (no
+           logout, no red alarm). */
+        var gift50Toggle = document.getElementById("gift50Toggle");
+        var gift50State = document.getElementById("gift50State");
+        var gift50Status = document.getElementById("gift50Status");
+        var gift50Unavailable = document.getElementById("gift50Unavailable");
+        var gift50Enabled = false;
+        var gift50Loading = false;
+        var gift50Saving = false;
+
+        function setGift50UI() {
+          if (!gift50Toggle || !gift50State) return;
+          gift50Toggle.checked = gift50Enabled;
+          gift50State.textContent = gift50Enabled
+            ? "បើក (ON) · 50 song credits"
+            : "បិទ (OFF) · 24 song credits";
+        }
+        function showGift50Unavailable() {
+          if (gift50Unavailable) gift50Unavailable.classList.remove("hidden");
+        }
+        function hideGift50Unavailable() {
+          if (gift50Unavailable) gift50Unavailable.classList.add("hidden");
+        }
+
+        function loadGift50(opts) {
+          opts = opts || {};
+          if (!gift50Toggle || gift50Loading || gift50Saving) return Promise.resolve();
+          gift50Loading = true;
+          if (!opts.silent && gift50Status) gift50Status.textContent = "កំពុងផ្ទុក… · Loading…";
+          return api("/api/admin/gift-50")
+            .then(function (data) {
+              if (!data || data.ok === false || typeof data.enabled === "undefined") {
+                throw new Error("unavailable");
+              }
+              gift50Enabled = !!data.enabled;
+              hideGift50Unavailable();
+              if (gift50Status) gift50Status.textContent = "";
+              setGift50UI();
+            })
+            .catch(function () {
+              if (gift50Status) gift50Status.textContent = "";
+              showGift50Unavailable();
+              setGift50UI();
+            })
+            .then(function () { gift50Loading = false; });
+        }
+
+        if (gift50Toggle) {
+          gift50Toggle.addEventListener("change", function () {
+            if (gift50Saving) { setGift50UI(); return; }
+            var val = gift50Toggle.checked;
+            var prev = gift50Enabled;
+            gift50Enabled = val;
+            setGift50UI();
+            gift50Saving = true;
+            gift50Toggle.disabled = true;
+            var stop = makeTicker(gift50Status, function (s) {
+              return "កំពុងរក្សាទុក… · Saving… " + s + " វិនាទី";
+            });
+            api("/api/admin/gift-50", { method: "POST", body: { enabled: val } })
+              .then(function (data) {
+                if (!data || data.ok === false) throw new Error("unavailable");
+                if (typeof data.enabled !== "undefined") gift50Enabled = !!data.enabled;
+                stop();
+                gift50Saving = false;
+                gift50Toggle.disabled = false;
+                hideGift50Unavailable();
+                setGift50UI();
+                gift50Status.textContent = gift50Enabled
+                  ? "បានរក្សាទុកហើយ ✓ · Saved — new users get 50 song credits"
+                  : "បានរក្សាទុកហើយ ✓ · Saved — new users get 24 song credits";
+              })
+              .catch(function () {
+                stop();
+                gift50Saving = false;
+                gift50Toggle.disabled = false;
+                gift50Enabled = prev;
+                setGift50UI();
+                showGift50Unavailable();
+                gift50Status.textContent = "Server setting not available yet";
+              });
+          });
+        }
+        setGift50UI();
+
         /* ---------- Payment ---------- */
         var paymentKhqrInput = document.getElementById("paymentKhqrInput");
         var paymentBinanceInput = document.getElementById("paymentBinanceInput");
@@ -5377,12 +5735,12 @@
             var groqExtra = p.id === "groq"
               ? "<p class='groq-usage-hint'>រាប់តែ Chat/Text tokens (AI Chat + បកប្រែ) · Whisper មិនរាប់ទេ · Chat/text tokens only — Whisper audio is not counted.</p>" +
                 "<div class='groq-usage-note hidden'></div>" +
-                "<button class='btn groq-usage-refresh' type='button'>↻ Live · ផ្ទុកចំនួនឡើងវិញ</button>"
+                "<button class='btn groq-usage-refresh' type='button'>● Live · Auto · ធ្វើបច្ចុប្បន្នភាពស្វ័យប្រវត្តិ</button>"
               : "";
             var mvsepExtra = p.id === "mvsep"
               ? "<p class='mvsep-usage-hint'>Demucs stem separation — បំបែកសំឡេង/ភ្លេង · 50 separations/day ក្នុងមួយ key · 50/day per key.</p>" +
                 "<div class='mvsep-usage-note hidden'></div>" +
-                "<button class='btn mvsep-usage-refresh' type='button'>↻ Live · ផ្ទុកចំនួនឡើងវិញ</button>"
+                "<button class='btn mvsep-usage-refresh' type='button'>● Live · Auto · ធ្វើបច្ចុប្បន្នភាពស្វ័យប្រវត្តិ</button>"
               : "";
             card.innerHTML =
               "<div class='kc-head' role='button' tabindex='0' aria-expanded='false'><span class='kc-name'></span><span class='kc-count count-badge hidden'></span><span class='key-status none'>មិនទាន់មាន key</span><span class='kc-arrow' aria-hidden='true'>▼</span></div>" +
@@ -5468,7 +5826,7 @@
               var row = document.createElement("div");
               row.className = "kc-item";
               var tail = st.last4s[idx] ? "••••" + st.last4s[idx] : "••••";
-              var usageHtml = (id === "groq" || id === "mvsep") ? "<span class='kc-usage hidden'></span>" : "";
+              var usageHtml = "<span class='kc-usage hidden'></span>";
               row.innerHTML =
                 "<span class='kc-dot' role='img' aria-label='មិនទាន់ដឹងស្ថានភាព'></span>" +
                 "<span class='kc-main'>" +
@@ -5478,8 +5836,7 @@
                   "<span class='kc-full hidden'></span>" +
                 "</span>" +
                 "<button class='kc-act kc-eye' type='button' aria-label='បង្ហាញ/លាក់ Key " + (idx + 1) + "'>" + EYE_SVG + "</button>" +
-                "<button class='kc-act kc-copy' type='button' aria-label='ចម្លង Key " + (idx + 1) + "'>" + COPY_SVG + "</button>" +
-                "<button class='kc-del' type='button' aria-label='លុប Key " + (idx + 1) + "'>✕</button>";
+                "<button class='kc-act kc-copy' type='button' aria-label='ចម្លង Key " + (idx + 1) + "'>" + COPY_SVG + "</button>";
               row.querySelector(".kc-item-label").textContent = "Key " + (idx + 1) + " " + tail;
               var eyeBtn = row.querySelector(".kc-eye");
               var fullEl = row.querySelector(".kc-full");
@@ -5531,15 +5888,13 @@
                     refs.line.textContent = "ចម្លង Key មិនបាន៖ " + err.message;
                   });
               });
-              row.querySelector(".kc-del").addEventListener("click", function () {
-                deleteKey(p, refs, idx);
-              });
               refs.list.appendChild(row);
             })(i);
           }
           applyKeyDots(id);
           if (id === "groq") applyGroqUsage();
-          if (id === "mvsep") applyMvsepUsage();
+          else if (id === "mvsep") applyMvsepUsage();
+          else applyProviderUsage(id);
         }
 
         /* ---------- Provider status (public, live) ----------
@@ -5584,6 +5939,7 @@
               KEY_PROVIDERS.forEach(function (p) {
                 updateKeyBadge(p.id);
                 applyKeyDots(p.id);
+                if (p.id !== "groq" && p.id !== "mvsep") applyProviderUsage(p.id);
               });
             })
             .catch(function () { /* lights simply stay as they were */ });
@@ -5692,6 +6048,8 @@
               : ((typeof groqDailyLimit === "number" && groqDailyLimit > 0) ? groqDailyLimit : 200000);
             var remaining = Number(entry.remainingToday);
             if (!isFinite(remaining)) remaining = 0;
+            var used = Number(entry.usedToday);
+            if (!isFinite(used)) used = Math.max(limit - remaining, 0);
             var percent;
             if (typeof entry.percentRemaining === "number" && isFinite(entry.percentRemaining)) {
               percent = Math.round(entry.percentRemaining);
@@ -5712,14 +6070,14 @@
             dot.className = "groq-dot";
             span.appendChild(dot);
             var lead = document.createElement("span");
-            lead.textContent = "● Live · នៅសល់ ";
+            lead.textContent = "● ប្រើហើយ ";
             span.appendChild(lead);
             var num = document.createElement("span");
             num.className = "kc-usage-num";
-            num.textContent = fmtNum(remaining) + " / " + fmtNum(limit);
+            num.textContent = fmtNum(used) + " / " + fmtNum(limit);
             span.appendChild(num);
             var tail = document.createElement("span");
-            tail.textContent = " · " + percent + "%";
+            tail.textContent = " · នៅសល់ " + fmtNum(remaining) + " · " + percent + "%";
             span.appendChild(tail);
           });
           var note = refs.groqNote;
@@ -5836,6 +6194,134 @@
             }
           }
         }
+
+        /* ---------- Usage for EVERY provider (per key) ----------
+           Groq and MVSEP have their own counters above. Every other
+           provider's rows get a usage line too, painted by
+           applyProviderUsage():
+           1. Real counts when the server reports them — GET
+              /api/admin/usage → { providers: { <id>: { dailyLimit,
+              keys: [{ key, usedToday, remainingToday, status }] } } },
+              with a per-provider /api/admin/<id>-usage fallback in the
+              same shape as groq-usage / mvsep-usage. Counts render as
+              «● ប្រើហើយ X / limit · នៅសល់ Y» so a used API's number is
+              visible at once.
+           2. Until the server counts a provider, the row falls back to
+              what provider-status does report for that key: «ប្រើរួច ·
+              Used · <last-used time>» once it has run, «មិនទាន់ប្រើ ·
+              Not used yet» before — the row always shows its usage
+              state, never a blank. */
+        var providerUsageMap = {};
+
+        function storeProviderUsage(id, payload) {
+          var pv = (payload && typeof payload === "object") ? payload : {};
+          var arr = pv.keys || pv.perKey || [];
+          if (!Array.isArray(arr)) return;
+          var byKey = {};
+          arr.forEach(function (e, i) {
+            if (!e || typeof e !== "object") return;
+            var n = (typeof e.key === "number") ? e.key : i + 1;
+            byKey[n] = e;
+          });
+          var limit = (typeof pv.dailyLimit === "number" && pv.dailyLimit > 0) ? pv.dailyLimit
+            : (typeof pv.limit === "number" && pv.limit > 0) ? pv.limit : null;
+          providerUsageMap[id] = { limit: limit, byKey: byKey };
+        }
+
+        function loadGenericUsage() {
+          var others = KEY_PROVIDERS.filter(function (p) { return p.id !== "groq" && p.id !== "mvsep"; });
+          function paintAll() {
+            others.forEach(function (p) { applyProviderUsage(p.id); });
+          }
+          return api("/api/admin/usage")
+            .then(function (data) {
+              var d = (data && typeof data === "object") ? data : {};
+              var provs = d.providers || d.usage || {};
+              if (provs && typeof provs === "object") {
+                Object.keys(provs).forEach(function (id) { storeProviderUsage(id, provs[id]); });
+              }
+              /* Per-provider fallback for any provider the combined
+                 endpoint did not cover. */
+              var missing = others.filter(function (p) {
+                return !providerUsageMap[p.id] && ((keyState[p.id] || {}).count || 0) > 0;
+              });
+              var chain = Promise.resolve();
+              missing.forEach(function (p) {
+                chain = chain.then(function () {
+                  return api("/api/admin/" + p.id + "-usage")
+                    .then(function (pd) {
+                      if (pd && pd.ok === true) storeProviderUsage(p.id, pd);
+                    })
+                    .catch(function () { /* not counted by the server yet */ });
+                });
+              });
+              return chain.then(paintAll);
+            })
+            .catch(function () { paintAll(); });
+        }
+
+        function applyProviderUsage(id) {
+          if (id === "groq" || id === "mvsep") return;
+          var refs = keyCards[id];
+          if (!refs || !refs.list) return;
+          var m = providerUsageMap[id];
+          var rows = refs.list.querySelectorAll(".kc-item");
+          rows.forEach(function (row, idx) {
+            var span = row.querySelector(".kc-usage");
+            if (!span) return;
+            var entry = m && m.byKey ? m.byKey[idx + 1] : null;
+            span.textContent = "";
+            if (entry) {
+              var used = Number(entry.usedToday !== undefined ? entry.usedToday : entry.used);
+              if (!isFinite(used)) used = 0;
+              var limit = (typeof entry.dailyLimit === "number" && entry.dailyLimit > 0) ? entry.dailyLimit
+                : (m && typeof m.limit === "number" && m.limit > 0) ? m.limit
+                : (typeof entry.limit === "number" && entry.limit > 0) ? entry.limit : null;
+              var remaining = Number(entry.remainingToday);
+              if (!isFinite(remaining) && limit !== null) remaining = Math.max(limit - used, 0);
+              var cls = "usage-green";
+              if (entry.status === "red" || (limit !== null && remaining <= 0)) cls = "usage-red";
+              else if (entry.status === "yellow" || (limit !== null && remaining <= Math.max(1, Math.ceil(limit * 0.2)))) cls = "usage-yellow";
+              span.className = "kc-usage " + cls + (idx === 0 ? " kc-usage-first" : "");
+              var dot = document.createElement("span");
+              dot.className = "usage-dot";
+              span.appendChild(dot);
+              var lead = document.createElement("span");
+              lead.textContent = "● ប្រើហើយ ";
+              span.appendChild(lead);
+              var num = document.createElement("span");
+              num.className = "kc-usage-num";
+              num.textContent = limit !== null ? (fmtNum(used) + " / " + fmtNum(limit)) : fmtNum(used);
+              span.appendChild(num);
+              if (limit !== null && isFinite(remaining)) {
+                var tail = document.createElement("span");
+                tail.textContent = " · នៅសល់ " + fmtNum(remaining);
+                span.appendChild(tail);
+              }
+              return;
+            }
+            /* No server count for this provider yet — show the usage
+               state provider-status reports for this key instead. */
+            span.className = "kc-usage kc-usage-state" + (idx === 0 ? " kc-usage-first" : "");
+            var ps = psEntryFor(id, idx);
+            if (ps && (ps.lastOk || ps.at)) {
+              span.textContent = "● ប្រើរួច · Used · " + fmtDateTime(ps.lastOk || ps.at);
+            } else {
+              span.textContent = "មិនទាន់ប្រើ · Not used yet";
+            }
+          });
+        }
+
+        /* Usage counts refresh themselves while the API Keys page is
+           open — LIVE and automatic, no manual reload tap needed. */
+        setInterval(function () {
+          if (appView.classList.contains("hidden") || !getKey()) return;
+          if (currentSection !== "keys") return;
+          loadProviderStatus();
+          if ((keyState["groq"] || {}).count > 0) loadGroqUsage();
+          if ((keyState["mvsep"] || {}).count > 0) loadMvsepUsage();
+          loadGenericUsage();
+        }, 20000);
 
         /* Load per-key status for one provider:
            GET /api/admin/keys/status?provider=X → { results: [{ index,
@@ -6103,6 +6589,7 @@
               else { groqUsageMap = null; groqUsageTried = false; applyGroqUsage(); }
               if ((keyState["mvsep"] || {}).count > 0) loadMvsepUsage();
               else { mvsepUsageMap = null; mvsepUsageTried = false; applyMvsepUsage(); }
+              loadGenericUsage();
             })
             .catch(function (err) { handleSectionError(err, keysStatus); });
         }
@@ -8801,6 +9288,445 @@
           });
         }
 
+        /* ---------- Feature Usage ----------
+           GET /api/admin/feature-usage (admin-key auth via api()) returns
+           { ok, date, features: [{ feature, total, today, days }] } sorted
+           by total descending. Every tracked feature is always shown —
+           a feature the server has not reported yet renders with 0 / 0 so
+           the full list stays visible. Refreshed each time the section
+           is opened (showSection) and by its ↻ button. */
+        var fuStatus = document.getElementById("fuStatus");
+        var fuError = document.getElementById("fuError");
+        var fuRefreshBtn = document.getElementById("fuRefreshBtn");
+        var fuList = document.getElementById("fuList");
+        var fuEmpty = document.getElementById("fuEmpty");
+        var fuTotalAll = document.getElementById("fuTotalAll");
+        var fuTodayAll = document.getElementById("fuTodayAll");
+        var fuDate = document.getElementById("fuDate");
+        var fuLoading = false;
+
+        var FU_FEATURES = [
+          { key: "history_like", name: "Like · ចូលចិត្ត" },
+          { key: "history_download", name: "Download · ទាញយក" },
+          { key: "history_mv", name: "MV · មើល MV" },
+          { key: "history_vocal_studio", name: "Vocal Studio · ស្ទូឌីយោសំឡេង" },
+          { key: "history_share", name: "Share · ចែករំលែក" },
+          { key: "history_save", name: "Save · រក្សាទុក" },
+          { key: "history_post_public", name: "Post to Public · ផុសទៅ Public" },
+          { key: "history_delete", name: "Delete · លុបបទ" },
+          { key: "history_listen", name: "Listen · ស្ដាប់" },
+          { key: "theme_day", name: "Theme Day · របៀបថ្ងៃ" },
+          { key: "theme_night", name: "Theme Night · របៀបយប់" },
+          { key: "theme_auto", name: "Theme Auto · របៀបអូតូ" },
+          { key: "export_wav", name: "Export WAV · នាំចេញ WAV" },
+          { key: "export_mp3", name: "Export MP3 · នាំចេញ MP3" },
+          { key: "version_history_view", name: "Version History · មើលប្រវត្តិកំណែ" }
+        ];
+        var FU_NAMES = {};
+        FU_FEATURES.forEach(function (f) { FU_NAMES[f.key] = f.name; });
+
+        function fuFriendlyName(key) {
+          return FU_NAMES[key] || String(key || "").replace(/_/g, " ");
+        }
+
+        function renderFeatureUsage(data) {
+          var byKey = {};
+          var rows = (data && Array.isArray(data.features)) ? data.features : [];
+          rows.forEach(function (r) {
+            if (!r || !r.feature) return;
+            byKey[String(r.feature)] = {
+              feature: String(r.feature),
+              total: Number(r.total) || 0,
+              today: Number(r.today) || 0
+            };
+          });
+          /* Keep every tracked feature in the list, even unreported ones. */
+          FU_FEATURES.forEach(function (f) {
+            if (!byKey[f.key]) byKey[f.key] = { feature: f.key, total: 0, today: 0 };
+          });
+          var list = Object.keys(byKey).map(function (k) { return byKey[k]; });
+          list.sort(function (a, b) {
+            if (b.total !== a.total) return b.total - a.total;
+            if (b.today !== a.today) return b.today - a.today;
+            return a.feature < b.feature ? -1 : (a.feature > b.feature ? 1 : 0);
+          });
+
+          var totalAll = 0, todayAll = 0;
+          list.forEach(function (r) { totalAll += r.total; todayAll += r.today; });
+          fuTotalAll.textContent = fmtNum(totalAll);
+          fuTodayAll.textContent = fmtNum(todayAll);
+          fuDate.textContent = (data && data.date) ? ("ថ្ងៃទិន្នន័យ · Date: " + String(data.date)) : "";
+
+          fuList.innerHTML = "";
+          list.forEach(function (r, i) {
+            var row = document.createElement("div");
+            row.className = "fu-row";
+
+            var rank = document.createElement("span");
+            rank.className = "fu-rank";
+            rank.textContent = String(i + 1);
+            row.appendChild(rank);
+
+            var main = document.createElement("div");
+            main.className = "fu-main";
+            var nm = document.createElement("div");
+            nm.className = "fu-name";
+            nm.textContent = fuFriendlyName(r.feature);
+            main.appendChild(nm);
+            var kk = document.createElement("div");
+            kk.className = "fu-key";
+            kk.textContent = r.feature;
+            main.appendChild(kk);
+            row.appendChild(main);
+
+            var counts = document.createElement("div");
+            counts.className = "fu-counts";
+            var tot = document.createElement("div");
+            tot.className = "fu-total";
+            var num = document.createElement("div");
+            num.className = "fu-num";
+            num.textContent = fmtNum(r.total);
+            tot.appendChild(num);
+            var lab = document.createElement("div");
+            lab.className = "fu-lab";
+            lab.textContent = "សរុប · Total";
+            tot.appendChild(lab);
+            counts.appendChild(tot);
+            var today = document.createElement("span");
+            today.className = "fu-today" + (r.today > 0 ? "" : " zero");
+            today.textContent = "ថ្ងៃនេះ " + fmtNum(r.today);
+            counts.appendChild(today);
+            row.appendChild(counts);
+
+            fuList.appendChild(row);
+          });
+          fuEmpty.classList.toggle("hidden", totalAll > 0);
+        }
+
+        function loadFeatureUsage() {
+          if (fuLoading) return Promise.resolve();
+          fuLoading = true;
+          hideAlert(fuError);
+          fuRefreshBtn.disabled = true;
+          var stop = makeTicker(fuStatus, function (s) {
+            return "កំពុងផ្ទុកចំនួនប្រើមុខងារ… " + s + " វិនាទី";
+          });
+          function done() {
+            stop();
+            fuLoading = false;
+            fuRefreshBtn.disabled = false;
+          }
+          return api("/api/admin/feature-usage")
+            .then(function (data) {
+              done();
+              if (data && data.ok === false) {
+                showAlert(fuError, "ផ្ទុកចំនួនប្រើមុខងារមិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                return;
+              }
+              renderFeatureUsage(data || {});
+              var now = new Date();
+              fuStatus.textContent = "បានធ្វើបច្ចុប្បន្នភាព៖ " +
+                String(now.getHours()).padStart(2, "0") + ":" +
+                String(now.getMinutes()).padStart(2, "0") + ":" +
+                String(now.getSeconds()).padStart(2, "0");
+            })
+            .catch(function (err) {
+              done();
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              fuStatus.textContent = "";
+              showAlert(fuError, "ផ្ទុកចំនួនប្រើមុខងារមិនបាន៖ " + err.message);
+            });
+        }
+
+        fuRefreshBtn.addEventListener("click", function () { loadFeatureUsage(); });
+
+        /* ---------- Device Records ----------
+           GET /api/admin/device-records (admin-key auth via api()) returns
+           every registered device, newest first: fingerprint, model, last
+           IP, country, account slots, strikes, blocked flag, VPN flags,
+           the Gmails seen on the device and its first/last seen times.
+           POST /api/admin/unblock-device { fingerprint } clears a block
+           and resets that device's strikes. The list refreshes each time
+           the section is opened (showSection) and by its ↻ button. Field
+           names are read tolerantly (pick) so small server naming
+           differences never blank the list. */
+        var devStatus = document.getElementById("devStatus");
+        var devError = document.getElementById("devError");
+        var devRefreshBtn = document.getElementById("devRefreshBtn");
+        var devListEl = document.getElementById("devList");
+        var devEmpty = document.getElementById("devEmpty");
+        var devTotalEl = document.getElementById("devTotal");
+        var devBlockedEl = document.getElementById("devBlocked");
+        var devVpnEl = document.getElementById("devVpn");
+        var devLoading = false;
+        var deviceRecords = [];
+
+        function devBool(v) {
+          if (v === true || v === 1) return true;
+          if (typeof v === "string") {
+            var s = v.trim().toLowerCase();
+            return s === "true" || s === "yes" || s === "1";
+          }
+          return false;
+        }
+
+        function normalizeDevice(d) {
+          d = (d && typeof d === "object") ? d : {};
+          var gmailsRaw = pick(d, ["gmails", "gmailList", "seenGmails", "gmailsSeen", "emails", "accounts"]);
+          var gmails = [];
+          if (Array.isArray(gmailsRaw)) {
+            gmailsRaw.forEach(function (g) {
+              if (typeof g === "string" && g) gmails.push(g);
+              else if (g && typeof g === "object") {
+                var em = pick(g, ["gmail", "email", "address", "name"]);
+                if (em) gmails.push(String(em));
+              }
+            });
+          } else if (typeof gmailsRaw === "string" && gmailsRaw) {
+            gmails = [gmailsRaw];
+          }
+          var slotsRaw = pick(d, ["slots", "slotsUsed", "slotCount", "usedSlots", "accountsUsed"]);
+          var slotsUsed = NaN, slotsMax = NaN;
+          if (typeof slotsRaw === "number") slotsUsed = slotsRaw;
+          else if (Array.isArray(slotsRaw)) slotsUsed = slotsRaw.length;
+          else if (slotsRaw && typeof slotsRaw === "object") {
+            slotsUsed = Number(pick(slotsRaw, ["used", "count", "current", "value"]));
+            slotsMax = Number(pick(slotsRaw, ["max", "total", "limit", "allowed"]));
+          } else if (slotsRaw !== undefined && slotsRaw !== null && slotsRaw !== "") {
+            slotsUsed = Number(slotsRaw);
+          }
+          if (!isFinite(slotsUsed)) slotsUsed = gmails.length;
+          var maxRaw = Number(pick(d, ["maxSlots", "slotLimit", "slotsMax", "maxAccounts", "allowedSlots"]));
+          if (isFinite(maxRaw) && maxRaw > 0) slotsMax = maxRaw;
+          var extra = Number(pick(d, ["extraSlots", "purchasedSlots", "paidSlots", "extra"])) || 0;
+          if (!isFinite(slotsMax) || slotsMax <= 0) slotsMax = 3 + (extra > 0 ? extra : 0);
+          var strikesRaw = pick(d, ["strikes", "strikeCount", "strike_count", "warnings", "strike"]);
+          var strikes = Array.isArray(strikesRaw) ? strikesRaw.length : (Number(strikesRaw) || 0);
+          var flags = [];
+          var flagsRaw = pick(d, ["vpnFlags", "flags", "riskFlags"]);
+          if (Array.isArray(flagsRaw)) {
+            flagsRaw.forEach(function (f) { if (f) flags.push(String(f)); });
+          } else if (typeof flagsRaw === "string" && flagsRaw) {
+            flags.push(flagsRaw);
+          }
+          var vpn = devBool(pick(d, ["vpn", "vpnUsed", "vpnDetected", "usedVpn", "vpnFlag", "vpn_used"])) ||
+            flags.some(function (f) { return f.toLowerCase().indexOf("vpn") !== -1; });
+          return {
+            fingerprint: String(pick(d, ["fingerprint", "fp", "deviceId", "device_id", "id"]) || ""),
+            model: String(pick(d, ["model", "deviceModel", "device_model", "modelCode", "device"]) || "—"),
+            ip: String(pick(d, ["lastIp", "lastIP", "last_ip", "ip", "ipAddress", "ip_address"]) || ""),
+            country: String(pick(d, ["country", "countryCode", "country_code", "countryName"]) || ""),
+            slotsUsed: slotsUsed,
+            slotsMax: slotsMax,
+            strikes: strikes,
+            blocked: devBool(pick(d, ["blocked", "isBlocked", "banned", "isBanned"])),
+            vpn: vpn,
+            flags: flags,
+            gmails: gmails,
+            firstSeen: pick(d, ["firstSeen", "first_seen", "firstAt", "createdAt", "created_at"]),
+            lastSeen: pick(d, ["lastSeen", "last_seen", "lastAt", "updatedAt", "seenAt"])
+          };
+        }
+
+        function devStrikeChip(dev) {
+          var chip = document.createElement("span");
+          if (dev.blocked) {
+            chip.className = "dev-chip blocked";
+            chip.textContent = "🚫 Blocked · ត្រូវបានបិទ";
+          } else if (dev.strikes >= 3) {
+            chip.className = "dev-chip strike-3";
+            chip.textContent = "Strike " + dev.strikes + " · ព្រមានចុងក្រោយ";
+          } else if (dev.strikes === 2) {
+            chip.className = "dev-chip strike-2";
+            chip.textContent = "Strike 2 · ព្រមានលឿង";
+          } else if (dev.strikes === 1) {
+            chip.className = "dev-chip strike-1";
+            chip.textContent = "Strike 1 · ព្រមានបៃតង";
+          } else {
+            chip.className = "dev-chip strike-ok";
+            chip.textContent = "ល្អ · OK";
+          }
+          return chip;
+        }
+
+        function buildDeviceRow(dev) {
+          var row = document.createElement("div");
+          row.className = "dev-row" + (dev.blocked ? " blocked" : "");
+
+          var head = document.createElement("div");
+          head.className = "dev-head";
+          var main = document.createElement("div");
+          main.className = "dev-main";
+          var model = document.createElement("div");
+          model.className = "dev-model";
+          model.textContent = dev.model;
+          main.appendChild(model);
+          if (dev.fingerprint) {
+            var fp = document.createElement("div");
+            fp.className = "dev-fp";
+            fp.textContent = dev.fingerprint;
+            main.appendChild(fp);
+          }
+          head.appendChild(main);
+          head.appendChild(devStrikeChip(dev));
+          row.appendChild(head);
+
+          var metaBits = [];
+          if (dev.ip) metaBits.push("IP " + dev.ip);
+          if (dev.country) metaBits.push(dev.country);
+          if (metaBits.length) {
+            var meta = document.createElement("div");
+            meta.className = "dev-meta";
+            meta.textContent = metaBits.join(" · ");
+            row.appendChild(meta);
+          }
+
+          var slots = document.createElement("div");
+          slots.className = "dev-meta";
+          var slotsLabel = document.createElement("span");
+          slotsLabel.textContent = "Slots · គណនី៖ ";
+          var slotsVal = document.createElement("b");
+          slotsVal.textContent = fmtNum(dev.slotsUsed) + " / " + fmtNum(dev.slotsMax);
+          slots.appendChild(slotsLabel);
+          slots.appendChild(slotsVal);
+          row.appendChild(slots);
+
+          var seenBits = [];
+          var fs = fmtDateTime(dev.firstSeen);
+          var ls = fmtDateTime(dev.lastSeen);
+          if (fs && fs !== "—") seenBits.push("ឃើញដំបូង · First: " + fs);
+          if (ls && ls !== "—") seenBits.push("ចុងក្រោយ · Last: " + ls);
+          if (seenBits.length) {
+            var seen = document.createElement("div");
+            seen.className = "dev-meta";
+            seen.textContent = seenBits.join("  ·  ");
+            row.appendChild(seen);
+          }
+
+          var chips = document.createElement("div");
+          chips.className = "dev-chips";
+          var hasChips = false;
+          if (dev.vpn) {
+            var vpnChip = document.createElement("span");
+            vpnChip.className = "dev-chip vpn";
+            vpnChip.textContent = "VPN · បានបើក VPN";
+            chips.appendChild(vpnChip);
+            hasChips = true;
+          }
+          dev.flags.forEach(function (f) {
+            if (f.toLowerCase().indexOf("vpn") !== -1) return;
+            var c = document.createElement("span");
+            c.className = "dev-chip";
+            c.textContent = f;
+            chips.appendChild(c);
+            hasChips = true;
+          });
+          if (hasChips) row.appendChild(chips);
+
+          if (dev.gmails.length) {
+            var gWrap = document.createElement("div");
+            gWrap.className = "dev-gmails";
+            dev.gmails.forEach(function (g) {
+              var gc = document.createElement("span");
+              gc.className = "dev-gmail";
+              gc.textContent = g;
+              gWrap.appendChild(gc);
+            });
+            row.appendChild(gWrap);
+          }
+
+          if (dev.blocked && dev.fingerprint) {
+            var actions = document.createElement("div");
+            actions.className = "dev-actions";
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "btn btn-primary";
+            btn.textContent = "ដោះប្លុក · Unblock";
+            btn.addEventListener("click", function () { unblockDevice(dev.fingerprint, btn); });
+            actions.appendChild(btn);
+            row.appendChild(actions);
+          }
+          return row;
+        }
+
+        function renderDeviceRecords() {
+          var blockedCount = 0, vpnCount = 0;
+          deviceRecords.forEach(function (d) {
+            if (d.blocked) blockedCount++;
+            if (d.vpn) vpnCount++;
+          });
+          devTotalEl.textContent = fmtNum(deviceRecords.length);
+          devBlockedEl.textContent = fmtNum(blockedCount);
+          devVpnEl.textContent = fmtNum(vpnCount);
+          devListEl.innerHTML = "";
+          deviceRecords.forEach(function (d) { devListEl.appendChild(buildDeviceRow(d)); });
+          devEmpty.classList.toggle("hidden", deviceRecords.length > 0);
+        }
+
+        function loadDeviceRecords() {
+          if (devLoading) return Promise.resolve();
+          devLoading = true;
+          hideAlert(devError);
+          devRefreshBtn.disabled = true;
+          var stop = makeTicker(devStatus, function (s) {
+            return "កំពុងផ្ទុកបញ្ជីឧបករណ៍… " + s + " វិនាទី";
+          });
+          function done() {
+            stop();
+            devLoading = false;
+            devRefreshBtn.disabled = false;
+          }
+          return api("/api/admin/device-records")
+            .then(function (data) {
+              done();
+              if (data && data.ok === false) {
+                showAlert(devError, "ផ្ទុកបញ្ជីឧបករណ៍មិនបាន៖ " + (data.error || data.message || "server បដិសេធ"));
+                return;
+              }
+              var list = Array.isArray(data) ? data :
+                (data && (data.devices || data.records || data.items || data.data)) || [];
+              /* Server returns newest first — keep its order. */
+              deviceRecords = list.map(normalizeDevice);
+              renderDeviceRecords();
+              var now = new Date();
+              devStatus.textContent = "បានធ្វើបច្ចុប្បន្នភាព៖ " +
+                String(now.getHours()).padStart(2, "0") + ":" +
+                String(now.getMinutes()).padStart(2, "0") + ":" +
+                String(now.getSeconds()).padStart(2, "0") +
+                " · សរុប " + fmtNum(deviceRecords.length) + " ឧបករណ៍";
+            })
+            .catch(function (err) {
+              done();
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              devStatus.textContent = "";
+              showAlert(devError, "ផ្ទុកបញ្ជីឧបករណ៍មិនបាន៖ " + err.message);
+            });
+        }
+
+        function unblockDevice(fingerprint, btn) {
+          if (!fingerprint || btn.disabled) return;
+          var label = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = "កំពុងដោះប្លុក…";
+          hideAlert(devError);
+          api("/api/admin/unblock-device", { method: "POST", body: { fingerprint: fingerprint } })
+            .then(function (data) {
+              if (data && data.ok === false) {
+                throw new Error(data.error || data.message || "server បដិសេធ");
+              }
+              devStatus.textContent = "បានដោះប្លុកឧបករណ៍ ✓ · Strikes ត្រូវបានកំណត់ឡើងវិញ";
+              return loadDeviceRecords();
+            })
+            .catch(function (err) {
+              btn.disabled = false;
+              btn.textContent = label;
+              if (err.code === "AUTH") { handleSectionError(err, null); return; }
+              showAlert(devError, "ដោះប្លុកមិនបាន៖ " + err.message);
+            });
+        }
+
+        devRefreshBtn.addEventListener("click", function () { loadDeviceRecords(); });
+
         /* ---------- Analytics / stats ---------- */
         var statsStatus = document.getElementById("statsStatus");
         var statsError = document.getElementById("statsError");
@@ -8846,6 +9772,10 @@
         function setStat(id, n) {
           document.getElementById(id).textContent = fmtNum(n);
         }
+
+        /* Records behind the stat numbers, kept from the latest
+           loadStats so tapping a stat box can show its detail rows. */
+        var statCtx = { feed: null, failures: [], acts: null };
 
         function renderStats(data, feedPosts, notifActs) {
           var root = asObj(data);
@@ -9041,6 +9971,10 @@
             activityList.appendChild(row);
           });
           activityEmpty.classList.toggle("hidden", acts.length > 0);
+
+          statCtx.feed = feed;
+          statCtx.failures = recent;
+          statCtx.acts = acts;
         }
 
         function loadStats() {
@@ -9109,6 +10043,235 @@
         setInterval(function () {
           if (!appView.classList.contains("hidden") && getKey()) loadStats();
         }, 90000);
+
+        /* ---------- Tappable stat boxes → record detail ----------
+           Every stat box on the dashboard strip and the Stats page
+           carries data-stat. Tapping one opens this sheet with the
+           records behind the number, built from data the page already
+           has: the users list (name, Gmail, device/model, country,
+           last seen), the live Public feed (song title, author, views /
+           likes / downloads, time) and the stats payload's recent
+           failures. Where the server gives no record list for a number,
+           the sheet says so instead of inventing rows. */
+        var statOverlay = document.getElementById("statOverlay");
+        var statSheetTitle = document.getElementById("statSheetTitle");
+        var statSheetSub = document.getElementById("statSheetSub");
+        var statDetailList = document.getElementById("statDetailList");
+        var statDetailEmpty = document.getElementById("statDetailEmpty");
+        var statDetailNote = document.getElementById("statDetailNote");
+        var statOpenKind = null;
+
+        var STAT_TITLES = {
+          usersToday: "អ្នកប្រើថ្ងៃនេះ · Users today",
+          users7: "អ្នកប្រើ 7 ថ្ងៃ · Users · 7 days",
+          users30: "អ្នកប្រើ 30 ថ្ងៃ · Users · 30 days",
+          createdToday: "បង្កើតថ្ងៃនេះ · Created today",
+          songsToday: "បទចម្រៀងថ្ងៃនេះ · Songs today",
+          videosToday: "វីដេអូថ្ងៃនេះ · Videos today",
+          imagesToday: "រូបភាពថ្ងៃនេះ · Images today",
+          publicPosts: "ផុស Public · Public posts",
+          publicViews: "Views · Public",
+          publicLikes: "Like · Public",
+          publicDownloads: "Downloads · Public",
+          songsTotal: "បទសរុប · All songs",
+          mediaTotal: "Media សរុប · All media",
+          failuresToday: "បញ្ហាថ្ងៃនេះ · Problems today"
+        };
+
+        function statMs(v) {
+          if (v === null || v === undefined || v === "") return null;
+          var t = new Date(v).getTime();
+          return isNaN(t) ? null : t;
+        }
+        function startOfTodayMs() {
+          var d = new Date();
+          d.setHours(0, 0, 0, 0);
+          return d.getTime();
+        }
+        function feedMode(p) {
+          return String((p && (p.mode || p.type)) || "").toLowerCase();
+        }
+        function feedDownloads(p) {
+          return firstNum(pick(asObj(p), ["downloads", "downloadCount", "download"]));
+        }
+        function feedRow(p, numText) {
+          var typeKey = String(p.mode || p.type || "");
+          var meta = (POST_TYPE_LABELS[typeKey] || typeKey || "Post") +
+            " · " + String(p.name || "Admin") +
+            " · Views " + fmtNum(firstNum(p.views)) +
+            " · Likes " + fmtNum(firstNum(p.likes)) +
+            " · Downloads " + fmtNum(feedDownloads(p));
+          return {
+            time: p.createdAt ? fmtDateTime(p.createdAt) : "",
+            title: String(p.title || "—"),
+            meta: meta,
+            num: numText || ""
+          };
+        }
+
+        function buildStatRows(kind) {
+          var rows = [];
+          var note = "";
+          if (kind === "usersToday" || kind === "users7" || kind === "users30") {
+            var days = kind === "usersToday" ? 1 : (kind === "users7" ? 7 : 30);
+            var cutoff = kind === "usersToday" ? startOfTodayMs() : Date.now() - days * 86400000;
+            var matched = [];
+            users.forEach(function (u) {
+              var ms = statMs(u.lastSeen);
+              if (ms === null) ms = statMs(u.since);
+              if (ms !== null && ms >= cutoff) matched.push({ u: u, ms: ms });
+            });
+            matched.sort(function (a, b) { return b.ms - a.ms; });
+            matched.slice(0, 60).forEach(function (m) {
+              var u = m.u;
+              var metaParts = [];
+              if (u.email) metaParts.push(u.email);
+              var dev = deviceLabel(u);
+              if (dev && dev !== "—") metaParts.push(dev);
+              var place = u.country || u.countryCode || "";
+              if (place) metaParts.push(String(place));
+              rows.push({
+                time: fmtDateTime(u.lastSeen || u.since),
+                title: u.name || u.email || "—",
+                meta: metaParts.join(" · "),
+                num: ""
+              });
+            });
+            if (!users.length) note = "បញ្ជីអ្នកប្រើកំពុងផ្ទុក… · Loading the user list…";
+            else if (matched.length > 60) note = "បង្ហាញ 60 នាក់ចុងក្រោយ · Showing the latest 60";
+            return { rows: rows, note: note };
+          }
+
+          if (kind === "failuresToday") {
+            (statCtx.failures || []).slice(0, 30).forEach(function (raw) {
+              var f = normalizeFailure(raw);
+              var head = [f.type, f.provider].filter(Boolean).join(" · ");
+              rows.push({
+                time: fmtDateTime(f.time),
+                title: head || "បញ្ហា · Problem",
+                meta: String(f.error || "—"),
+                num: ""
+              });
+            });
+            return { rows: rows, note: note };
+          }
+
+          /* Everything else is behind the live Public feed. */
+          var feed = Array.isArray(statCtx.feed) ? statCtx.feed : null;
+          if (!feed) {
+            return { rows: [], note: "កំពុងផ្ទុកទិន្នន័យ… · Loading…" };
+          }
+          var posts = feed.slice();
+          var byCreatedDesc = function (a, b) {
+            return (statMs(b.createdAt) || 0) - (statMs(a.createdAt) || 0);
+          };
+          if (kind === "publicPosts") {
+            posts.sort(byCreatedDesc);
+            posts.slice(0, 60).forEach(function (p) { rows.push(feedRow(p, "")); });
+          } else if (kind === "publicViews") {
+            posts.sort(function (a, b) { return firstNum(b.views) - firstNum(a.views); });
+            posts.slice(0, 60).forEach(function (p) { rows.push(feedRow(p, fmtNum(firstNum(p.views)))); });
+          } else if (kind === "publicLikes") {
+            posts.sort(function (a, b) { return firstNum(b.likes) - firstNum(a.likes); });
+            posts.slice(0, 60).forEach(function (p) { rows.push(feedRow(p, fmtNum(firstNum(p.likes)))); });
+          } else if (kind === "publicDownloads") {
+            posts.sort(function (a, b) { return feedDownloads(b) - feedDownloads(a); });
+            posts.slice(0, 60).forEach(function (p) { rows.push(feedRow(p, fmtNum(feedDownloads(p)))); });
+            note = "ចំនួនសរុបលើ Server អាចច្រើនជាងផលបូកក្នុង Feed នេះ (Download ត្រូវបានរាប់គ្រប់កន្លែង)។";
+          } else if (kind === "songsTotal") {
+            posts.filter(function (p) { return feedMode(p) === "song"; }).sort(byCreatedDesc)
+              .slice(0, 60).forEach(function (p) { rows.push(feedRow(p, "")); });
+          } else if (kind === "mediaTotal") {
+            posts.filter(function (p) {
+              var m = feedMode(p);
+              return m === "image" || m === "video" || m === "3d";
+            }).sort(byCreatedDesc).slice(0, 60).forEach(function (p) { rows.push(feedRow(p, "")); });
+          } else if (kind === "createdToday" || kind === "songsToday" || kind === "videosToday" || kind === "imagesToday") {
+            var t0 = startOfTodayMs();
+            var want = kind === "songsToday" ? ["song"]
+              : kind === "videosToday" ? ["video"]
+              : kind === "imagesToday" ? ["image", "3d"]
+              : ["song", "video", "image", "3d"];
+            posts.filter(function (p) {
+              var ms = statMs(p.createdAt);
+              return ms !== null && ms >= t0 && want.indexOf(feedMode(p)) !== -1;
+            }).sort(byCreatedDesc).slice(0, 60).forEach(function (p) { rows.push(feedRow(p, "")); });
+            if (!rows.length) note = "បញ្ជីនេះបង្ហាញតែអ្វីដែលបានផុសទៅ Public ថ្ងៃនេះ — ការបង្កើតដែលមិនបានផុស Server មិនផ្ដល់បញ្ជីលម្អិតទេ។";
+          }
+          return { rows: rows, note: note };
+        }
+
+        function renderStatDetail() {
+          if (!statOpenKind) return;
+          var built = buildStatRows(statOpenKind);
+          statDetailList.innerHTML = "";
+          built.rows.forEach(function (r) {
+            var row = document.createElement("div");
+            row.className = "sd-row";
+            row.innerHTML =
+              "<span class='sd-time'></span>" +
+              "<div class='sd-main'><div class='sd-title'></div><div class='sd-meta'></div></div>" +
+              "<span class='sd-num'></span>";
+            row.querySelector(".sd-time").textContent = r.time || "";
+            row.querySelector(".sd-title").textContent = r.title || "—";
+            row.querySelector(".sd-meta").textContent = r.meta || "";
+            row.querySelector(".sd-num").textContent = r.num || "";
+            statDetailList.appendChild(row);
+          });
+          statDetailEmpty.classList.toggle("hidden", built.rows.length > 0);
+          statDetailNote.textContent = built.note || "";
+          statDetailNote.classList.toggle("hidden", !built.note);
+        }
+
+        function openStatDetail(kind, card) {
+          statOpenKind = kind;
+          statSheetTitle.textContent = STAT_TITLES[kind] || "លម្អិត · Detail";
+          var sub = "";
+          if (card) {
+            var v = card.querySelector(".sv");
+            var k = card.querySelector(".sk");
+            sub = (k ? k.textContent : "") + (v ? " · " + v.textContent : "");
+          }
+          statSheetSub.textContent = sub;
+          statOverlay.classList.add("open");
+          renderStatDetail();
+          /* If the records behind this number are not in memory yet,
+             fetch them, then repaint the open sheet. */
+          if ((kind === "usersToday" || kind === "users7" || kind === "users30") && !users.length) {
+            try {
+              var pr = loadUsers();
+              if (pr && pr.then) pr.then(function () {
+                if (statOpenKind === kind && statOverlay.classList.contains("open")) renderStatDetail();
+              }, function () {});
+            } catch (e) { /* the sheet keeps its loading note */ }
+          }
+          if (!Array.isArray(statCtx.feed) &&
+              kind !== "usersToday" && kind !== "users7" && kind !== "users30") {
+            loadStats().then(function () {
+              if (statOpenKind === kind && statOverlay.classList.contains("open")) renderStatDetail();
+            });
+          }
+        }
+
+        function closeStatDetail() {
+          statOverlay.classList.remove("open");
+          statOpenKind = null;
+        }
+        document.getElementById("statSheetClose").addEventListener("click", closeStatDetail);
+        statOverlay.addEventListener("click", function (e) { if (e.target === statOverlay) closeStatDetail(); });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && statOverlay.classList.contains("open")) closeStatDetail();
+        });
+
+        document.querySelectorAll(".stat-card[data-stat]").forEach(function (card) {
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
+          var kind = card.getAttribute("data-stat");
+          card.addEventListener("click", function () { openStatDetail(kind, card); });
+          card.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openStatDetail(kind, card); }
+          });
+        });
 
         /* ---------- Web Push notifications (ដំណឹងពីទូរស័ព្ទ) ----------
            Real device notifications via Web Push — NOT Telegram. The
@@ -9387,6 +10550,7 @@
         refreshPushState();
 
         function loadControlData() {
+          loadGift50({ silent: true });
           loadSettings();
           loadKeys();
           loadProviderStatus();
