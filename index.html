@@ -7185,9 +7185,18 @@
               : (src.user && typeof src.user === "object") ? src.user : null;
             if (balObj) balance = numVal(pick(balObj, ["balance", "walletBalance", "wallet_balance", "currentBalance"]));
           }
+          var userId = pick(src, ["userId", "user_id", "userID", "uid", "userUid", "user_uid", "ownerId", "owner_id", "accountId", "account_id"]);
+          if (userId === undefined || userId === null || userId === "") {
+            var userObj = (src.user && typeof src.user === "object") ? src.user
+              : (src.account && typeof src.account === "object") ? src.account : null;
+            if (userObj) userId = pick(userObj, ["userId", "user_id", "userID", "id", "_id", "uid"]);
+          }
+          if (userId !== undefined && userId !== null) userId = String(userId).trim();
+          if (!userId) userId = "";
           return {
             id: pick(src, ["id", "_id", "requestId", "request_id"]),
             type: type,
+            userId: userId,
             email: pick(src, ["email", "gmail", "userEmail", "user_email"]) || "",
             amount: amount,
             method: pick(src, ["method", "paymentMethod", "payment_method", "channel", "provider"]) || "",
@@ -7266,6 +7275,7 @@
               row.appendChild(v);
               rows.appendChild(row);
             }
+            addRow("User ID", r.userId ? String(r.userId) : "—");
             if (r.type === "topup") addRow("វិធីបង់ · Method", walletMethodLabel(r.method));
             if (r.type === "withdraw") {
               addRow("ថ្លៃសេវា · Fee", walletMoney(r.fee));
