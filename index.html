@@ -1783,7 +1783,7 @@
           <p class="save-status" id="postStatus"></p>
 
           <div class="live-posts-head">
-            <h3>Post ក្នុង Public</h3>
+            <h3>Public Posts · ផុស Public</h3>
             <button class="btn" id="livePostsRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
           <p class="save-status" id="livePostsStatus" style="text-align:left;"></p>
@@ -8494,6 +8494,7 @@
             meta.className = "live-post-meta";
             meta.textContent = (POST_TYPE_LABELS[typeKey] || typeKey || "Post") +
               " · " + String(p.name || "Admin") +
+              (p.email ? " · " + String(p.email) : "") +
               " · Views " + fmtNum(p.views || 0) + " · Likes " + fmtNum(p.likes || 0) +
               (p.createdAt ? " · " + fmtDateTime(p.createdAt) : "");
             main.appendChild(t);
