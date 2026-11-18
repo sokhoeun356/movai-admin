@@ -2462,6 +2462,14 @@
             <div class="v" id="sheetSong" style="color:var(--yellow);">0</div>
           </div>
           <div class="detail-cell">
+            <div class="k">Wallet Balance · កាបូបលុយ</div>
+            <div class="v" id="sheetWalletBalance" style="color:var(--lime);">$0.00</div>
+          </div>
+          <div class="detail-cell">
+            <div class="k">Earn Money · លុយរកបាន</div>
+            <div class="v" id="sheetEarnMoney" style="color:var(--yellow);">$0.00</div>
+          </div>
+          <div class="detail-cell">
             <div class="k">កញ្ចប់</div>
             <div class="v small" id="sheetPlan">—</div>
           </div>
@@ -2732,6 +2740,8 @@
         var sheetFullName = document.getElementById("sheetFullName");
         var sheetMedia = document.getElementById("sheetMedia");
         var sheetSong = document.getElementById("sheetSong");
+        var sheetWalletBalance = document.getElementById("sheetWalletBalance");
+        var sheetEarnMoney = document.getElementById("sheetEarnMoney");
         var sheetPlan = document.getElementById("sheetPlan");
         var sheetPlanBadge = document.getElementById("sheetPlanBadge");
         var sheetPlanExpiry = document.getElementById("sheetPlanExpiry");
@@ -2805,6 +2815,12 @@
           var v = Number(n);
           if (!isFinite(v)) v = 0;
           return v.toLocaleString("en-US");
+        }
+
+        function fmtUserMoney(n) {
+          var v = Number(n);
+          if (!isFinite(v)) v = 0;
+          return "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function fmtDate(raw) {
@@ -3002,6 +3018,21 @@
               }
             });
           }
+          /* Two separate money balances: Wallet Balance is top-up
+             money the user can spend; Earn Money is cashback + view
+             earnings, withdraw-only (cannot buy anything). Read both
+             tolerantly; absent means $0.00. */
+          var walletObj = (u.wallet && typeof u.wallet === "object") ? u.wallet : null;
+          var walletMoneyVal = creditVal(u, ["walletBalance", "wallet_balance", "walletAmount", "wallet_amount"]);
+          if (walletMoneyVal === undefined && walletObj) walletMoneyVal = creditVal(walletObj, ["walletBalance", "wallet_balance", "balance", "amount"]);
+          if (walletMoneyVal === undefined && bal) walletMoneyVal = creditVal(bal, ["walletBalance", "wallet_balance"]);
+          if (walletMoneyVal === undefined && typeof u.balance === "number") walletMoneyVal = numVal(u.balance);
+          var earnObj = (u.earnings && typeof u.earnings === "object") ? u.earnings
+            : (u.earn && typeof u.earn === "object") ? u.earn : null;
+          var earnMoneyVal = creditVal(u, ["earnBalance", "earnMoney", "earningsBalance", "earn_balance", "earn_money", "earnings_balance", "earnAmount", "earn_amount"]);
+          if (earnMoneyVal === undefined && earnObj) earnMoneyVal = creditVal(earnObj, ["earnBalance", "earnMoney", "earningsBalance", "balance", "amount", "total"]);
+          if (earnMoneyVal === undefined && walletObj) earnMoneyVal = creditVal(walletObj, ["earnBalance", "earnMoney", "earningsBalance"]);
+          if (earnMoneyVal === undefined && bal) earnMoneyVal = creditVal(bal, ["earnBalance", "earnMoney", "earningsBalance"]);
           return {
             id: pick(u, ["id", "userId", "user_id", "uid", "publicId", "public_id"]) || "",
             name: name,
@@ -3010,6 +3041,8 @@
             email: pick(u, ["email", "gmail", "mail"]) || "",
             media: mediaVal !== undefined ? mediaVal : 0,
             song: songVal !== undefined ? songVal : 0,
+            walletBalance: walletMoneyVal !== undefined ? walletMoneyVal : 0,
+            earnBalance: earnMoneyVal !== undefined ? earnMoneyVal : 0,
             plan: planStr,
             planExpiresAt: planExpiresRaw,
             songPlan: songPlanStr,
@@ -3462,6 +3495,8 @@
                   selectedUser = fresh;
                   sheetMedia.textContent = fmtNum(fresh.media);
                   sheetSong.textContent = fmtNum(fresh.song);
+                  if (sheetWalletBalance) sheetWalletBalance.textContent = fmtUserMoney(fresh.walletBalance);
+                  if (sheetEarnMoney) sheetEarnMoney.textContent = fmtUserMoney(fresh.earnBalance);
                   sheetPlan.textContent = fresh.isPro ? fresh.plan : "Free";
                   setSheetPlanBadge(fresh.isPro);
                   setSheetPlanExpiry(fresh);
@@ -3710,6 +3745,8 @@
           sheetFullName.textContent = full || u.name;
           sheetMedia.textContent = fmtNum(u.media);
           sheetSong.textContent = fmtNum(u.song);
+          if (sheetWalletBalance) sheetWalletBalance.textContent = fmtUserMoney(u.walletBalance);
+          if (sheetEarnMoney) sheetEarnMoney.textContent = fmtUserMoney(u.earnBalance);
           sheetPlan.textContent = u.isPro ? u.plan : "Free";
           setSheetPlanBadge(u.isPro);
           setSheetPlanExpiry(u);
@@ -4033,6 +4070,8 @@
             selectedUser = fresh;
             sheetMedia.textContent = fmtNum(fresh.media);
             sheetSong.textContent = fmtNum(fresh.song);
+            if (sheetWalletBalance) sheetWalletBalance.textContent = fmtUserMoney(fresh.walletBalance);
+            if (sheetEarnMoney) sheetEarnMoney.textContent = fmtUserMoney(fresh.earnBalance);
             sheetPlan.textContent = fresh.isPro ? fresh.plan : "Free";
             updateDeductBalance();
           }
@@ -7287,6 +7326,18 @@
           return String(raw);
         }
 
+        /* Which balance a withdraw comes from: 'earnings' means the
+           Earn Money balance (cashback + view earnings, withdraw-only),
+           'wallet' means the Wallet Balance (top-up money). Absent or
+           unknown shows "—". */
+        function walletSourceLabel(raw) {
+          var s = String(raw || "").toLowerCase();
+          if (!s) return "—";
+          if (s.indexOf("earn") !== -1) return "Earn Money · លុយរកបាន";
+          if (s.indexOf("wallet") !== -1) return "Wallet Balance · កាបូបលុយ";
+          return "—";
+        }
+
         function normalizeWalletRequest(r) {
           var src = r || {};
           var typeRaw = String(pick(src, ["type", "kind", "requestType", "request_type"]) || "").toLowerCase();
@@ -7324,9 +7375,15 @@
           }
           if (userId !== undefined && userId !== null) userId = String(userId).trim();
           if (!userId) userId = "";
+          var sourceRaw = pick(src, ["source", "balanceSource", "balance_source", "fromBalance", "from_balance", "withdrawFrom", "withdraw_from", "balanceType", "balance_type"]);
+          if (sourceRaw === undefined || sourceRaw === null || sourceRaw === "") {
+            var srcObj = (src.wallet && typeof src.wallet === "object") ? src.wallet : null;
+            if (srcObj) sourceRaw = pick(srcObj, ["source", "balanceSource", "balanceType"]);
+          }
           return {
             id: pick(src, ["id", "_id", "requestId", "request_id"]),
             type: type,
+            source: sourceRaw !== undefined && sourceRaw !== null ? String(sourceRaw) : "",
             userId: userId,
             email: pick(src, ["email", "gmail", "userEmail", "user_email"]) || "",
             amount: amount,
@@ -7409,6 +7466,7 @@
             addRow("User ID", r.userId ? String(r.userId) : "—");
             if (r.type === "topup") addRow("វិធីបង់ · Method", walletMethodLabel(r.method));
             if (r.type === "withdraw") {
+              addRow("ដកពី · Withdraw from", walletSourceLabel(r.source));
               addRow("ថ្លៃសេវា · Fee", walletMoney(r.fee));
               addRow("សរុប · Total", r.total !== undefined ? walletMoney(r.total) : "");
             }
