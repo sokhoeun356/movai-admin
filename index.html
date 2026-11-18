@@ -2181,6 +2181,26 @@
         <div class="section-card">
           <h2>Devices · ឧបករណ៍</h2>
           <p class="desc">ឧបករណ៍ទាំងអស់ដែលបានចុះឈ្មោះ — Fingerprint, ម៉ូឌែល, IP, ប្រទេស, Slots, Strikes, VPN និង Gmail ដែលបានឃើញ។ ឧបករណ៍ថ្មីជាងគេនៅខាងលើ។</p>
+          <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px;">
+            <h3 style="font-size:16px;margin:0 0 4px;">កំណត់ 3 Account ឥតគិតថ្លៃ / Device · 3 free accounts per device</h3>
+            <p class="desc" style="margin:0 0 10px;">បើក = កំណត់ 3 Account ឥតគិតថ្លៃក្នុងមួយឧបករណ៍ · បិទ = អត់មានកំណត់</p>
+            <div class="switch-row">
+              <label class="switch">
+                <input type="checkbox" id="devLimitToggle" aria-label="Device limit · កំណត់ 3 Account ឥតគិតថ្លៃ បើក ឬ បិទ" />
+                <span class="track" aria-hidden="true"></span>
+              </label>
+              <div>
+                <div class="switch-label" id="devLimitState">បិទ (OFF) · អត់មានកំណត់</div>
+                <div class="switch-state">ON = 3 free accounts per device · extra slot $1.00 · OFF = no device limit</div>
+              </div>
+            </div>
+            <div class="note-box">
+              <div>បើក៖ ឧបករណ៍មួយអាចបង្កើត Account ឥតគិតថ្លៃបានតែ 3 ប៉ុណ្ណោះ។ ចង់បានច្រើនជាងហ្នឹង ត្រូវទិញ Slot បន្ថែម $1.00 ក្នុងមួយ Gmail។ បិទ៖ អត់មានកំណត់ចំនួន Account ក្នុងមួយឧបករណ៍ទេ។</div>
+              <div style="margin-top:6px;">ON: one device can create only 3 free accounts. Extra Gmail slots cost $1.00 each. OFF: no limit on accounts per device.</div>
+            </div>
+            <div class="note-box hidden" id="devLimitUnavailable" role="status">Server setting not available yet · ការកំណត់នៅលើ Server មិនទាន់មាននៅឡើយ</div>
+            <p class="save-status" id="devLimitStatus" style="text-align:left;"></p>
+          </div>
           <div class="toolbar" style="margin-top:0;">
             <button class="btn" id="devRefreshBtn" type="button">↻ ផ្ទុកឡើងវិញ</button>
           </div>
@@ -2220,6 +2240,26 @@
       <div id="panel-security" class="hidden">
         <div class="section-card">
           <h2>សុវត្ថិភាព</h2>
+          <div style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px;">
+            <h3 style="font-size:16px;margin:0 0 4px;">ចាប់ស្វ័យប្រវត្តិ · Auto-Catch (scam / hacker)</h3>
+            <p class="desc" style="margin:0 0 10px;">បើក = ប្លុកស្វ័យប្រវត្តិ + ផ្ញើ Email ព្រមាន · បិទ = កត់ត្រា + ជូនដំណឹង Admin តែប៉ុណ្ណោះ</p>
+            <div class="switch-row">
+              <label class="switch">
+                <input type="checkbox" id="autoCatchToggle" aria-label="Auto-Catch · ចាប់ស្វ័យប្រវត្តិ បើក ឬ បិទ" />
+                <span class="track" aria-hidden="true"></span>
+              </label>
+              <div>
+                <div class="switch-label" id="autoCatchState">បិទ (OFF) · កត់ត្រាតែប៉ុណ្ណោះ</div>
+                <div class="switch-state">ON = auto-block + strike emails · OFF = record + notify Admin only</div>
+              </div>
+            </div>
+            <div class="note-box">
+              <div>បើក៖ ពេលរកឃើញ Scam / Hacker នឹងប្លុកស្វ័យប្រវត្តិ ហើយផ្ញើ Email ព្រមានតាមកម្រិត។ បិទ៖ កត់ត្រា Strikes ហើយជូនដំណឹង Admin តែប៉ុណ្ណោះ — អត់ប្លុកស្វ័យប្រវត្តិ អត់ផ្ញើ Email ទេ។</div>
+              <div style="margin-top:6px;">ON: scam/hacker behaviour is auto-blocked and strike emails are sent. OFF: strikes are recorded and Admin is notified only — no auto-block, no email.</div>
+            </div>
+            <div class="note-box hidden" id="autoCatchUnavailable" role="status">Server setting not available yet · ការកំណត់នៅលើ Server មិនទាន់មាននៅឡើយ</div>
+            <p class="save-status" id="autoCatchStatus" style="text-align:left;"></p>
+          </div>
           <div class="note-box" style="margin:0 0 16px;">
             អ្នកត្រូវបានប្លុក → ទាក់ទង Admin តាម Telegram <a href="https://t.me/yemsokhoeun_9999" target="_blank" rel="noopener" style="color:var(--lime); font-weight:700;">@yemsokhoeun_9999</a>
           </div>
@@ -4839,9 +4879,9 @@
           if (name === "smooth") loadSettings();
           if (name === "analytics") loadStats();
           if (name === "feature-usage") loadFeatureUsage();
-          if (name === "devices") loadDeviceRecords();
+          if (name === "devices") { loadDeviceRecords(); loadDeviceLimit({ silent: true }); }
           if (name === "notifications") loadNotifications();
-          if (name === "security") loadSecurity();
+          if (name === "security") { loadSecurity(); loadAutoCatch({ silent: true }); }
           if (name === "updates") loadUpdates();
           if (name === "telegram") loadTelegramSettings();
           if (name === "email") loadEmailSettings();
@@ -5894,6 +5934,195 @@
           });
         }
         setGift50UI();
+
+        /* ---------- Device limit (3 free accounts per device) ----------
+           Toggle at the top of the Devices section.
+           ON  → the 3-free-accounts-per-device limit is enforced
+                 (extra Gmail slots cost $1.00 each).
+           OFF → no device limit.
+           State lives on the server: GET / POST /api/admin/device-limit
+           ({enabled, limit}; defaults OFF / 3). The limit value itself
+           is NOT changed from here — the toggle only flips `enabled`.
+           Same failure handling as the gift-50 toggle: any failure only
+           shows the neutral "Server setting not available yet" note,
+           reverts the switch on a failed save, and never breaks Admin. */
+        var devLimitToggle = document.getElementById("devLimitToggle");
+        var devLimitState = document.getElementById("devLimitState");
+        var devLimitStatus = document.getElementById("devLimitStatus");
+        var devLimitUnavailable = document.getElementById("devLimitUnavailable");
+        var devLimitEnabled = false;
+        var devLimitValue = 3;
+        var devLimitLoading = false;
+        var devLimitSaving = false;
+
+        function setDevLimitUI() {
+          if (!devLimitToggle || !devLimitState) return;
+          devLimitToggle.checked = devLimitEnabled;
+          devLimitState.textContent = devLimitEnabled
+            ? "បើក (ON) · " + devLimitValue + " free accounts per device"
+            : "បិទ (OFF) · អត់មានកំណត់";
+        }
+        function showDevLimitUnavailable() {
+          if (devLimitUnavailable) devLimitUnavailable.classList.remove("hidden");
+        }
+        function hideDevLimitUnavailable() {
+          if (devLimitUnavailable) devLimitUnavailable.classList.add("hidden");
+        }
+
+        function loadDeviceLimit(opts) {
+          opts = opts || {};
+          if (!devLimitToggle || devLimitLoading || devLimitSaving) return Promise.resolve();
+          devLimitLoading = true;
+          if (!opts.silent && devLimitStatus) devLimitStatus.textContent = "កំពុងផ្ទុក… · Loading…";
+          return api("/api/admin/device-limit")
+            .then(function (data) {
+              if (!data || data.ok === false || typeof data.enabled === "undefined") {
+                throw new Error("unavailable");
+              }
+              devLimitEnabled = !!data.enabled;
+              if (typeof data.limit === "number" && data.limit > 0) devLimitValue = data.limit;
+              hideDevLimitUnavailable();
+              if (devLimitStatus) devLimitStatus.textContent = "";
+              setDevLimitUI();
+            })
+            .catch(function () {
+              if (devLimitStatus) devLimitStatus.textContent = "";
+              showDevLimitUnavailable();
+              setDevLimitUI();
+            })
+            .then(function () { devLimitLoading = false; });
+        }
+
+        if (devLimitToggle) {
+          devLimitToggle.addEventListener("change", function () {
+            if (devLimitSaving) { setDevLimitUI(); return; }
+            var val = devLimitToggle.checked;
+            var prev = devLimitEnabled;
+            devLimitEnabled = val;
+            setDevLimitUI();
+            devLimitSaving = true;
+            devLimitToggle.disabled = true;
+            var stop = makeTicker(devLimitStatus, function (s) {
+              return "កំពុងរក្សាទុក… · Saving… " + s + " វិនាទី";
+            });
+            api("/api/admin/device-limit", { method: "POST", body: { enabled: val } })
+              .then(function (data) {
+                if (!data || data.ok === false) throw new Error("unavailable");
+                if (typeof data.enabled !== "undefined") devLimitEnabled = !!data.enabled;
+                if (typeof data.limit === "number" && data.limit > 0) devLimitValue = data.limit;
+                stop();
+                devLimitSaving = false;
+                devLimitToggle.disabled = false;
+                hideDevLimitUnavailable();
+                setDevLimitUI();
+                devLimitStatus.textContent = devLimitEnabled
+                  ? "បានរក្សាទុកហើយ ✓ · Saved — device limit ON (" + devLimitValue + " free accounts per device)"
+                  : "បានរក្សាទុកហើយ ✓ · Saved — device limit OFF (no device limit)";
+              })
+              .catch(function () {
+                stop();
+                devLimitSaving = false;
+                devLimitToggle.disabled = false;
+                devLimitEnabled = prev;
+                setDevLimitUI();
+                showDevLimitUnavailable();
+                devLimitStatus.textContent = "Server setting not available yet";
+              });
+          });
+        }
+        setDevLimitUI();
+
+        /* ---------- Auto-Catch (scam / hacker) ----------
+           Toggle at the top of the Security section.
+           ON  → scam/hacker behaviour is auto-blocked and strike
+                 emails are sent.
+           OFF → strikes are recorded + Admin notified only — no
+                 auto-block, no email.
+           State lives on the server: GET / POST /api/admin/auto-catch
+           ({enabled}; default OFF). Same failure handling as the
+           gift-50 toggle. */
+        var autoCatchToggle = document.getElementById("autoCatchToggle");
+        var autoCatchState = document.getElementById("autoCatchState");
+        var autoCatchStatus = document.getElementById("autoCatchStatus");
+        var autoCatchUnavailable = document.getElementById("autoCatchUnavailable");
+        var autoCatchEnabled = false;
+        var autoCatchLoading = false;
+        var autoCatchSaving = false;
+
+        function setAutoCatchUI() {
+          if (!autoCatchToggle || !autoCatchState) return;
+          autoCatchToggle.checked = autoCatchEnabled;
+          autoCatchState.textContent = autoCatchEnabled
+            ? "បើក (ON) · ប្លុកស្វ័យប្រវត្តិ + Email"
+            : "បិទ (OFF) · កត់ត្រាតែប៉ុណ្ណោះ";
+        }
+        function showAutoCatchUnavailable() {
+          if (autoCatchUnavailable) autoCatchUnavailable.classList.remove("hidden");
+        }
+        function hideAutoCatchUnavailable() {
+          if (autoCatchUnavailable) autoCatchUnavailable.classList.add("hidden");
+        }
+
+        function loadAutoCatch(opts) {
+          opts = opts || {};
+          if (!autoCatchToggle || autoCatchLoading || autoCatchSaving) return Promise.resolve();
+          autoCatchLoading = true;
+          if (!opts.silent && autoCatchStatus) autoCatchStatus.textContent = "កំពុងផ្ទុក… · Loading…";
+          return api("/api/admin/auto-catch")
+            .then(function (data) {
+              if (!data || data.ok === false || typeof data.enabled === "undefined") {
+                throw new Error("unavailable");
+              }
+              autoCatchEnabled = !!data.enabled;
+              hideAutoCatchUnavailable();
+              if (autoCatchStatus) autoCatchStatus.textContent = "";
+              setAutoCatchUI();
+            })
+            .catch(function () {
+              if (autoCatchStatus) autoCatchStatus.textContent = "";
+              showAutoCatchUnavailable();
+              setAutoCatchUI();
+            })
+            .then(function () { autoCatchLoading = false; });
+        }
+
+        if (autoCatchToggle) {
+          autoCatchToggle.addEventListener("change", function () {
+            if (autoCatchSaving) { setAutoCatchUI(); return; }
+            var val = autoCatchToggle.checked;
+            var prev = autoCatchEnabled;
+            autoCatchEnabled = val;
+            setAutoCatchUI();
+            autoCatchSaving = true;
+            autoCatchToggle.disabled = true;
+            var stop = makeTicker(autoCatchStatus, function (s) {
+              return "កំពុងរក្សាទុក… · Saving… " + s + " វិនាទី";
+            });
+            api("/api/admin/auto-catch", { method: "POST", body: { enabled: val } })
+              .then(function (data) {
+                if (!data || data.ok === false) throw new Error("unavailable");
+                if (typeof data.enabled !== "undefined") autoCatchEnabled = !!data.enabled;
+                stop();
+                autoCatchSaving = false;
+                autoCatchToggle.disabled = false;
+                hideAutoCatchUnavailable();
+                setAutoCatchUI();
+                autoCatchStatus.textContent = autoCatchEnabled
+                  ? "បានរក្សាទុកហើយ ✓ · Saved — Auto-Catch ON (auto-block + strike emails)"
+                  : "បានរក្សាទុកហើយ ✓ · Saved — Auto-Catch OFF (record + notify Admin only)";
+              })
+              .catch(function () {
+                stop();
+                autoCatchSaving = false;
+                autoCatchToggle.disabled = false;
+                autoCatchEnabled = prev;
+                setAutoCatchUI();
+                showAutoCatchUnavailable();
+                autoCatchStatus.textContent = "Server setting not available yet";
+              });
+          });
+        }
+        setAutoCatchUI();
 
         /* ---------- Payment ---------- */
         var paymentKhqrInput = document.getElementById("paymentKhqrInput");
@@ -11584,6 +11813,8 @@
 
         function loadControlData() {
           loadGift50({ silent: true });
+          loadDeviceLimit({ silent: true });
+          loadAutoCatch({ silent: true });
           loadSettings();
           loadKeys();
           loadProviderStatus();
