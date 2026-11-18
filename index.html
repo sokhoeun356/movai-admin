@@ -783,6 +783,16 @@
       .mvsep-usage-hint { margin: 0 0 6px; }
       .mvsep-usage-note { margin: 0 0 8px; }
       .mvsep-usage-refresh { min-height: 2.2rem; padding: 6px 12px; font-size: 13px; margin-bottom: 8px; }
+      /* ---------- Suno live balance (per key row) ---------- */
+      .suno-green { color: #22C55E; }
+      .suno-red { color: var(--red); }
+      .suno-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; background: #565D64; }
+      .suno-green .suno-dot { background: #22C55E; box-shadow: 0 0 6px rgba(34,197,94,.55); }
+      .suno-red .suno-dot { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,.5); }
+      .suno-usage-hint, .suno-usage-note { color: var(--text-dim); font-size: 12.5px; }
+      .suno-usage-hint { margin: 0 0 6px; }
+      .suno-usage-note { margin: 0 0 8px; }
+      .suno-usage-refresh { min-height: 2.2rem; padding: 6px 12px; font-size: 13px; margin-bottom: 8px; }
       .key-card .kc-tools { margin-bottom: 8px; }
       .key-card .kc-copyall { min-height: 2.4rem; padding: 7px 14px; font-size: 13.5px; }
 
@@ -6301,6 +6311,11 @@
                 "<div class='mvsep-usage-note hidden'></div>" +
                 "<button class='btn mvsep-usage-refresh' type='button'>● Live · Auto · ធ្វើបច្ចុប្បន្នភាពស្វ័យប្រវត្តិ</button>"
               : "";
+            var sunoExtra = p.id === "suno"
+              ? "<p class='suno-usage-hint'>Suno credits — ចំនួន credits នៅសល់ក្នុងមួយ key (sunoapi.org) · Credits left per key.</p>" +
+                "<div class='suno-usage-note hidden'></div>" +
+                "<button class='btn suno-usage-refresh' type='button'>● Live · Auto · ធ្វើបច្ចុប្បន្នភាពស្វ័យប្រវត្តិ</button>"
+              : "";
             card.innerHTML =
               "<div class='kc-head' role='button' tabindex='0' aria-expanded='false'><span class='kc-name'></span><span class='kc-count count-badge hidden'></span><span class='key-status none'>មិនទាន់មាន key</span><span class='kc-arrow' aria-hidden='true'>▼</span></div>" +
               "<div class='api-body'>" +
@@ -6308,6 +6323,7 @@
               "<div class='kc-list'></div>" +
               groqExtra +
               mvsepExtra +
+              sunoExtra +
               "<div class='kc-tools hidden'><button class='btn kc-copyall' type='button'>Copy All · ចម្លង Key ទាំងអស់</button></div>" +
               epHtml +
               "<div class='kc-row'>" +
@@ -6333,13 +6349,18 @@
               groqNote: card.querySelector(".groq-usage-note"),
               groqRefresh: card.querySelector(".groq-usage-refresh"),
               mvsepNote: card.querySelector(".mvsep-usage-note"),
-              mvsepRefresh: card.querySelector(".mvsep-usage-refresh")
+              mvsepRefresh: card.querySelector(".mvsep-usage-refresh"),
+              sunoNote: card.querySelector(".suno-usage-note"),
+              sunoRefresh: card.querySelector(".suno-usage-refresh")
             };
             if (p.id === "groq" && refs.groqRefresh) {
               refs.groqRefresh.addEventListener("click", function () { loadGroqUsage(); });
             }
             if (p.id === "mvsep" && refs.mvsepRefresh) {
               refs.mvsepRefresh.addEventListener("click", function () { loadMvsepUsage(); loadProviderStatus(); });
+            }
+            if (p.id === "suno" && refs.sunoRefresh) {
+              refs.sunoRefresh.addEventListener("click", function () { loadSunoBalance(); });
             }
             keyCards[p.id] = refs;
             keyState[p.id] = { count: 0, last4s: [] };
@@ -6453,6 +6474,7 @@
           applyKeyDots(id);
           if (id === "groq") applyGroqUsage();
           else if (id === "mvsep") applyMvsepUsage();
+          else if (id === "suno") applySunoBalance();
           else applyProviderUsage(id);
         }
 
@@ -6648,6 +6670,93 @@
               note.textContent = groqUsageTried
                 ? "Groq usage: មិនទាន់មាន · not available"
                 : "កំពុងពិនិត្យការប្រើប្រាស់ Groq… · Checking Groq usage…";
+              note.classList.remove("hidden");
+            } else {
+              note.textContent = "";
+              note.classList.add("hidden");
+            }
+          }
+        }
+
+        /* ---------- Suno live balance (per key) ----------
+           GET /api/admin/suno-balance → { ok:true, provider:'suno',
+           totalRemaining, keys:[{ key, remaining, status }] } — one
+           entry per configured Suno key, in order. The sunoapi.org
+           credit endpoint returns ONLY the remaining balance (no
+           total/used), so each row shows «នៅសល់ X credits» with a
+           green dot (>0) or red dot (0). Cached here and repainted
+           by applySunoBalance() on every renderKeyCard("suno")
+           without refetching. Only key NUMBERS and the endpoint's
+           numbers are ever shown — never a key value. */
+        var sunoBalanceMap = null;
+        var sunoBalanceTried = false;
+        var sunoBalanceTotal = null;
+
+        function loadSunoBalance() {
+          return api("/api/admin/suno-balance")
+            .then(function (data) {
+              var d = (data && typeof data === "object") ? data : {};
+              if (d.ok === true && Array.isArray(d.keys)) {
+                sunoBalanceMap = d.keys;
+                sunoBalanceTotal = (typeof d.totalRemaining === "number" && isFinite(d.totalRemaining)) ? d.totalRemaining : null;
+              } else {
+                sunoBalanceMap = null;
+                sunoBalanceTotal = null;
+              }
+              sunoBalanceTried = true;
+              applySunoBalance();
+            })
+            .catch(function () {
+              /* Neutral note only — never a red alarm. */
+              sunoBalanceMap = null;
+              sunoBalanceTotal = null;
+              sunoBalanceTried = true;
+              applySunoBalance();
+            });
+        }
+
+        function applySunoBalance() {
+          var refs = keyCards["suno"];
+          if (!refs || !refs.list) return;
+          var rows = refs.list.querySelectorAll(".kc-item");
+          rows.forEach(function (row, idx) {
+            var span = row.querySelector(".kc-usage");
+            if (!span) return;
+            var entry = null;
+            if (Array.isArray(sunoBalanceMap)) {
+              for (var k = 0; k < sunoBalanceMap.length; k++) {
+                if (sunoBalanceMap[k] && sunoBalanceMap[k].key === idx + 1) { entry = sunoBalanceMap[k]; break; }
+              }
+            }
+            if (!entry || typeof entry.remaining !== "number" || !isFinite(entry.remaining)) {
+              span.textContent = "";
+              span.className = "kc-usage hidden";
+              return;
+            }
+            var remaining = Math.floor(entry.remaining);
+            var cls = entry.status === "red" ? "suno-red" : "suno-green";
+            span.textContent = "";
+            span.className = "kc-usage " + cls + (idx === 0 ? " kc-usage-first" : "");
+            var dot = document.createElement("span");
+            dot.className = "suno-dot";
+            span.appendChild(dot);
+            var lead = document.createElement("span");
+            lead.textContent = "● នៅសល់ ";
+            span.appendChild(lead);
+            var num = document.createElement("span");
+            num.className = "kc-usage-num";
+            num.textContent = fmtNum(remaining) + " credits";
+            span.appendChild(num);
+          });
+          var note = refs.sunoNote;
+          if (note) {
+            if (Array.isArray(sunoBalanceMap)) {
+              note.textContent = "";
+              note.classList.add("hidden");
+            } else if (((keyState["suno"] || {}).count || 0) > 0) {
+              note.textContent = sunoBalanceTried
+                ? "Suno balance: មិនទាន់មាន · not available"
+                : "កំពុងពិនិត្យ Suno balance… · Checking Suno balance…";
               note.classList.remove("hidden");
             } else {
               note.textContent = "";
@@ -6879,6 +6988,7 @@
           loadProviderStatus();
           if ((keyState["groq"] || {}).count > 0) loadGroqUsage();
           if ((keyState["mvsep"] || {}).count > 0) loadMvsepUsage();
+          if ((keyState["suno"] || {}).count > 0) loadSunoBalance();
           loadGenericUsage();
         }, 20000);
 
@@ -7148,6 +7258,8 @@
               else { groqUsageMap = null; groqUsageTried = false; applyGroqUsage(); }
               if ((keyState["mvsep"] || {}).count > 0) loadMvsepUsage();
               else { mvsepUsageMap = null; mvsepUsageTried = false; applyMvsepUsage(); }
+              if ((keyState["suno"] || {}).count > 0) loadSunoBalance();
+              else { sunoBalanceMap = null; sunoBalanceTried = false; sunoBalanceTotal = null; applySunoBalance(); }
               loadGenericUsage();
             })
             .catch(function (err) { handleSectionError(err, keysStatus); });
