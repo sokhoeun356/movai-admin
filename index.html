@@ -241,6 +241,18 @@
         margin-bottom: 8px;
       }
       .btn-setup:hover { filter: brightness(1.07); }
+      /* Two explicit password choices (owner order 2026-11-18):
+         "Set it myself" and "Let AI set it", side by side. */
+      .pw-choice-row { display: flex; gap: 8px; margin-top: 8px; }
+      .pw-choice-row .btn { flex: 1; min-width: 0; }
+      /* No-password instruction: the owner must log in and set
+         their own password — the admin does not set it. */
+      .pw-note-box {
+        border: 1px solid rgba(245,197,24,.45); background: var(--yellow-bg);
+        border-radius: 12px; padding: 12px; margin-top: 12px;
+        font-size: 13.5px; color: var(--text-dim); line-height: 1.6;
+      }
+      .pw-note-box b { color: var(--text); }
       .pw-sub { border-top: 1px solid var(--line-soft); margin-top: 14px; padding-top: 12px; }
       .pw-confirm {
         background: var(--red-bg); border: 1px solid rgba(255,107,107,.35);
@@ -2508,8 +2520,34 @@
           <p class="pw-status-line">ស្ថានភាព · Status៖ <b id="sheetPwStatus">—</b></p>
           <p class="pw-note">Admin មើល Password របស់អ្នកប្រើមិនបានទេ — Password ត្រូវរក្សាទុកជាហាស់ (hash) ដែលបកវិញមិនបាន។ មើលបានតែស្ថានភាព និងកំណត់ថ្មីបាន។ · Admin can never view a user's password — status + reset only.</p>
           <button class="btn btn-block btn-setup hidden" id="pwSetupBtn" type="button">🔓 បើក Account · Set up password</button>
-          <button class="btn btn-block" id="pwResetBtn" type="button">កំណត់ Password ឡើងវិញ · Reset password</button>
-          <button class="btn btn-primary btn-block" id="pwResetShowBtn" type="button" style="margin-top:8px;">🔑 Reset &amp; Show · កំណត់ថ្មី ហើយបង្ហាញ</button>
+          <div id="pwNoPwNote" class="pw-note-box hidden">
+            <b>គណនីនេះមិនទាន់មាន Password ទេ · This account has no password yet.</b><br />
+            Admin មិនត្រូវដាក់ Password ឲ្យគេទេ — ម្ចាស់គណនីត្រូវចូលដោយ Google ហើយបង្កើត Password ដោយខ្លួនឯងនៅលើ Website (Create Password) និងបំពេញព័ត៌មានរបស់គេ។ គណនីនេះនៅជាប់ (locked) រហូតដល់ម្ចាស់គេចូលមកធ្វើខ្លួនឯង។<br />
+            The admin does not set a password for this account — the owner must log in with Google and create their own password on the website (Create Password screen) and fill in their own info. This account stays locked until the owner does it themselves.
+          </div>
+          <div id="pwSetSection">
+            <div class="pw-sub">
+              <span class="field-label">កំណត់ Password ថ្មី · Set new password</span>
+              <p class="pw-note" style="margin-top:4px;">សម្រាប់តែពេលអ្នកប្រើភ្លេច Password · Only when the user forgot their password.</p>
+              <div class="pw-choice-row">
+                <button class="btn" id="pwChoiceSelfBtn" type="button">✏️ ដាក់ដោយខ្លួនឯង · Set it myself</button>
+                <button class="btn btn-primary" id="pwChoiceAiBtn" type="button">🤖 AI ដាក់ឲ្យ · Let AI set it</button>
+              </div>
+              <div id="pwManualBox" class="hidden" style="margin-top:10px;">
+                <div class="key-field">
+                  <input class="text-input" id="pwNewInput" type="password" placeholder="Password ថ្មី (6–64 តួ)…" autocomplete="new-password" aria-label="Password ថ្មី · New password" />
+                  <button class="btn key-tool-btn" id="pwEyeBtn" type="button" aria-label="បង្ហាញ / លាក់ Password" title="បង្ហាញ / លាក់ Password">
+                    <svg id="pwEyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg id="pwEyeOff" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.61 6.61A13.53 13.53 0 0 0 2 12s3.5 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/></svg>
+                  </button>
+                </div>
+                <button class="btn btn-primary btn-block" id="pwSetBtn" type="button" style="margin-top:8px;">ដាក់ Password ថ្មី · Set</button>
+              </div>
+            </div>
+            <div class="pw-sub">
+              <button class="btn btn-block" id="pwClearToggleBtn" type="button">លុប Password · Clear password</button>
+            </div>
+          </div>
           <div id="pwShownBox" class="pw-shown hidden">
             <span class="field-label">Password ថ្មី · New password — បង្ហាញតែពេលនេះ · shown only now</span>
             <div class="pw-shown-row">
@@ -2519,17 +2557,6 @@
             <p class="pw-shown-note">ចម្លង Password នេះផ្ញើឲ្យអ្នកប្រើតាម Telegram / ទូរស័ព្ទ / សារ។ វានឹងមិនបង្ហាញម្ដងទៀតទេ។ · Copy this password and send it to the user — it will not be shown again.</p>
           </div>
           <div id="pwPanel" class="hidden">
-            <div class="pw-sub">
-              <span class="field-label">ដាក់ Password ថ្មី · Set new password</span>
-              <div class="key-field">
-                <input class="text-input" id="pwNewInput" type="password" placeholder="Password ថ្មី (6–64 តួ)…" autocomplete="new-password" aria-label="Password ថ្មី · New password" />
-                <button class="btn key-tool-btn" id="pwEyeBtn" type="button" aria-label="បង្ហាញ / លាក់ Password" title="បង្ហាញ / លាក់ Password">
-                  <svg id="pwEyeOpen" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                  <svg id="pwEyeOff" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19M6.61 6.61A13.53 13.53 0 0 0 2 12s3.5 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/></svg>
-                </button>
-              </div>
-              <button class="btn btn-primary btn-block" id="pwSetBtn" type="button" style="margin-top:8px;">ដាក់ Password ថ្មី · Set</button>
-            </div>
             <div class="pw-sub">
               <span class="field-label">លុប Password · Clear password</span>
               <button class="btn btn-block btn-reject" id="pwClearBtn" type="button">លុប Password · Clear password</button>
@@ -4471,18 +4498,31 @@
            must tell the user the password they chose. A server answer
            of { ok:false, error } is a failure and its real error is
            shown in the sheet, never hidden.
-           "Reset & Show" is the one exception to "never shown back":
-           it generates a NEW temporary password in this app, sends it
-           through the exact same reset call, and — only after the
-           server confirms — displays that NEW password once in the
-           sheet (with a Copy button) so the admin can send it to the
-           user. It is the password the admin just created, never the
-           user's old one (a hash, unrecoverable by design). The shown
-           value lives only in this sheet's DOM until the sheet is
-           reset for another user; it is never persisted. */
+           Setting a password (forgot-password case only) offers TWO
+           explicit choices in one place: (1) "Set it myself" — the
+           admin types a password (6–64 chars) and taps Set; it is
+           sent once and NEVER shown back, only a success message.
+           (2) "Let AI set it" — the one exception to "never shown
+           back": it generates a NEW temporary password in this app,
+           sends it through the exact same reset call, and — only
+           after the server confirms — displays that NEW password
+           once in the sheet (with a Copy button) so the admin can
+           send it to the user. It is the password the admin just
+           created, never the user's old one (a hash, unrecoverable
+           by design). The shown value lives only in this sheet's DOM
+           until the sheet is reset for another user; it is never
+           persisted. Accounts with NO password yet get neither
+           choice: "Open Account" shows only an instruction — the
+           OWNER must log in with Google and create their own
+           password; the admin never sets one for them. */
         var sheetPasswordCell = document.getElementById("sheetPasswordCell");
         var sheetPwStatus = document.getElementById("sheetPwStatus");
-        var pwResetBtn = document.getElementById("pwResetBtn");
+        var pwChoiceSelfBtn = document.getElementById("pwChoiceSelfBtn");
+        var pwChoiceAiBtn = document.getElementById("pwChoiceAiBtn");
+        var pwManualBox = document.getElementById("pwManualBox");
+        var pwSetSection = document.getElementById("pwSetSection");
+        var pwNoPwNote = document.getElementById("pwNoPwNote");
+        var pwClearToggleBtn = document.getElementById("pwClearToggleBtn");
         var pwPanel = document.getElementById("pwPanel");
         var pwNewInput = document.getElementById("pwNewInput");
         var pwEyeBtn = document.getElementById("pwEyeBtn");
@@ -4497,7 +4537,6 @@
         var pwOk = document.getElementById("pwOk");
         var pwStatus = document.getElementById("pwStatus");
         var pwSetupBtn = document.getElementById("pwSetupBtn");
-        var pwResetShowBtn = document.getElementById("pwResetShowBtn");
         var pwShownBox = document.getElementById("pwShownBox");
         var pwShownValue = document.getElementById("pwShownValue");
         var pwCopyBtn = document.getElementById("pwCopyBtn");
@@ -4510,15 +4549,22 @@
           var has = !!(selectedUser && selectedUser.hasPassword);
           if (sheetPasswordCell) sheetPasswordCell.textContent = pwStatusLabel(has);
           if (sheetPwStatus) sheetPwStatus.textContent = pwStatusLabel(has);
-          /* No password yet: lead with the green "Open / Set up"
-             action and hide the generic "Reset password" wording —
-             there is nothing to reset. Accounts WITH a password keep
-             the existing buttons exactly as before. */
+          /* No password yet: lead with the green "Open Account"
+             action. It does NOT set a password — tapping it shows
+             the instruction that the OWNER must log in and set
+             their own. The two set-choices (forgot-password case)
+             stay hidden: the admin never sets a password for an
+             account that has none. Accounts WITH a password keep
+             the two choices and hide the "Open Account" button. */
           if (pwSetupBtn) pwSetupBtn.classList.toggle("hidden", has);
-          if (pwResetBtn) pwResetBtn.classList.toggle("hidden", !has);
+          if (pwSetSection) pwSetSection.classList.toggle("hidden", !has);
+          if (pwNoPwNote) pwNoPwNote.classList.add("hidden");
+          if (!has && pwPanel) pwPanel.classList.add("hidden");
         }
         function resetPasswordPanel() {
           if (pwPanel) pwPanel.classList.add("hidden");
+          if (pwManualBox) pwManualBox.classList.add("hidden");
+          if (pwNoPwNote) pwNoPwNote.classList.add("hidden");
           if (pwShownBox) pwShownBox.classList.add("hidden");
           if (pwShownValue) pwShownValue.textContent = "—";
           if (pwClearConfirm) pwClearConfirm.classList.add("hidden");
@@ -4540,9 +4586,10 @@
           pwSetBtn.disabled = busy;
           pwClearBtn.disabled = busy;
           pwClearConfirmBtn.disabled = busy;
-          pwResetBtn.disabled = busy;
+          if (pwChoiceSelfBtn) pwChoiceSelfBtn.disabled = busy;
+          if (pwChoiceAiBtn) pwChoiceAiBtn.disabled = busy;
+          if (pwClearToggleBtn) pwClearToggleBtn.disabled = busy;
           if (pwSetupBtn) pwSetupBtn.disabled = busy;
-          pwResetShowBtn.disabled = busy;
         }
         /* A fresh temporary password for Reset & Show: 10 characters
            from an unambiguous alphabet (no 0/O, 1/l/I), drawn with
@@ -4632,22 +4679,50 @@
               showAlert(pwError, err.message);
             });
         }
-        pwResetBtn.addEventListener("click", function () {
-          pwPanel.classList.toggle("hidden");
-          if (!pwPanel.classList.contains("hidden")) pwClearConfirm.classList.add("hidden");
-        });
-        pwResetShowBtn.addEventListener("click", function () {
+        /* Choice 1 — "Set it myself": reveal the manual password
+           input (eye toggle, 6–64 rule) + Set button. The typed
+           password is set via doPasswordReset(newPassword, false)
+           and is NEVER shown back — only a success message. The
+           AI-shown box is cleared first so only one path is active. */
+        if (pwChoiceSelfBtn) pwChoiceSelfBtn.addEventListener("click", function () {
           if (!selectedUser || pwPending) return;
+          hideAlert(pwError);
+          hideAlert(pwOk);
+          if (pwShownBox) pwShownBox.classList.add("hidden");
+          if (pwShownValue) pwShownValue.textContent = "—";
+          if (pwManualBox) pwManualBox.classList.remove("hidden");
+          if (pwNewInput) pwNewInput.focus();
+        });
+        /* Choice 2 — "Let AI set it": generate a 10-char temporary
+           password, set it, and show it ONCE (with Copy) so the
+           admin can send it to the user. This is the only path that
+           ever displays a password, and only the NEW one. The manual
+           box is hidden first so only one path is active. */
+        if (pwChoiceAiBtn) pwChoiceAiBtn.addEventListener("click", function () {
+          if (!selectedUser || pwPending) return;
+          if (pwManualBox) pwManualBox.classList.add("hidden");
           doPasswordReset(generateTempPassword(), true);
         });
-        /* "Open / Set up" for accounts with NO password yet: exactly
-           the Reset & Show flow — generate a 10-char temporary
-           password, POST /api/admin/reset-password, and only after
-           the server read-back show the NEW password in the
-           highlighted box with its Copy button. */
+        /* Clear-password section toggle (the Clear section itself,
+           with its confirm, is unchanged). */
+        if (pwClearToggleBtn) pwClearToggleBtn.addEventListener("click", function () {
+          if (pwPanel) pwPanel.classList.toggle("hidden");
+          if (pwPanel && !pwPanel.classList.contains("hidden")) pwClearConfirm.classList.add("hidden");
+        });
+        /* "Open Account" for accounts with NO password yet: the admin
+           does NOT set a password here — no generation, no set, no
+           display. Show the instruction instead: the OWNER must log
+           in with Google and create their own password (website
+           Create Password screen) and fill in their own info. The
+           account stays locked until they do. (Admin setting a
+           password is only right when the user FORGOT theirs — the
+           two choices above.) */
         if (pwSetupBtn) pwSetupBtn.addEventListener("click", function () {
           if (!selectedUser || pwPending) return;
-          doPasswordReset(generateTempPassword(), true);
+          hideAlert(pwError);
+          hideAlert(pwOk);
+          if (pwNoPwNote) pwNoPwNote.classList.remove("hidden");
+          if (pwNoPwNote) pwNoPwNote.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
         pwCopyBtn.addEventListener("click", function () {
           var val = pwShownValue.textContent;
