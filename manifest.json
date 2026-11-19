@@ -17,5 +17,6 @@
   "name": "MovAi Admin",
   "orientation": "portrait",
   "short_name": "MovAi Admin",
-  "start_url": "/"
+  "start_url": "/",
+  "version": "2.1.8"
 }
