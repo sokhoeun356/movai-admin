@@ -1,6 +1,6 @@
 {
   "background_color": "#0a0313",
-  "description": "MovAi Admin \u2014 Manage users, songs and payments.",
+  "description": "MovAi Admin — Manage users, songs and payments.",
   "display": "standalone",
   "icons": [
     {
@@ -18,5 +18,5 @@
   "orientation": "portrait",
   "short_name": "MovAi Admin",
   "start_url": "/",
-  "version": "2.1.9"
+  "version": "2.1.10"
 }
